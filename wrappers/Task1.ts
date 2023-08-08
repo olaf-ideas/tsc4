@@ -1,6 +1,8 @@
 import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from 'ton-core';
 
-export type Task1Config = {};
+export type Task1Config = {
+
+};
 
 export function task1ConfigToCell(config: Task1Config): Cell {
     return beginCell().endCell();
