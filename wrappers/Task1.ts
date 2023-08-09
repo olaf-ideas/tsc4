@@ -28,4 +28,13 @@ export class Task1 implements Contract {
             body: beginCell().endCell(),
         });
     }
+
+    async getCell(provider: ContractProvider, h: bigint, c: Cell) : Promise<Cell> {
+        const result = (await provider.get('find_branch_by_hash', [
+            { type: 'int', value: h },
+            { type: 'cell', cell: c},
+        ])).stack;
+
+        return result.readCell();
+    }
 }

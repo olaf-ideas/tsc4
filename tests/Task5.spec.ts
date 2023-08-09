@@ -42,7 +42,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(1n, 3n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -58,7 +58,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(201n, 4n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -75,7 +75,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(100n, 0n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -88,7 +88,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(370n, 0n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -101,7 +101,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(369n, 1n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -115,7 +115,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(0n, 0n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -128,6 +128,6 @@ describe('Task5', () => {
     it('just show me the results', async() => {
         const result = await task5.getFibonacciSequence(115n, 255n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
     })
 });

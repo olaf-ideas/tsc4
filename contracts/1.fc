@@ -6,7 +6,13 @@
   this branch should be returned. Return empty cell if the branch is not found.
 -}
 
-#include "imports/stdlib.fc";
+;; #include "imports/stdlib.fc";
+
+int cell_hash(cell c) asm "HASHCU";
+(slice, cell) load_ref(slice s) asm( -> 1 0) "LDREF";
+slice begin_parse(cell c) asm "CTOS";
+int slice_refs_empty?(slice s) asm "SREMPTY";
+() end_parse(slice s) impure asm "ENDS";
 
 () recv_internal() {
 }
@@ -16,6 +22,17 @@
 
     if (hash == cell_hash(tree)) {
         return tree;
+    }
+
+    slice adj = begin_parse(tree);
+
+    while (adj.slice_refs_empty?() != -1) {
+
+        cell neigh = find_branch_by_hash(hash, adj~load_ref());
+
+        if (hash == cell_hash(neigh)) {
+            return neigh;
+        }
     }
 
     return begin_cell().end_cell();
