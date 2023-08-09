@@ -42,7 +42,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(1n, 3n);
 
-        // console.log("result: ", result);
+        console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -58,7 +58,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(201n, 4n);
 
-        // console.log("result: ", result);
+        console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -75,7 +75,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(100n, 0n);
 
-        // console.log("result: ", result);
+        console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -88,7 +88,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(370n, 0n);
 
-        // console.log("result: ", result);
+        console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -101,7 +101,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(369n, 1n);
 
-        // console.log("result: ", result);
+        console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -115,7 +115,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(0n, 0n);
 
-        // console.log("result: ", result);
+        console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -131,42 +131,44 @@ describe('Task5', () => {
         // console.log("result: ", result);
     })
 
-    // it('test all', async() => {
-    //     //  sequence from N to N+K terms (0<=N<=370; 0<=N+K<=370; 0<=K<=255). 
-    //     for (var n = 0; n <= 370; n++) {
-    //         for (var k = 0; k <= 255; k++) {
-    //             if (n < 0 || n > 370 || n + k < 0 || n + k > 370 || k < 0 || k > 255)
-    //                 continue;
-
-    //             const result = await task5.getFibonacciSequence(BigInt(n), BigInt(k));
+    it('test all', async() => {
+        //  sequence from N to N+K terms (0<=N<=370; 0<=N+K<=370; 0<=K<=255). 
+        for (var n = 360; n <= 370; n++) {
+            for (var k = 0; k <= 255; k++) {
+                if (n < 0 || n > 370 || n + k < 0 || n + k > 370 || k < 0 || k > 255)
+                    continue;
                 
-    //             const answer = {"items": [
-    //                 {"type": "int", "value": 0n}
-    //             ]};
+                console.log("testing: ", n, k);
 
-    //             answer.items.pop();
-
-    //             var a = 0n, b = 1n;
-
-    //             for (var i = 0; i < n; i++) {
-    //                 var c = a + b;
-    //                 a = b;
-    //                 b = c;
-    //             }
-
-    //             for (var i = 0; i < k; i++) {
-    //                 answer.items.push({"type": "int", "value": a});
-
-    //                 var c = a + b;
-    //                 a = b;
-    //                 b = c;
-    //             }
+                const result = await task5.getFibonacciSequence(BigInt(n), BigInt(k));
                 
-    //             // console.log("n: ", n, "k: ", k);
-    //             // console.log(answer);
+                const answer = {"items": [
+                    {"type": "int", "value": 0n}
+                ]};
 
-    //             expect(result).toEqual(answer);
-    //         }
-    //     }
-    // })
+                answer.items.pop();
+
+                var a = 0n, b = 1n;
+
+                for (var i = 0; i < n; i++) {
+                    var c = a + b;
+                    a = b;
+                    b = c;
+                }
+
+                for (var i = 0; i < k; i++) {
+                    answer.items.push({"type": "int", "value": a});
+
+                    var c = a + b;
+                    a = b;
+                    b = c;
+                }
+                
+                // console.log("n: ", n, "k: ", k);
+                // console.log(answer);
+
+                expect(result).toEqual(answer);
+            }
+        }
+    })
 });

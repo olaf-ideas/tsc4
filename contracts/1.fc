@@ -13,21 +13,21 @@ int cell_hash(cell c) asm "HASHCU";
 slice begin_parse(cell c) asm "CTOS";
 int slice_refs_empty?(slice s) asm "SREMPTY";
 forall X -> X null() asm "PUSHNULL";
-forall X -> X first(tuple t) asm "FIRST";
-forall X, Y -> [X, Y] pair(X x, Y y) asm "PAIR";
 
 () recv_internal() {
 }
 
-(int, cell) internal_search(int hash, cell tree) {
-    if (hash == cell_hash(tree)) {
+global int hash_copy;
+
+(int, cell) internal_search(cell tree) {
+    if (hash_copy == cell_hash(tree)) {
         return (true, tree);
     }
 
     slice adj = begin_parse(tree);
 
-    while (~ adj.slice_refs_empty?()) {
-        (int result, cell node) = internal_search(hash, adj~load_ref());
+    while (adj.slice_refs_empty?() == -1) {
+        (int result, cell node) = internal_search(adj~load_ref());
 
         if (result == true) {
             return (true, node);
@@ -38,9 +38,11 @@ forall X, Y -> [X, Y] pair(X x, Y y) asm "PAIR";
 }
 
 ;; testable
-(cell) find_branch_by_hash(int hash, cell tree) method_id {
+(cell) find_branch_by_hash(int hash, cell tree) inline method_id {
 
-    (int result, cell node)= internal_search(hash, tree);
+    hash_copy = hash;
+
+    (int result, cell node) = internal_search(tree);
 
     if (result == true) {
         return node;
