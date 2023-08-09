@@ -13,6 +13,7 @@ int cell_hash(cell c) asm "HASHCU";
 slice begin_parse(cell c) asm "CTOS";
 int slice_refs_empty?(slice s) asm "SREMPTY";
 () end_parse(slice s) impure asm "ENDS";
+int slice_empty?(slice s) asm "SEMPTY";
 
 () recv_internal() {
 }
@@ -30,7 +31,9 @@ int slice_refs_empty?(slice s) asm "SREMPTY";
 
         cell neigh = find_branch_by_hash(hash, adj~load_ref());
 
-        if (hash == cell_hash(neigh)) {
+        slice neigh_slice = begin_parse(neigh);
+
+        if (neigh_slice.slice_empty?() != -1) {
             return neigh;
         }
     }
