@@ -37,6 +37,7 @@ forall X -> X null() asm "PUSHNULL";
     b = c;
   }
 
+  tpush(result, a);
   result~tpush(a);
 
   repeat(k - 1) {
@@ -44,7 +45,7 @@ forall X -> X null() asm "PUSHNULL";
     a = b;
     b = c;
 
-    result~tpush(a);
+    tpush(result, a);
   }
 
   return result;

@@ -131,42 +131,42 @@ describe('Task5', () => {
         // console.log("result: ", result);
     })
 
-    // it('test all', async() => {
-    //     //  sequence from N to N+K terms (0<=N<=370; 0<=N+K<=370; 0<=K<=255). 
-    //     for (var n = 0; n <= 370; n++) {
-    //         for (var k = 0; k <= 255; k++) {
-    //             if (n < 0 || n > 370 || n + k < 0 || n + k > 370 || k < 0 || k > 255)
-    //                 continue;
+    it('test all', async() => {
+        //  sequence from N to N+K terms (0<=N<=370; 0<=N+K<=370; 0<=K<=255). 
+        for (var n = 0; n <= 370; n++) {
+            for (var k = 0; k <= 255; k++) {
+                if (n < 0 || n > 370 || n + k < 0 || n + k > 370 || k < 0 || k > 255)
+                    continue;
 
-    //             const result = await task5.getFibonacciSequence(BigInt(n), BigInt(k));
+                const result = await task5.getFibonacciSequence(BigInt(n), BigInt(k));
                 
-    //             const answer = {"items": [
-    //                 {"type": "int", "value": 0n}
-    //             ]};
+                const answer = {"items": [
+                    {"type": "int", "value": 0n}
+                ]};
 
-    //             answer.items.pop();
+                answer.items.pop();
 
-    //             var a = 0n, b = 1n;
+                var a = 0n, b = 1n;
 
-    //             for (var i = 0; i < n; i++) {
-    //                 var c = a + b;
-    //                 a = b;
-    //                 b = c;
-    //             }
+                for (var i = 0; i < n; i++) {
+                    var c = a + b;
+                    a = b;
+                    b = c;
+                }
 
-    //             for (var i = 0; i < k; i++) {
-    //                 answer.items.push({"type": "int", "value": a});
+                for (var i = 0; i < k; i++) {
+                    answer.items.push({"type": "int", "value": a});
 
-    //                 var c = a + b;
-    //                 a = b;
-    //                 b = c;
-    //             }
+                    var c = a + b;
+                    a = b;
+                    b = c;
+                }
                 
-    //             console.log("n: ", n, "k: ", k);
-    //             // console.log(answer);
+                // console.log("n: ", n, "k: ", k);
+                // console.log(answer);
 
-    //             expect(result).toEqual(answer);
-    //         }
-    //     }
-    // })
+                expect(result).toEqual(answer);
+            }
+        }
+    })
 });
