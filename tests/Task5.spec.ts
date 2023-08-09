@@ -3,6 +3,7 @@ import { Cell, TupleReader, toNano } from 'ton-core';
 import { Task5 } from '../wrappers/Task5';
 import '@ton-community/test-utils';
 import { compile } from '@ton-community/blueprint';
+import { getFileInfo } from 'prettier';
 
 describe('Task5', () => {
     let code: Cell;
@@ -68,5 +69,11 @@ describe('Task5', () => {
                 ]
             }
         );
+    })
+
+    it('just show me the results', async() => {
+        const result = await task5.getFibonacciSequence(115n, 255n);
+
+        console.log("result: ", result);
     })
 });

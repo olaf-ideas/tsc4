@@ -28,13 +28,15 @@
   }
 
   tuple result = empty_tuple();
-  
-  repeat(k) {
-    result~tpush(a);
 
+  result~tpush(a);
+
+  repeat(k - 1) {
     int c = a + b;
     a = b;
     b = c;
+
+    result~tpush(a);
   }
 
   return result;
