@@ -28,7 +28,7 @@ export class Task5 implements Contract {
         });
     }
 
-    async getFibonacci(provider: ContractProvider, n: number, k: number) : Promise<TupleReader> {
+    async getFibonacciSequence(provider: ContractProvider, n: bigint, k: bigint) : Promise<TupleReader> {
         const result = (await provider.get('fibonacci_sequence', [
             { type: 'int', value: n },
             { type: 'int', value: k },
