@@ -14,21 +14,21 @@
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id {
 
-  if (hash == cell_hash(tree)) {
-    return tree;
-  }
+  ;; if (hash == cell_hash(tree)) {
+  ;;   return tree;
+  ;; }
   
-  slice cell_slice = tree.begin_parse();
+  ;; slice cell_slice = tree.begin_parse();
 
-  while (cell_slice.slice_refs_empty?() != -1) {
-    cell neighbour = cell_slice~load_ref();
+  ;; while (cell_slice.slice_refs_empty?() != -1) {
+  ;;   cell neighbour = cell_slice~load_ref();
 
-    cell found_cell = find_branch_by_hash(hash, neighbour);
+  ;;   cell found_cell = find_branch_by_hash(hash, neighbour);
 
-    if (hash == cell_hash(found_cell)) {
-      return found_cell;
-    }
-  }
+  ;;   if (hash == cell_hash(found_cell)) {
+  ;;     return found_cell;
+  ;;   }
+  ;; }
 
   return begin_cell().end_cell();
 }
