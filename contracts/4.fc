@@ -26,7 +26,7 @@ cell solve(int shift, cell text) {
 
         if (x > 122) {
           x -= 26;
-        }    
+        }
       }
     }
     else {
@@ -55,6 +55,10 @@ cell solve(int shift, cell text) {
 
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) inline method_id {
+  if (shift < 0) {
+    shift += 26;
+  }
+
   slice ds = text.begin_parse();
 
   int len = (ds.slice_bits() - 32) >> 3;
@@ -101,5 +105,5 @@ cell solve(int shift, cell text) {
 
 ;; testable
 (cell) caesar_cipher_decrypt(int shift, cell text) inline method_id {
-  return caesar_cipher_encrypt(26 - shift, text);
+  return caesar_cipher_encrypt(shift, text);
 }
