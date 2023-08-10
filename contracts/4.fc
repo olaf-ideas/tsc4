@@ -12,7 +12,7 @@
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) inline method_id {
   slice ds = text.begin_parse();
-  ds~skip_bits(32);
+  ;; ds~skip_bits(32);
 
   builder result = begin_cell();
 
