@@ -60,6 +60,9 @@ cell preload_ref(slice s) asm "PLDREF";
                 }
             }
         }
+        else {
+            len -= 1;
+        }
     }
 
     return begin_cell().end_cell();
