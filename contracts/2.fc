@@ -22,20 +22,40 @@ int tlen(tuple t) asm "TLEN";
   int m = tlen(matrixB);
   int p = tlen(first(matrixB));
 
+  tuple matrixBT = empty_tuple();
+
+  int x = 0;
+  while (x < p) {
+    tuple row = empty_tuple();
+
+    int y = 0;
+    while (y < m) {
+      row~tpush(matrixB.at(y).at(x));
+
+      y += 1;
+    }
+
+    matrixBT~tpush(row);
+
+    x += 1;
+  }
+
   tuple result = empty_tuple();
 
   int i = 0;
   while (i < n) {
+    tuple row_A = matrixA.at(i);
     tuple row = empty_tuple();
-    tuple Arow = matrixA.at(i);
 
     int j = 0;
     while (j < p) {
+      tuple row_B = matrixBT.at(j);
+
       int value = 0;
 
       int k = 0;
       while (k < m) {
-        value += Arow.at(k) * matrixB.at(k).at(j);
+        value += row_A.at(k) * row_B.at(k);
 
         k += 1;
       }
