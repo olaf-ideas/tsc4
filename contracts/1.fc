@@ -13,37 +13,36 @@ int cell_hash(cell c) asm "HASHCU";
 slice begin_parse(cell c) asm "CTOS";
 int slice_refs_empty?(slice s) asm "SREMPTY";
 forall X -> X null() asm "PUSHNULL";
-forall X -> X first(tuple t) asm "FIRST";
+forall X -> (tuple, X) list_next(tuple list) asm( -> 1 0) "UNCONS";
+forall X -> tuple cons(X head, tuple tail) asm "CONS";
 forall X, Y -> [X, Y] pair(X x, Y y) asm "PAIR";
 
 () recv_internal() {
 }
 
-(int, cell) internal_search(int hash, cell tree) {
-    if (hash == cell_hash(tree)) {
-        return (true, tree);
-    }
-
-    slice adj = begin_parse(tree);
-
-    while (~ adj.slice_refs_empty?()) {
-        (int result, cell node) = internal_search(hash, adj~load_ref());
-
-        if (result == true) {
-            return (true, node);
-        }
-    }
-
-    return (false, null());
-}
-
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id {
 
-    (int result, cell node)= internal_search(hash, tree);
+    tuple queue = null();
+    queue = cons(tree, queue);
 
-    if (result == true) {
-        return node;
+    int len = 1;
+
+    while (len > 0) {
+        cell node = queue~list_next();
+        
+        if (hash == cell_hash(node)) {
+            return node;
+        }
+        
+        len -= 1;
+
+        slice adj = begin_parse(node);
+
+        while (~ adj.slice_refs_empty?()) {
+            queue = cons(adj~load_ref(), queue);
+            len += 1;
+        }
     }
 
     return begin_cell().end_cell();
