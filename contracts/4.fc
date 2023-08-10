@@ -14,20 +14,33 @@
   slice ds = text.begin_parse();
   ds~skip_bits(32);
 
-  int len = ds.slice_bits() >> 3;
-
   builder result = begin_cell();
 
-  repeat(len) {
-    int x = ds~load_uint(8);
+  int flag = true;
 
-    x -= shift;
+  while (flag) {
 
-    if (x < 0) {
-      x += 256;
+    int len = ds.slice_bits() >> 3;
+
+    repeat(len) {
+      int x = ds~load_uint(8);
+
+      x -= shift;
+
+      if (x < 0) {
+        x += 256;
+      }
+
+      result~store_uint(x, 8);
     }
 
-    result~store_uint(x, 8);
+    if (ds.slice_refs_empty?()) {
+      flag = false;
+    }
+    else {
+      cell nx = ds.preload_ref();
+      ds = nx.begin_parse();
+    }
   }
 
   return result.end_cell();
@@ -38,22 +51,33 @@
   slice ds = text.begin_parse();
   ds~skip_bits(32);
 
-  int len = ds.slice_bits();
-
   builder result = begin_cell();
 
-  while (len > 0) {
-    int x = ds~load_uint(8);
+  int flag = true;
 
-    x += shift;
+  while (flag) {
 
-    if (x >= 256) {
-      x -= 256;
+    int len = ds.slice_bits() >> 3;
+
+    repeat(len) {
+      int x = ds~load_uint(8);
+
+      x += shift;
+
+      if (x >= 256) {
+        x -= 256;
+      }
+
+      result~store_uint(x, 8);
     }
 
-    result~store_uint(x, 8);
-
-    len -= 8;
+    if (ds.slice_refs_empty?()) {
+      flag = false;
+    }
+    else {
+      cell nx = ds.preload_ref();
+      ds = nx.begin_parse();
+    }
   }
 
   return result.end_cell();
