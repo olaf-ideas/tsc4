@@ -37,7 +37,9 @@ cell solve(int shift, cell text) {
   }
 
   if (ds.slice_refs_empty?() == false) {
-    result.store_ref(solve(shift, ds~load_ref()));
+    cell next = preload_ref(ds);
+    cell rest = solve(shift, next);
+    result = store_ref(result, rest);
   }
 
   return result.end_cell();
@@ -75,7 +77,7 @@ cell solve(int shift, cell text) {
   if (ds.slice_refs_empty?() == false) {
     cell next = preload_ref(ds);
     cell rest = solve(shift, next);
-    result.store_ref(rest);
+    result = store_ref(result, rest);
   }
 
   return result.end_cell();
