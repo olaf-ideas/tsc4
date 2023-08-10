@@ -20,7 +20,7 @@
 
   while(flag) {
 
-    int len = ds.slice_bits() >> 3;
+    int len = ds.slice_bits() / 8;
 
     repeat(len) {
       int x = ds~load_uint(8);
@@ -45,7 +45,7 @@
       flag = false;
     }
     else {
-      cell nx = ds.preload_ref();
+      cell nx = ds~load_ref();
       ds = nx.begin_parse();
     }
   }
