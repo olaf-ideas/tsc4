@@ -16,9 +16,6 @@
 () recv_internal() {
 }
 
-forall X -> tuple tpush(tuple t, X value) asm "TPUSH";
-tuple empty_tuple() asm "NIL";
-
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) inline method_id {
   if (k == 0) {
