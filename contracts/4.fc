@@ -18,17 +18,24 @@
 
   int flag = true;
 
-  while (flag) {
+  while(flag) {
 
     int len = ds.slice_bits() >> 3;
 
     repeat(len) {
       int x = ds~load_uint(8);
 
-      x -= shift;
-
-      if (x < 0) {
-        x += 256;
+      if (97 <= x) {
+        if (x <= 122) {
+          x = (x - 97 + shift) % 26 + 97;
+        }
+      }
+      else {
+        if (65 <= x) { 
+          if (x <= 90) {
+            x = (x - 65 + shift) % 26 + 65;
+          }
+        }
       }
 
       result~store_uint(x, 8);
@@ -48,37 +55,5 @@
 
 ;; testable
 (cell) caesar_cipher_decrypt(int shift, cell text) inline method_id {
-  slice ds = text.begin_parse();
-  ds~skip_bits(32);
-
-  builder result = begin_cell();
-
-  int flag = true;
-
-  while (flag) {
-
-    int len = ds.slice_bits() >> 3;
-
-    repeat(len) {
-      int x = ds~load_uint(8);
-
-      x += shift;
-
-      if (x >= 256) {
-        x -= 256;
-      }
-
-      result~store_uint(x, 8);
-    }
-
-    if (ds.slice_refs_empty?()) {
-      flag = false;
-    }
-    else {
-      cell nx = ds.preload_ref();
-      ds = nx.begin_parse();
-    }
-  }
-
-  return result.end_cell();
+  return caesar_cipher_encrypt(- shift, text);
 }
