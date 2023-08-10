@@ -33,6 +33,7 @@ export class Task5 implements Contract {
             { type: 'int', value: n },
             { type: 'int', value: k },
         ])).stack;
+        
         return result.readTuple();
     }
 }

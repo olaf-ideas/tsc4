@@ -42,7 +42,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(1n, 3n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -58,7 +58,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(201n, 4n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -75,7 +75,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(100n, 0n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -88,7 +88,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(370n, 0n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -101,7 +101,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(369n, 1n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -115,7 +115,7 @@ describe('Task5', () => {
 
         const result = await task5.getFibonacciSequence(0n, 0n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         expect(result).toEqual(
             {"items": 
                 [
@@ -133,12 +133,12 @@ describe('Task5', () => {
 
     it('test all', async() => {
         //  sequence from N to N+K terms (0<=N<=370; 0<=N+K<=370; 0<=K<=255). 
-        for (var n = 360; n <= 370; n++) {
+        for (var n = 365; n <= 370; n++) {
             for (var k = 0; k <= 255; k++) {
                 if (n < 0 || n > 370 || n + k < 0 || n + k > 370 || k < 0 || k > 255)
                     continue;
                 
-                console.log("testing: ", n, k);
+                // console.log("testing: ", n, k);
 
                 const result = await task5.getFibonacciSequence(BigInt(n), BigInt(k));
                 

@@ -12,7 +12,40 @@
 () recv_internal() {
 }
 
+forall X -> X first(tuple t) asm "FIRST";
+int tlen(tuple t) asm "TLEN";
+
 ;; testable
 (tuple) matrix_multiplier(tuple matrixA, tuple matrixB) method_id {
-  return null();
+
+  int n = tlen(matrixA);
+  int m = tlen(matrixB);
+  int p = tlen(first(matrixB));
+
+  tuple result = empty_tuple();
+
+  int i = 0;
+  while (i < n) {
+    tuple row = empty_tuple();
+
+    int j = 0;
+    while (j < p) {
+      int value = 0;
+
+      int k = 0;
+      while (k < m) {
+        value += matrixA.at(i).at(k) * matrixB.at(k).at(j);
+
+        k += 1;
+      }
+
+      row~tpush(value);
+      j += 1;
+    }
+
+    result~tpush(row);
+    i += 1;
+  }
+
+  return result;
 }
