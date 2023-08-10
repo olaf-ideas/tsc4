@@ -6,12 +6,10 @@
   character should go to the beginning. Return new text encoded in cell.
 -}
 
-int is_null(cell c) asm "ISNULL";
-
 () recv_internal() {
 }
 
-cell solve(int shift, cell text) {
+cell solve(int shift, cell text) inline {
   slice ds = text.begin_parse();
 
   builder result = begin_cell();
@@ -22,18 +20,26 @@ cell solve(int shift, cell text) {
 
     if (97 <= x) {
       if (x <= 122) {
-        x = (x - 97 + shift + 26) % 26 + 97;
-      }
-    }
-    else {
-      if (65 <= x) { 
-        if (x <= 90) {
-          x = (x - 65 + shift + 26) % 26 + 65;
+        x = x + shift;
+
+        if (x > 122) {
+          x -= 26;
         }
       }
     }
+    else {
+    if (65 <= x) { 
+      if (x <= 90) {
+        x = x + shift;
 
-    result~store_uint(x, 8);
+        if (x > 90) {
+          x -= 26;
+        }
+      }
+    }
+    }
+
+    result = store_uint(result, x, 8);
   }
 
   if (ds.slice_refs_empty?() == false) {

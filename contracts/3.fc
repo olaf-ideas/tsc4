@@ -19,7 +19,56 @@
 () recv_internal() {
 }
 
+int len(int n) {
+  int result = 0;
+
+  while (n > 0) {
+    result += 1;
+
+    n >>= 1;
+  }
+
+  return result;
+}
+
+tuple find_pi_table(tuple n) {
+  const int len = tlen(n);
+  
+  tuple pi = empty_tuple();
+  int d = 0;
+  
+  int i = 0;
+  while (i < n) {
+    int flag = (d > 0);
+
+    while (flag) {
+      if (d == 0) {
+        flag = false;
+      }
+      else {
+        if (n.at(d) == n.at(i)) {
+          flag = false;
+        }
+        else {
+          d = pi.at(d - 1);
+        }
+      }
+    }
+
+    pi~tpush(d);
+
+    i += 1;
+  }
+
+  return pi;
+}
+
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) inline method_id {
+  int d = 0;
+  tuple pi = empty_tuple();
+
+
+
   return begin_cell().end_cell();
 }
