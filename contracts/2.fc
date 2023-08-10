@@ -16,7 +16,7 @@ forall X -> X first(tuple t) asm "FIRST";
 int tlen(tuple t) asm "TLEN";
 
 ;; testable
-(tuple) matrix_multiplier(tuple matrixA, tuple matrixB) method_id {
+(tuple) matrix_multiplier(tuple matrixA, tuple matrixB) inline method_id {
 
   int n = tlen(matrixA);
   int m = tlen(matrixB);

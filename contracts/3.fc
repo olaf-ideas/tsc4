@@ -20,6 +20,6 @@
 }
 
 ;; testable
-(cell) find_and_replace(int flag, int value, cell linked_list) method_id {
+(cell) find_and_replace(int flag, int value, cell linked_list) inline method_id {
   return begin_cell().end_cell();
 }

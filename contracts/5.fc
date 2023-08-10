@@ -18,7 +18,6 @@
 
 forall X -> tuple tpush(tuple t, X value) asm "TPUSH";
 tuple empty_tuple() asm "NIL";
-forall X -> [X] single(X x) asm "SINGLE";
 
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) inline method_id {
@@ -28,24 +27,6 @@ forall X -> [X] single(X x) asm "SINGLE";
 
   int a = 0;
   int b = 1;
-  int p = 0;
-  int q = 1;
-
-  while (n > 30) {
-    if (n & 1) {
-      int bq = b * q;
-      b = a * q + bq + b * p;
-      a = a * p + bq;
-    }
-
-    if (n > 1) {
-      int qq = q * q;
-      q = 2 * p * q + qq;
-      p = p * p + qq;
-    }
-
-    n >>= 1;
-  }
 
   repeat(n) {
     int c = a + b;

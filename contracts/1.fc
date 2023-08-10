@@ -21,7 +21,7 @@ forall X, Y -> [X, Y] pair(X x, Y y) asm "PAIR";
 }
 
 ;; testable
-(cell) find_branch_by_hash(int hash, cell tree) method_id {
+(cell) find_branch_by_hash(int hash, cell tree) inline method_id {
 
     tuple queue = null();
     queue = cons(tree, queue);

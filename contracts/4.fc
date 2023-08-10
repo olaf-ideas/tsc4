@@ -10,11 +10,11 @@
 }
 
 ;; testable
-(cell) caesar_cipher_encrypt(int shift, cell text) method_id {
+(cell) caesar_cipher_encrypt(int shift, cell text) inline method_id {
   return begin_cell().end_cell();
 }
 
 ;; testable
-(cell) caesar_cipher_decrypt(int shift, cell text) method_id {
+(cell) caesar_cipher_decrypt(int shift, cell text) inline method_id {
   return begin_cell().end_cell();
 }
