@@ -27,6 +27,7 @@ int tlen(tuple t) asm "TLEN";
   int i = 0;
   while (i < n) {
     tuple row = empty_tuple();
+    tuple Arow = matrixA.at(i);
 
     int j = 0;
     while (j < p) {
@@ -34,7 +35,7 @@ int tlen(tuple t) asm "TLEN";
 
       int k = 0;
       while (k < m) {
-        value += matrixA.at(i).at(k) * matrixB.at(k).at(j);
+        value += Arow.at(k) * matrixB.at(k).at(j);
 
         k += 1;
       }
