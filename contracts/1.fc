@@ -35,15 +35,30 @@ cell preload_ref(slice s) asm "PLDREF";
             return node;
         }
 
-        len -= 1;
-
         slice adj = begin_parse(node);
 
-        int sons = slice_refs(adj);
-
-        repeat(sons) {
+        ifnot (adj.slice_refs_empty?()) {
             queue = cons(adj~load_ref(), queue);
-            len += 1;
+
+            ifnot (adj.slice_refs_empty?()) {
+                queue = cons(adj~load_ref(), queue);
+
+                ifnot (adj.slice_refs_empty?()) {
+                    queue = cons(adj~load_ref(), queue);
+
+                    ifnot (adj.slice_refs_empty?()) {
+                        queue = cons(adj.preload_ref(), queue);
+
+                        len += 3;
+                    }
+                    else {
+                        len += 2;
+                    }
+                }
+                else {
+                    len += 1;
+                }
+            }
         }
     }
 
