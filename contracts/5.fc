@@ -27,11 +27,23 @@ tuple empty_tuple() asm "NIL";
 
   int a = 0;
   int b = 1;
+  int p = 0;
+  int q = 1;
 
-  repeat(n) {
-    int c = a + b;
-    a = b;
-    b = c;
+  while (n > 0) {
+    if (n & 1) {
+      int bq = b * q;
+      b = a * q + bq + b * p;
+      a = a * p + bq;
+    }
+
+    if (n > 1) {
+      int qq = q * q;
+      q = 2 * p * q + qq;
+      p = p * p + qq;
+    }
+
+    n >>= 1;
   }
 
   tuple result = empty_tuple();
