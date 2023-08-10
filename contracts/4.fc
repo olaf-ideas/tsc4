@@ -6,36 +6,7 @@
   character should go to the beginning. Return new text encoded in cell.
 -}
 
-cell preload_ref(slice s) asm "PLDREF";
-
 () recv_internal() {
-}
-
-(cell) _caesar_cipher_encrypt(int shift, slice ds) inline {
-  builder result = begin_cell();
-  
-  int len = ds.slice_bits();
-
-  while (len > 0) {
-    int x = ds~load_uint(8);
-
-    x -= shift;
-
-    result~store_uint(x, 8);
-
-    len -= 8;
-  }
-
-  if (ds.slice_refs_empty?()) {
-    cell next_block = preload_ref(ds);
-    slice next_ds = next_block.begin_parse();
-    
-    cell solved = _caesar_cipher_encrypt(shift, next_ds);
-
-    result.store_ref(solved);
-  }
-
-  return result.end_cell();
 }
 
 ;; testable
@@ -43,31 +14,20 @@ cell preload_ref(slice s) asm "PLDREF";
   slice ds = text.begin_parse();
   ds~skip_bits(32);
 
-  return _caesar_cipher_encrypt(shift, ds);
-}
+  int len = ds.slice_bits() >> 3;
 
-(cell) _caesar_cipher_decrypt(int shift, slice ds) inline {
   builder result = begin_cell();
-  
-  int len = ds.slice_bits();
 
-  while (len > 0) {
+  repeat(len) {
     int x = ds~load_uint(8);
 
-    x += shift;
+    x -= shift;
+
+    if (x < 0) {
+      x += 256;
+    }
 
     result~store_uint(x, 8);
-
-    len -= 8;
-  }
-
-  if (ds.slice_refs_empty?()) {
-    cell next_block = preload_ref(ds);
-    slice next_ds = next_block.begin_parse();
-    
-    cell solved = _caesar_cipher_encrypt(shift, next_ds);
-
-    result.store_ref(solved);
   }
 
   return result.end_cell();
@@ -78,5 +38,23 @@ cell preload_ref(slice s) asm "PLDREF";
   slice ds = text.begin_parse();
   ds~skip_bits(32);
 
-  return _caesar_cipher_decrypt(shift, ds);
+  int len = ds.slice_bits();
+
+  builder result = begin_cell();
+
+  while (len > 0) {
+    int x = ds~load_uint(8);
+
+    x += shift;
+
+    if (x >= 256) {
+      x -= 256;
+    }
+
+    result~store_uint(x, 8);
+
+    len -= 8;
+  }
+
+  return result.end_cell();
 }

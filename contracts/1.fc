@@ -35,14 +35,15 @@ cell preload_ref(slice s) asm "PLDREF";
             return node;
         }
 
+        len -= 1;
+
         slice adj = begin_parse(node);
 
         int sons = slice_refs(adj);
 
-        len += sons - 1;
-        
         repeat(sons) {
             queue = cons(adj~load_ref(), queue);
+            len += 1;
         }
     }
 

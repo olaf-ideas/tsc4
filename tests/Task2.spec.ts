@@ -72,10 +72,10 @@ describe('Task2', () => {
             ));
         };
         
-        debug_matrix(A);
-        debug_matrix(B);
-        debug_matrix(C);
-        debug_matrix(result);
+        // debug_matrix(A);
+        // debug_matrix(B);
+        // debug_matrix(C);
+        // debug_matrix(result);
 
         expect(result).toEqual(C);
     })
