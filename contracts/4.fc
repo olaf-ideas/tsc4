@@ -11,56 +11,43 @@ int is_null(cell c) asm "ISNULL";
 () recv_internal() {
 }
 
-builder shift_slice(builder result, slice ds, int shift) inline_ref {
-  int len = ds.slice_bits() >> 3;
-
-  repeat(len) {
-    int x = ds~load_uint(8);
-
-    if (97 <= x) { if (x <= 122) {
-      x += shift;
-
-      if (x > 122) {
-        x -= 26;
-      }
-      else {
-      if (x < 97) {
-        x += 26;
-      }
-      }
-    }
-    }
-    else {
-    if (65 <= x) { if (x <= 90) {
-      x += shift;
-
-      if (x > 90) {
-        x -= 26;
-      }
-      else {
-      if (x < 65) {
-        x += 26;
-      }
-      }
-    }
-    }
-    }
-
-    result~store_uint(x, 8);
-  }
-
-  return result;
-}
-
 cell solve(int shift, cell text) {
   slice ds = text.begin_parse();
 
   builder result = begin_cell();
 
-  result = shift_slice(result, ds, shift);
+  int len = ds.slice_bits() >> 3;
+  repeat(len) {
+    int x = ds~load_uint(8);
+
+    if (97 <= x) {
+      if (x <= 122) {
+        x += shift;
+
+        if (x > 122) {
+          x -= 26;
+        }    
+      }
+    }
+    else {
+      if (65 <= x) { 
+        if (x <= 90) {
+          x += shift;
+          
+          if (x > 90) {
+            x -= 26;
+          }
+        }
+      }
+    }
+
+    result = store_uint(result, x, 8);
+  }
 
   if (ds.slice_refs_empty?() == false) {
-    result = store_ref(result, solve(shift, preload_ref(ds)));
+    cell next = preload_ref(ds);
+    cell rest = solve(shift, next);
+    result = store_ref(result, rest);
   }
 
   return result.end_cell();
@@ -70,14 +57,43 @@ cell solve(int shift, cell text) {
 (cell) caesar_cipher_encrypt(int shift, cell text) inline method_id {
   slice ds = text.begin_parse();
 
+  int len = (ds.slice_bits() - 32) >> 3;
+
   ds = skip_bits(ds, 32);
 
   builder result = begin_cell().store_uint(0, 32);
   
-  result = shift_slice(result, ds, shift);
+  repeat(len) {
+    int x = ds~load_uint(8);
+
+    if (97 <= x) {
+      if (x <= 122) {
+        x += shift;
+
+        if (x > 122) {
+          x -= 26;
+        }    
+      }
+    }
+    else {
+      if (65 <= x) { 
+        if (x <= 90) {
+          x += shift;
+
+          if (x > 90) {
+            x -= 26;
+          }
+        }
+      }
+    }
+
+    result = store_uint(result, x, 8);
+  }
 
   if (ds.slice_refs_empty?() == false) {
-    result = store_ref(result, solve(shift, preload_ref(ds)));
+    cell next = preload_ref(ds);
+    cell rest = solve(shift, next);
+    result = store_ref(result, rest);
   }
 
   return result.end_cell();
@@ -85,5 +101,5 @@ cell solve(int shift, cell text) {
 
 ;; testable
 (cell) caesar_cipher_decrypt(int shift, cell text) inline method_id {
-  return caesar_cipher_encrypt(- shift, text);
+  return caesar_cipher_encrypt(26 - shift, text);
 }
