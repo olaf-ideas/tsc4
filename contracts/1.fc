@@ -39,7 +39,9 @@ cell preload_ref(slice s) asm "PLDREF";
 
         slice adj = begin_parse(node);
 
-        while (~ adj.slice_refs_empty?()) {
+        int sons = slice_refs(adj);
+
+        repeat(sons) {
             queue = cons(adj~load_ref(), queue);
             len += 1;
         }
