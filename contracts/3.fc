@@ -24,11 +24,19 @@ int tlen(tuple t) asm "TLEN";
 }
 
 tuple to_tuple(int key) {
-  tuple result = empty_tuple();
+
+  tuple t = empty_tuple();
 
   while (key > 0) {
-    result~tpush(key % 2);
+    t~tpush(key % 2);
     key >>= 1;
+  }
+
+  tuple result = empty_tuple();
+
+  while (tlen(t) > 0) {
+    (t, int last) = tpop(t);
+    result~tpush(last);
   }
 
   return result;
