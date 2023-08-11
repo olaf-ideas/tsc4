@@ -25,12 +25,12 @@ int tlen(tuple t) asm "TLEN";
 (tuple) make_tuple(int key) {
   tuple t = empty_tuple();
   
+  ;; ~dump(key);
   while (key > 0) {
-    t = tpush(t, key % 10);
-    key /= 10;
+    t = tpush(t, key % 2);
+    
+    key /= 2;
   }
-
-  ;; return t;
 
   tuple result = empty_tuple();
 
@@ -80,19 +80,26 @@ int tlen(tuple t) asm "TLEN";
   return true;
 }
 
-(cell) _find_and_replace(tuple flag, tuple value, tuple window, int timer, slice data) {
+global tuple flagT, tuple valueT, tuple window, int timer, slice data;
+
+(cell) _find_and_replace() {
   builder result = begin_cell();
 
   while (~ data.slice_empty?()) {
 
-    if (result.builder_bits() == 1000) {
-      cell c = _find_and_replace(flag, value, window, timer, data);
+    ;; ~strdump("while data loop");
+    ;; ~dump(window);
+
+    if (result.builder_bits() == 1023) {
+      cell c = _find_and_replace();
       result = store_ref(result, c);
       return result.end_cell();
     }
 
     ;; pop front element from window
-    if (window.tlen() >= flag.tlen()) {
+    if (window.tlen() >= flagT.tlen()) {
+      ;; ~strdump("window >= flagT");
+
       (window, int x) = tpopfront(window);
 
       result = store_uint(result, x, 1);
@@ -102,6 +109,8 @@ int tlen(tuple t) asm "TLEN";
       }
     }
     else {
+      ;; ~strdump("window < flagT");
+
       if (data.slice_data_empty?()) {
         cell next = preload_ref(data);
         data = begin_parse(next);
@@ -112,18 +121,18 @@ int tlen(tuple t) asm "TLEN";
       window~tpush(bit);
 
       if (timer == 0) {
-        if (check_tuple_equality(window, flag) == true) {
-          window = value;
-          timer = value.tlen();
+        if (check_tuple_equality(window, flagT) == true) {
+          ;; ~strdump("found flag");
+          window = valueT;
+          timer = valueT.tlen();
         }
       }
-      
     }
   }
 
   while (window.tlen() > 0) {
-    if (result.builder_bits() == 1000) {
-      cell c = _find_and_replace(flag, value, window, timer, data);
+    if (result.builder_bits() == 1023) {
+      cell c = _find_and_replace();
 
       result = store_ref(result, c);
 
@@ -140,11 +149,20 @@ int tlen(tuple t) asm "TLEN";
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id {
-  tuple flag_T = make_tuple(flag);
-  tuple value_T = make_tuple(value);
-  tuple window = empty_tuple();
-  int timer = 0;
-  slice data = linked_list.begin_parse();
+  ;; ~dump(flag);
+  ;; ~dump(value);
+  ;; ~dump(linked_list);
 
-  return _find_and_replace(flag_T, value_T, window, timer, data);
+  flagT = make_tuple(flag);
+  valueT = make_tuple(value);
+  window = empty_tuple();
+  timer = 0;
+  data = linked_list.begin_parse();
+
+  ;; ~strdump("flagT");
+  ;; ~dump(flagT);
+  ;; ~strdump("valueT");
+  ;; ~dump(valueT);
+
+  return _find_and_replace();
 }

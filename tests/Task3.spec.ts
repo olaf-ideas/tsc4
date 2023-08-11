@@ -45,14 +45,20 @@ describe('Task3', () => {
     it('small test on one cell', async () => {
         let input = '';
 
-        for (let i = 0; i < 500; i++) {
-            input += Math.round(Math.random()).toString();
+        let seed = 1;
+        for (let i = 0; i < 1500; i++) {
+            input += (seed % 2).toString();
+
+            seed ^= seed << 13;
+            seed ^= seed >> 17;
+            seed ^= seed << 5;
+            seed %= 1024;
         }
 
-        let flag = 1011n;
-        let value = 10101101011011101n;
+        let flag = 0b10110n;
+        let value = 0b10n;
 
-        let chunks = [200, 100, 800, 200, 500];
+        let chunks = [700, 800, 800, 200, 500];
 
         let last_cell = beginCell().endCell();
 
@@ -90,7 +96,86 @@ describe('Task3', () => {
 
         console.log("result list: ", result);
 
-        let answer_bits = solve(Number(flag).toString(), Number(value).toString(), input);
+        let answer_bits = solve(Number(flag).toString(2), Number(value).toString(2), input);
+
+        let result_bits = '';
+        let node = result;
+
+        while (true) {
+            for (let i = 0; i < node.bits.length; i++) {
+                result_bits += Number(node.bits.at(i));
+            }
+
+            if (node.refs.length == 0) {
+                break;
+            }
+
+            expect(node.refs.length).toEqual(1);
+
+            node = node.refs[0];
+        }
+
+        console.log("result bits: ", result_bits);
+        console.log("answer bits: ", answer_bits);
+
+        expect(result_bits).toEqual(answer_bits);
+    });
+
+    it('small test on one cell 2', async () => {
+        let input = '';
+
+        let seed = 1;
+        for (let i = 0; i < 1500; i++) {
+            input += (seed % 2).toString();
+
+            seed ^= seed << 13;
+            seed ^= seed >> 17;
+            seed ^= seed << 5;
+            seed %= 1024;
+        }
+
+        let flag = 0b1011n;
+        let value = 0b10101101011011101n;
+
+        let chunks = [700, 800, 800, 200, 500];
+
+        let last_cell = beginCell().endCell();
+
+        let cell_input = input;
+        for (let i = 0; cell_input.length > 0; i++) {
+
+            let len = Math.min(cell_input.length, chunks[i % chunks.length]);
+
+            let memory = cell_input.slice(cell_input.length - len, cell_input.length);
+
+            cell_input = cell_input.slice(0, cell_input.length - len);
+
+            console.log("memory: ", memory);
+
+            let builder = beginCell();
+
+            for (let j = 0; j < memory.length; j++) {
+                builder.storeBit(Number(memory[j]));
+            }
+            
+            if (last_cell.bits.length > 0) {
+                builder.storeRef(last_cell);
+            }
+
+            let next_cell = builder.endCell();
+
+            last_cell = next_cell;
+        }
+
+        console.log("input:", input);
+
+        console.log("linked list: ", last_cell);
+
+        const result = await task3.getFindAndReplace(flag, value, last_cell);
+
+        console.log("result list: ", result);
+
+        let answer_bits = solve(Number(flag).toString(2), Number(value).toString(2), input);
 
         let result_bits = '';
         let node = result;
