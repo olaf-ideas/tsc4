@@ -39,13 +39,13 @@ describe('Task3', () => {
 
     it('should work on this simple test', async () => {
 
-        let len = 12;
+        let len = 4 * 5;
 
         let linked_list = beginCell();
         
         let list = '';
 
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < len; i++) {
 
             let value: number = (i % 4 < 3 ? 0 : 1);
             list += value.toString();
@@ -56,17 +56,19 @@ describe('Task3', () => {
         let linked_list_cell = linked_list.endCell();
 
         let flag =  0b1000n;
-        let value = 0b1111n;
+        let value = 0b1001n;
 
         let hexToBin = require('hex-to-binary');
 
-        const result = await task3.getFindAndReplace(flag, value, linked_list_cell);
-
+        console.log("input : ", list.toString());
         console.log("flag: ", flag);
         console.log("value: ", value);
+        console.log("cell: ", linked_list_cell.toString());
+
+        const result = await task3.getFindAndReplace(flag, value, linked_list_cell);
+
         console.log("bits: ", result.bits.toString());
         console.log("result: ", hexToBin(result.bits.toString()));
-        console.log("input : ", list.toString());
 
     });
 });

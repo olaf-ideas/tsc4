@@ -16,12 +16,23 @@
 
 -}
 
-forall X -> (tuple, X) tpop(tuple t) asm "TPUSH";
+forall X -> (tuple, X) tpop(tuple t) asm "TPOP";
 forall X -> (tuple, X) ~tpop(tuple t) asm "TPOP";
 
 int tlen(tuple t) asm "TLEN";
 
 () recv_internal() {
+}
+
+int log2(int n) {
+  int result = 0;
+
+  while (n > 0) {
+    result += 1;
+    n >>= 1;
+  }
+
+  return result;
 }
 
 tuple to_tuple(int mask) {
@@ -32,18 +43,14 @@ tuple to_tuple(int mask) {
     mask >>= 1;
   }
 
+  ;; int len = log2(mask);
+
+  ;; while (len > 0) {
+  ;;   len -= 1;
+  ;;   result~tpush((mask >> len) % 2);
+  ;; }
+
   return result;
-}
-
-(slice, int) read_data(slice data) {
-  if (slice_data_empty?(data)) {
-    cell xd = data.preload_ref();
-    slice nxt = xd.begin_parse();
-
-    return read_data(nxt);
-  }
-
-  return data.load_uint(1);
 }
 
 (tuple, int) pop_front(tuple t) {
@@ -55,7 +62,8 @@ tuple to_tuple(int mask) {
 
   int i = 1;
   while (i < len) {
-    result~tpush(t.at(i));
+    int x = t.at(i);
+    result~tpush(x);
     i += 1;
   }
 
@@ -63,11 +71,16 @@ tuple to_tuple(int mask) {
 }
 
 int tuple_equal(tuple a, tuple b) {
-  int len = tlen(a);
+  int lenA = tlen(a);
+  int lenB = tlen(b);
 
-  repeat (len) {
-    int bita = a~tpop();
-    int bitb = b~tpop();
+  if (lenA != lenB) {
+    return false;
+  }
+
+  repeat (lenA) {
+    (a, int bita) = tpop(a);
+    (b, int bitb) = tpop(b);
 
     if (bita != bitb) {
       return false;
@@ -77,40 +90,51 @@ int tuple_equal(tuple a, tuple b) {
   return true;
 }
 
-cell solve(tuple flag, tuple value, int len, tuple window, slice data) {
+cell solve(tuple flag, tuple value, tuple window, slice data) {
   builder result = begin_cell();
   
-  while (~ data.slice_empty?()) {
-    if (tlen(window) == len) {
-      if (tuple_equal(window, flag) == true) {
-        window = value;
-      }
+  while (~ slice_empty?(data)) {
+    if (tlen(window) == tlen(flag)) {
+      ;; if (result.builder_bits() == 1023) {
+      ;;   cell next_chunk = solve(flag, value, window, data);
 
-      if (result.builder_bits() == 1023) {
-        cell next_chunk = solve(flag, value, len, window, data);
+      ;;   result = result.store_ref(next_chunk);
 
-        result = result.store_ref(next_chunk);
-
-        return result.end_cell();
-      }
+      ;;   return result.end_cell();
+      ;; }
 
       (window, int save) = pop_front(window);
 
       result = store_uint(result, save, 1);
     }
-    
-    (data, int bit) = read_data(data);
-    window~tpush(bit);
+
+    if (slice_data_empty?(data)) {
+      ifnot (slice_refs_empty?(data)) {
+        cell xd = data.preload_ref();
+        slice nxt = xd.begin_parse();
+
+        data = nxt;
+      }
+    }
+
+    ifnot (slice_empty?(data)) {
+      (data, int bit) = data.load_uint(1);
+      window~tpush(bit);
+    }
+
+    if (tuple_equal(window, flag) == true) {
+      window = value;
+    }
   }
 
   while (tlen(window) > 0) {
-    if (result.builder_bits() == 1023) {
-      cell next_chunk = solve(flag, value, len, window, data);
+    ;; if (result.builder_bits() == 1023) {
+    ;;   cell next_chunk = solve(flag, value, window, data);
 
-      result = result.store_ref(next_chunk);
+    ;;   result = result.store_ref(next_chunk);
 
-      return result.end_cell();
-    }
+    ;;   return result.end_cell();
+    ;; }
 
     (window, int save) = pop_front(window);
 
@@ -126,8 +150,7 @@ cell solve(tuple flag, tuple value, int len, tuple window, slice data) {
 
   tuple flagT = to_tuple(flag);
   tuple valueT = to_tuple(value);
-  int len = tlen(flagT);
   tuple window = empty_tuple();
 
-  return solve(flagT, valueT, len, window, data);
+  return solve(flagT, valueT, window, data);
 }
