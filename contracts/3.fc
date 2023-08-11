@@ -23,11 +23,19 @@ forall X -> (tuple, X) tpop(tuple t) asm "TPOP";
 int tlen(tuple t) asm "TLEN";
 
 (tuple) make_tuple(int key) {
-  tuple result = empty_tuple();
+  tuple t = empty_tuple();
   
   while (key > 0) {
-    result = tpush(result, key % 2);
+    t = tpush(t, key % 2);
     key /= 2;
+  }
+
+  tuple result = empty_tuple();
+
+  while (tlen(t) > 0) {
+    (t, int last) = tpop(t);
+
+    result = tpush(result, last);
   }
 
   return result;
