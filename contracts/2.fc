@@ -12,6 +12,7 @@
 () recv_internal() {
 }
 
+forall X -> (tuple, X) tpop(tuple t) asm "TPOP";
 forall X -> X first(tuple t) asm "FIRST";
 int tlen(tuple t) asm "TLEN";
 
@@ -44,20 +45,20 @@ int tlen(tuple t) asm "TLEN";
 
   int i = 0;
   while (i < n) {
-    tuple row_A = matrixA.at(i);
     tuple row = empty_tuple();
 
     int j = 0;
     while (j < p) {
       tuple row_B = matrixBT.at(j);
+      tuple row_A = matrixA.at(i);
 
       int value = 0;
+    
+      repeat(m) {
+        (row_A, int a) = tpop(row_A);
+        (row_B, int b) = tpop(row_B);
 
-      int k = 0;
-      while (k < m) {
-        value += row_A.at(k) * row_B.at(k);
-
-        k += 1;
+        value += a * b;
       }
 
       row~tpush(value);
