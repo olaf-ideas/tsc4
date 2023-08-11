@@ -4,6 +4,7 @@ import { Task3 } from '../wrappers/Task3';
 import '@ton-community/test-utils';
 import { compile } from '@ton-community/blueprint';
 import { task4ConfigToCell } from '../wrappers/Task4';
+import assert from 'assert';
 
 describe('Task3', () => {
     let code: Cell;
@@ -41,212 +42,76 @@ describe('Task3', () => {
         return list.replaceAll(flag, value);
     };
 
-    it('should work on this simple test', async () => {
+    it('small test on one cell', async () => {
+        let input = '';
 
-        let linked_list = beginCell();
-        
-        let list = '011101110';
-
-        for (let i = 0; i < list.length; i++) {
-
-            linked_list.storeBit(Number(list.at(i)));
+        for (let i = 0; i < 2000; i++) {
+            input += Math.round(Math.random()).toString();
         }
 
-        let linked_list_cell = linked_list.endCell();
+        let flag = 0b101011n;
+        let value = 0b1011001101n;
 
-        let flag =  0b111n;
-        let value = 0b1n;
+        let chunks = [200, 300, 400, 200, 500];
 
-        // console.log("input : ", list);
-        // console.log("flag: ", flag);
-        // console.log("value: ", value);
-        // console.log("cell: ", linked_list_cell.toString());
+        let last_cell = beginCell().endCell();
 
-        const result = await task3.getFindAndReplace(flag, value, linked_list_cell);
+        let cell_input = input;
+        for (let i = 0; cell_input.length > 0; i++) {
 
-        let result_list = '';
+            let len = Math.min(cell_input.length, chunks[i % chunks.length]);
 
-        for (let i = 0; i < result.bits.length; i++) {
-            result_list += Number(result.bits.at(i))
-        }
+            let memory = cell_input.slice(cell_input.length - len, cell_input.length);
 
-        expect(result_list).toEqual(solve(flag.toString(2), value.toString(2), list));
-    });
+            cell_input = cell_input.slice(0, cell_input.length - len);
 
-    it('should work on this hard test', async () => {
+            console.log("memory: ", memory);
 
-        for (let rep = 0; rep < 10; rep++) {
+            let builder = beginCell();
 
-            let linked_list = beginCell();
+            for (let j = 0; j < memory.length; j++) {
+                builder.storeBit(Number(memory[j]));
+            }
             
-            let list = ''
-
-            for (let i = 0; i < 512; i++) {
-                let x = Math.round(Math.random());
-
-                list += x.toString();
-
-                linked_list.storeBit(Number(list.at(i)));
+            if (last_cell.bits.length > 0) {
+                builder.storeRef(last_cell);
             }
 
-            let linked_list_cell = linked_list.endCell();
+            let next_cell = builder.endCell();
 
-            let flag =  0b1011101;
-            let value = 0b1110011;
+            last_cell = next_cell;
+        }
 
-            // console.log("input : ", list);
-            // console.log("flag: ", flag.toString(2));
-            // console.log("value: ", value.toString(2));
-            // console.log("cell: ", linked_list_cell.toString());
+        console.log("input:", input);
 
-            const result = await task3.getFindAndReplace(BigInt(flag), BigInt(value), linked_list_cell);
+        console.log("linked list: ", last_cell);
 
-            let result_list = '';
+        const result = await task3.getFindAndReplace(flag, value, last_cell);
 
-            for (let i = 0; i < result.bits.length; i++) {
-                result_list += Number(result.bits.at(i))
+        console.log("result list: ", result);
+
+        let answer_bits = solve(Number(flag).toString(2), Number(value).toString(2), input);
+
+        let result_bits = '';
+        let node = result;
+
+        while (true) {
+            for (let i = 0; i < node.bits.length; i++) {
+                result_bits += Number(node.bits.at(i));
             }
 
-            expect(result_list).toEqual(solve(flag.toString(2), value.toString(2), list));
-
-        }
-    });
-
-    it('should work on this linked list x2', async () => {
-
-        let linked_list1 = beginCell();
-        let linked_list2 = beginCell();
-        
-        let list = ''
-
-        for (let i = 0; i < 12; i++) {
-            let x = (i * 21 + 11) % 2;
-
-            list += x.toString();
-
-            linked_list1.storeBit(x);
-        }
-
-        for (let i = 0; i < 20; i++) {
-            let x = (i * 10 + 11) % 2;
-
-            list += x.toString();
-
-            linked_list2.storeBit(x);
-        }
-
-        let linked_list_cell2 = linked_list2.endCell();
-
-        linked_list1.storeRef(linked_list_cell2);
-
-        let linked_list_cell1 = linked_list1.endCell();
-
-        let flag =  0b1101;
-        let value = 0b1001;
-
-        function myToString(x: number) {
-            let result = '';
-
-            while (x > 0) {
-                result += (x % 2).toString();
-                x >>= 1;
+            if (node.refs.length == 0) {
+                break;
             }
 
-            return result;
-        };
+            expect(node.refs.length).toEqual(1);
 
-        console.log("input : ", list);
-        console.log("flag: ", myToString(flag));
-        console.log("value: ", myToString(value));
-        console.log("cell 1: ", linked_list_cell1.toString());
-        console.log("cell 2: ", linked_list_cell2.toString());
-
-        const answer = solve(flag.toString(2), value.toString(2), list);
-
-        const result = await task3.getFindAndReplace(BigInt(flag), BigInt(value), linked_list_cell1);
-
-        let result_list = '';
-
-        for (let i = 0; i < result.bits.length; i++) {
-            result_list += Number(result.bits.at(i));
+            node = node.refs[0];
         }
 
-        result_list += '|'
+        console.log("result bits: ", result_bits);
+        console.log("answer bits: ", answer_bits);
 
-        let neigh = result.refs.at(0) ?? result;
-
-        for (let i = 0; i < neigh.bits.length; i++) {
-            result_list += Number(neigh.bits.at(i));
-        }
-
-        console.log("result: ", result_list);
-        console.log("answer: ", answer);
-
-        // expect(result_list).toEqual(solve(flag.toString(2), value.toString(2), list));
-    });
-
-    it('should work on this linked list x2 hard', async () => {
-
-        let linked_list1 = beginCell();
-        let linked_list2 = beginCell();
-        
-        let list = ''
-
-        let cellA = '10100001011';
-        for (let i = 0; i < cellA.length; i++) {
-            let x = Number(cellA[i])
-
-            list += x.toString();
-
-            linked_list1.storeBit(x);
-        }
-
-        let cellB = '10101000111111';
-        for (let i = 0; i < cellB.length; i++) {
-            
-            let x = Number(cellB[i]);
-
-            list += x.toString();
-
-            linked_list2.storeBit(x);
-        }
-
-        let linked_list_cell2 = linked_list2.endCell();
-
-        linked_list1.storeRef(linked_list2);
-
-        let linked_list_cell1 = linked_list1.endCell();
-
-        let flag =  0b101011101;
-        let value = 0b111111111;
-
-        console.log("input : ", list);
-        console.log("flag: ", flag.toString(2));
-        console.log("value: ", value.toString(2));
-        console.log("cell 1: ", linked_list_cell1.toString());
-        console.log("cell 2: ", linked_list_cell2.toString());
-
-        const answer = solve(flag.toString(2), value.toString(2), list);
-
-        const result = await task3.getFindAndReplace(BigInt(flag), BigInt(value), linked_list_cell1);
-
-        let result_list = '';
-
-        for (let i = 0; i < result.bits.length; i++) {
-            result_list += Number(result.bits.at(i));
-        }
-
-        let neigh = result.refs.at(0) ?? result;
-
-        result_list += '|';
-
-        for (let i = 0; i < neigh.bits.length; i++) {
-            result_list += Number(neigh.bits.at(i));
-        }
-
-        console.log("result: ", result_list);
-        console.log("answer: ", answer);
-
-        // expect(result_list).toEqual(solve(flag.toString(2), value.toString(2), list));
+        expect(result_bits).toEqual(answer_bits);
     });
 });

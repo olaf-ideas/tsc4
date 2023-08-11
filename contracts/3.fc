@@ -26,9 +26,11 @@ int tlen(tuple t) asm "TLEN";
   tuple t = empty_tuple();
   
   while (key > 0) {
-    t = tpush(t, key % 10);
-    key /= 10;
+    t = tpush(t, key % 2);
+    key /= 2;
   }
+
+  ;; return t;
 
   tuple result = empty_tuple();
 
@@ -41,20 +43,21 @@ int tlen(tuple t) asm "TLEN";
   return result;
 }
 
-(tuple, int) pop_front(tuple t) {
-  tuple result = empty_tuple();
-
-  int front = first(t);
+(tuple, int) tpopfront(tuple t) {
+  int x = t.at(0);
 
   int len = tlen(t);
   int idx = 1;
-
+    
+  tuple result = empty_tuple();
   while (idx < len) {
-    result = tpush(result, t.at(idx));
+    int value = t.at(idx);
+
+    result~tpush(value);
     idx += 1;
   }
 
-  return (result, front);
+  return (result, x);
 }
 
 (int) check_tuple_equality(tuple a, tuple b) {
@@ -79,70 +82,69 @@ int tlen(tuple t) asm "TLEN";
 
 (cell) _find_and_replace(tuple flag, tuple value, tuple window, int timer, slice data) {
   builder result = begin_cell();
-  int done = 0;
 
+  while (~ data.slice_empty?()) {
 
-  while (~ slice_empty?(data)) {
-    if (done == 1000) {
-      cell _result = _find_and_replace(flag, value, window, timer, data);
-
-      result = store_ref(result, _result);
-
+    if (result.builder_bits() == 1000) {
+      cell c = _find_and_replace(flag, value, window, timer, data);
+      result = store_ref(result, c);
       return result.end_cell();
     }
 
     ;; pop front element from window
-    if (tlen(window) >= tlen(flag)) {
-      (window, int front) = pop_front(window);
+    if (window.tlen() >= flag.tlen()) {
+      (window, int x) = tpopfront(window);
 
-      result = store_uint(result, front, 1);
-      done += 1;
+      result = store_uint(result, x, 1);
 
       if (timer > 0) {
         timer -= 1;
       }
     }
-
-    if (tlen(window) < tlen(flag)) {
-      
-      if (slice_data_empty?(data)) {
-        (data, cell next_chunk) = load_ref(data);
-
-        data = begin_parse(next_chunk);
+    else {
+      if (data.slice_data_empty?()) {
+        cell next = preload_ref(data);
+        data = begin_parse(next);
       }
 
-      (data, int bit) = load_uint(data, 1);
+      int bit = data~load_uint(1);
 
-      window = tpush(window, bit);
+      window~tpush(bit);
 
       if (timer == 0) {
-        if (check_tuple_equality(window, flag)) {
+        if (check_tuple_equality(window, flag) == true) {
           window = value;
-          timer = tlen(value);
+          timer = value.tlen();
         }
       }
+      
     }
   }
 
-  while (tlen(window) > 0) {
-    if (done == 1000) {
-      cell _result = _find_and_replace(flag, value, window, timer, data);
+  while (window.tlen() > 0) {
+    if (result.builder_bits() == 1000) {
+      cell c = _find_and_replace(flag, value, window, timer, data);
 
-      result = store_ref(result, _result);
+      result = store_ref(result, c);
 
       return result.end_cell();
     }
     
-    (window, int front) = pop_front(window);
-    
-    result = store_uint(result, front, 1);
-    done += 1;
+    (window, int x) = tpopfront(window);
+
+    result = store_uint(result, x, 1);
   }
 
-  return end_cell(result);
+  return result.end_cell();
 }
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id {
-  return _find_and_replace(make_tuple(flag), make_tuple(value), empty_tuple(), 0, begin_parse(linked_list));
+  tuple flag_T = make_tuple(flag);
+  tuple value_T = make_tuple(value);
+  tuple window = empty_tuple();
+  int timer = 0;
+  slice data = linked_list.begin_parse();
+
+  return _find_and_replace(flag_T, value_T, window, timer, data);
 }
