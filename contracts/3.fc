@@ -90,14 +90,16 @@ int tuple_equal(tuple a, tuple b) {
   return true;
 }
 
-cell solve(tuple flag, tuple value, int timer, tuple window, slice data) {
+cell solve(tuple flag, tuple value, int timer, tuple window, slice data, tuple data_sizes) {
   builder result = begin_cell();
   
   while (~ slice_empty?(data)) {
 
     if (tlen(window) >= tlen(flag)) {
-      if (result.builder_bits() == 1023) {
-        cell next_chunk = solve(flag, value, timer, window, data);
+      if (result.builder_bits() == first(data_sizes)) {
+        (data_sizes, int last_size) = pop_front(data_sizes);
+
+        cell next_chunk = solve(flag, value, timer, window, data, data_sizes);
 
         result = result.store_ref(next_chunk);
 
@@ -119,6 +121,8 @@ cell solve(tuple flag, tuple value, int timer, tuple window, slice data) {
         slice nxt = xd.begin_parse();
 
         data = nxt;
+
+        data_sizes~tpush(slice_bits(data));
       }
     }
 
@@ -138,8 +142,9 @@ cell solve(tuple flag, tuple value, int timer, tuple window, slice data) {
   }
 
   while (tlen(window) > 0) {
-    if (result.builder_bits() == 1023) {
-      cell next_chunk = solve(flag, value, timer, window, data);
+    if (result.builder_bits() == first(data_sizes)) {
+      (data_sizes, int last_size) = pop_front(data_sizes);
+      cell next_chunk = solve(flag, value, timer, window, data, data_sizes);
 
       result = result.store_ref(next_chunk);
 
@@ -161,5 +166,9 @@ cell solve(tuple flag, tuple value, int timer, tuple window, slice data) {
   tuple valueT = to_tuple(value);
   tuple window = empty_tuple();
 
-  return solve(flagT, valueT, 0, window, data);
+  tuple data_sizes = empty_tuple();
+
+  data_sizes~tpush(slice_bits(data));
+
+  return solve(flagT, valueT, 0, window, data, data_sizes);
 }
