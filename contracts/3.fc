@@ -158,11 +158,9 @@ cell solve(tuple flag, tuple value, slice data, tuple window, int timer) {
 
   tuple window = empty_tuple(); 
 
-  repeat(1000) {
-    slice data = linked_list.begin_parse();
+  slice data = linked_list.begin_parse();
 
-    linked_list = solve(flag_t, value_t, data, window, 0);
-  }
+  linked_list = solve(flag_t, value_t, data, window, 0);
 
   return linked_list;
 }
