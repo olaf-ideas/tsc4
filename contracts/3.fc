@@ -38,17 +38,17 @@ int log2(int n) {
 tuple to_tuple(int mask) {
   tuple result = empty_tuple();
 
-  while (mask > 0) {
-    result~tpush(mask % 2);
-    mask >>= 1;
-  }
-
-  ;; int len = log2(mask);
-
-  ;; while (len > 0) {
-  ;;   len -= 1;
-  ;;   result~tpush((mask >> len) % 2);
+  ;; while (mask > 0) {
+  ;;   result~tpush(mask % 2);
+  ;;   mask >>= 1;
   ;; }
+
+  int len = log2(mask);
+
+  while (len > 0) {
+    len -= 1;
+    result~tpush((mask >> len) % 2);
+  }
 
   return result;
 }
@@ -94,7 +94,8 @@ cell solve(tuple flag, tuple value, int timer, tuple window, slice data) {
   builder result = begin_cell();
   
   while (~ slice_empty?(data)) {
-    if (tlen(window) == tlen(flag)) {
+
+    if (tlen(window) >= tlen(flag)) {
       if (result.builder_bits() == 1023) {
         cell next_chunk = solve(flag, value, timer, window, data);
 
@@ -121,9 +122,11 @@ cell solve(tuple flag, tuple value, int timer, tuple window, slice data) {
       }
     }
 
-    ifnot (slice_empty?(data)) {
-      (data, int bit) = data.load_uint(1);
-      window~tpush(bit);
+    if (tlen(window) < tlen(flag)) {
+      ifnot (slice_empty?(data)) {
+        (data, int bit) = data.load_uint(1);
+        window~tpush(bit);
+      }
     }
 
     if (timer == 0) {
@@ -144,7 +147,6 @@ cell solve(tuple flag, tuple value, int timer, tuple window, slice data) {
     }
 
     (window, int save) = pop_front(window);
-
     result = store_uint(result, save, 1);
   }
 
