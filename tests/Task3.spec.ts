@@ -132,10 +132,10 @@ describe('Task3', () => {
     // });
 
     it('small test on one cell 2', async () => {
-        let input = '0100000';
+        let input = '01110';
 
         let seed = 1;
-        for (let i = 0; i < 500; i++) {
+        for (let i = 0; i < 4000; i++) {
             input += (seed % 2).toString();
 
             seed ^= seed << 13;
@@ -144,10 +144,10 @@ describe('Task3', () => {
             seed %= 2137;
         }
 
-        let flag = 0b111n;
+        let flag = 0b1n;
         let value = 1n << 127n;
 
-        let chunks = [300, 1000, 3000, 600, 500];
+        let chunks = [1023, 1023, 900, 950, 990];
 
         let last_cell = beginCell().endCell();
 
@@ -160,7 +160,7 @@ describe('Task3', () => {
 
             cell_input = cell_input.slice(0, cell_input.length - len);
 
-            console.log("memory: ", memory);
+            // console.log("memory: ", memory);
 
             let builder = beginCell();
 
@@ -177,16 +177,16 @@ describe('Task3', () => {
             last_cell = next_cell;
         }
 
-        console.log("len: ", input.length);
-        console.log("flag: ", flag.toString(2));
-        console.log("value: ", value.toString(2));
-        console.log("input:", input);
+        // console.log("len: ", input.length);
+        // console.log("flag: ", flag.toString(2));
+        // console.log("value: ", value.toString(2));
+        // console.log("input:", input);
 
-        console.log("linked list: ", last_cell);
+        // console.log("linked list: ", last_cell);
 
         const result = await task3.getFindAndReplace(flag, value, last_cell);
 
-        console.log("result list: ", result);
+        // console.log("result list: ", result);
 
         let answer_bits = solve(Number(flag).toString(2), Number(value).toString(2), input);
 
@@ -210,10 +210,10 @@ describe('Task3', () => {
             node = node.refs[0];
         }
 
-        console.log("cnt: ", cnt);
-        console.log("input  bits; ", input);
-        console.log("result bits: ", result_bits);
-        console.log("answer bits: ", answer_bits);
+        // console.log("cnt: ", cnt);
+        // console.log("input  bits; ", input);
+        // console.log("result bits: ", result_bits);
+        // console.log("answer bits: ", answer_bits);
 
         expect(result_bits).toEqual(answer_bits);
     });
