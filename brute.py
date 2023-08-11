@@ -4,6 +4,11 @@ def fib(n):
         c = a + b
         a = b
         b = c
+
+        assert c < 2**257
+        assert a < 2**257
+        assert b < 2**257
+
     return a
 
 def fib_fast(n):
@@ -40,5 +45,6 @@ for i in range(370):
 print ("testing big")
 
 print(fib(369))
-print(fib_fast(369))
+# print(fib_fast(369))
 # print(fib_fast(370))
+print(fib(370))

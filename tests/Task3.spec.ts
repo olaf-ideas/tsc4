@@ -1,8 +1,9 @@
 import { Blockchain, SandboxContract } from '@ton-community/sandbox';
-import { Cell, toNano } from 'ton-core';
+import { Cell, toNano, Builder, Slice, Tuple, BitString, beginCell } from 'ton-core';
 import { Task3 } from '../wrappers/Task3';
 import '@ton-community/test-utils';
 import { compile } from '@ton-community/blueprint';
+import { task4ConfigToCell } from '../wrappers/Task4';
 
 describe('Task3', () => {
     let code: Cell;
@@ -34,5 +35,38 @@ describe('Task3', () => {
     it('should deploy', async () => {
         // the check is done inside beforeEach
         // blockchain and task3 are ready to use
+    });
+
+    it('should work on this simple test', async () => {
+
+        let len = 12;
+
+        let linked_list = beginCell();
+        
+        let list = '';
+
+        for (let i = 0; i < 8; i++) {
+
+            let value: number = (i % 4 < 3 ? 0 : 1);
+            list += value.toString();
+
+            linked_list.storeBit(value);
+        }
+
+        let linked_list_cell = linked_list.endCell();
+
+        let flag =  0b0001n;
+        let value = 0b1111n;
+
+        let hexToBin = require('hex-to-binary');
+
+        const result = await task3.getFindAndReplace(flag, value, linked_list_cell);
+
+        console.log("flag: ", flag);
+        console.log("value: ", value);
+        console.log("bits: ", result.bits.toString());
+        console.log("result: ", hexToBin(result.bits.toString()));
+        console.log("input : ", list.toString());
+
     });
 });

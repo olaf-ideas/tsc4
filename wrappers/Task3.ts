@@ -26,4 +26,14 @@ export class Task3 implements Contract {
             body: beginCell().endCell(),
         });
     }
+
+    async getFindAndReplace(provider: ContractProvider, flag: bigint, value: bigint, linked_list: Cell) : Promise<Cell> {
+        const result = (await provider.get('find_and_replace', [
+            { type: 'int', value: flag },
+            { type: 'int', value: value },
+            { type: 'cell', cell: linked_list },
+        ])).stack;
+
+        return result.readCell();
+    }
 }

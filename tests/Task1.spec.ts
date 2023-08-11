@@ -44,6 +44,6 @@ describe('Task1', () => {
 
         const result = await task1.getCell(0n, code);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
     });
 });

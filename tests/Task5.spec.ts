@@ -105,7 +105,21 @@ describe('Task5', () => {
         expect(result).toEqual(
             {"items": 
                 [
-                    {"type": "int", "value": 58472848379039952684853851736901133239741266891456844557261755914039063645794n}, 
+                    {"type": "int", "value": 58472848379039952684853851736901133239741266891456844557261755914039063645794n }, 
+                ]
+            }
+        );
+    })
+
+    it('should pass this test MAX', async() => {
+
+        const result = await task5.getFibonacciSequence(370n, 1n);
+
+        // console.log("result: ", result);
+        expect(result).toEqual(
+            {"items": 
+                [
+                    {"type": "int", "value": 94611056096305838013295371573764256526437182762229865607320618320601813254535n }, 
                 ]
             }
         );
@@ -135,7 +149,7 @@ describe('Task5', () => {
         //  sequence from N to N+K terms (0<=N<=370; 0<=N+K<=370; 0<=K<=255). 
         for (var n = 365; n <= 370; n++) {
             for (var k = 0; k <= 255; k++) {
-                if (n < 0 || n > 370 || n + k < 0 || n + k > 370 || k < 0 || k > 255)
+                if (n < 0 || n > 370 || n + k < 0 || n + k > 371 || k < 0 || k > 255)
                     continue;
                 
                 // console.log("testing: ", n, k);

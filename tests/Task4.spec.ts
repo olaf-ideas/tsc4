@@ -56,10 +56,10 @@ describe('Task4', () => {
 
         const result = await task4.getCeasarEncyption(shift, root);
 
-        console.log("buffer: ", data);
-        console.log("result: ", result.bits);
-        console.log("answer: ", ans_data);
-        console.log("are eq: ", ans_data.equals(result.bits));
+        // console.log("buffer: ", data);
+        // console.log("result: ", result.bits);
+        // console.log("answer: ", ans_data);
+        // console.log("are eq: ", ans_data.equals(result.bits));
 
         expect(ans_data.equals(result.bits)).toBeTruthy();
 
