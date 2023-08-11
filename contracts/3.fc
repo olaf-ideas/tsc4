@@ -32,14 +32,16 @@ tuple to_tuple(int key) {
     key >>= 1;
   }
 
-  tuple result = empty_tuple();
+  ;; tuple result = empty_tuple();
 
-  while (tlen(t) > 0) {
-    (t, int last) = tpop(t);
-    result~tpush(last);
-  }
+  ;; while (tlen(t) > 0) {
+  ;;   (t, int last) = tpop(t);
+  ;;   result~tpush(last);
+  ;; }
 
-  return result;
+  return t;
+
+  ;; return result;
 }
 
 (tuple, int) pop_front(tuple t) {
@@ -154,11 +156,13 @@ cell solve(tuple flag, tuple value, slice data, tuple window, int timer) {
   tuple flag_t = to_tuple(flag);
   tuple value_t = to_tuple(value);
 
-  slice data = linked_list.begin_parse();
+  tuple window = empty_tuple(); 
 
-  tuple window = empty_tuple();
+  repeat(1000) {
+    slice data = linked_list.begin_parse();
 
-  cell result = solve(flag_t, value_t, data, window, 0);
+    linked_list = solve(flag_t, value_t, data, window, 0);
+  }
 
-  return result;
+  return linked_list;
 }
