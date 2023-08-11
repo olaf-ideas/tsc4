@@ -23,7 +23,134 @@ int tlen(tuple t) asm "TLEN";
 () recv_internal() {
 }
 
+tuple to_tuple(int key) {
+  tuple result = empty_tuple();
+
+  while (key > 0) {
+    result~tpush(key % 2);
+    key >>= 1;
+  }
+
+  return result;
+}
+
+(tuple, int) pop_front(tuple t) {
+  tuple result = empty_tuple();
+  
+  int front = first(t);
+
+  int len = tlen(t);
+  int i = 1;
+  while (i < len) {
+    result~tpush(t.at(i));
+    i += 1;
+  }
+
+  return (result, front);
+}
+
+int equal_tuples(tuple a, tuple b) {
+  int alen = tlen(a);
+  int blen = tlen(b);
+
+  if (alen != blen) {
+    return false;
+  }
+
+  repeat(alen) {
+    (a, int lasta) = tpop(a);
+    (b, int lastb) = tpop(b);
+
+    if (lasta != lastb) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+cell solve(tuple flag, tuple value, slice data, tuple window, int timer) {
+  builder result = begin_cell();
+
+  while (~ slice_empty?(data)) {
+
+    if (tlen(window) >= tlen(flag)) {
+      if (builder_bits(result) == 1023) {
+        cell c = solve(flag, value, data, window, timer);
+
+        result = store_ref(result, c);
+
+        return result.end_cell();
+      }
+
+      (window, int first) = pop_front(window);
+
+      if (timer > 0) {
+        timer -= 1;
+      }
+
+      result = store_uint(result, first, 1);
+    }
+
+    if (tlen(window) < tlen(flag)) {
+      int sus = slice_data_empty?(data);
+
+      while (sus) {
+        ifnot (slice_refs_empty?(data)) {
+          cell c = data.preload_ref();
+          data = c.begin_parse();
+
+          sus = slice_data_empty?(data);
+        }
+        else {
+          sus = false;
+        }
+      }
+
+      ifnot (slice_empty?(data)) {
+        int next_value = data~load_uint(1);
+
+        window~tpush(next_value);
+
+        if (timer == 0) {
+          if (equal_tuples(window, flag) == true) {
+            window = value;
+            timer = tlen(value);
+          }
+        }
+      }
+    }
+  }
+
+  int window_len = tlen(window);
+  repeat(window_len) {
+    if (builder_bits(result) == 1023) {
+      cell c = solve(flag, value, data, window, timer);
+
+      result = store_ref(result, c);
+
+      return result.end_cell();
+    }
+
+    (window, int first) = pop_front(window);
+
+    result = store_uint(result, first, 1);
+  }
+
+  return result.end_cell();
+}
+
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) inline method_id {
-  return begin_cell().end_cell();
+
+  tuple flag_t = to_tuple(flag);
+  tuple value_t = to_tuple(value);
+
+  slice data = linked_list.begin_parse();
+
+  tuple window = empty_tuple();
+
+  cell result = solve(flag_t, value_t, data, window, 0);
+
+  return result;
 }

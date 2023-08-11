@@ -141,12 +141,23 @@ describe('Task3', () => {
 
         let linked_list_cell1 = linked_list1.endCell();
 
-        let flag =  0b1011;
+        let flag =  0b1101;
         let value = 0b1001;
 
+        function myToString(x: number) {
+            let result = '';
+
+            while (x > 0) {
+                result += (x % 2).toString();
+                x >>= 1;
+            }
+
+            return result;
+        };
+
         console.log("input : ", list);
-        console.log("flag: ", flag.toString(2));
-        console.log("value: ", value.toString(2));
+        console.log("flag: ", myToString(flag));
+        console.log("value: ", myToString(value));
         console.log("cell 1: ", linked_list_cell1.toString());
         console.log("cell 2: ", linked_list_cell2.toString());
 

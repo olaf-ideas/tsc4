@@ -49,8 +49,8 @@ int tlen(tuple t) asm "TLEN";
 
     int j = 0;
     while (j < p) {
-      tuple row_B = matrixBT.at(j);
       tuple row_A = matrixA.at(i);
+      tuple row_B = matrixBT.at(j);
 
       int value = 0;
     
