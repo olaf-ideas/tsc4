@@ -35,15 +35,52 @@ cell preload_ref(slice s) asm "PLDREF";
             return node;
         }
 
-        len -= 1;
-
         slice adj = begin_parse(node);
 
         int sons = slice_refs(adj);
 
-        repeat(sons) {
-            queue = cons(adj~load_ref(), queue);
-            len += 1;
+        if (sons == 1) {
+            queue = cons(adj.preload_ref(), queue);
+        }
+        else {
+            if (sons == 2) {
+                cell s1 = adj~load_ref();
+                cell s2 = adj.preload_ref();
+
+                queue = cons(s2, queue);
+                queue = cons(s1, queue);
+
+                len += 1;
+            }
+            else {
+                if (sons == 3) {
+                    cell s1 = adj~load_ref();
+                    cell s2 = adj~load_ref();
+                    cell s3 = adj.preload_ref();
+
+                    queue = cons(s3, queue);
+                    queue = cons(s1, queue);
+                    queue = cons(s2, queue);
+
+                    len += 2;
+                }
+                else {
+                    if (sons == 4) {
+                        cell s1 = adj~load_ref();
+                        cell s2 = adj~load_ref();
+                        cell s3 = adj~load_ref();
+                        cell s4 = adj.preload_ref();
+
+                        queue = cons(s2, queue);
+                        queue = cons(s4, queue);
+                        queue = cons(s3, queue);
+                        queue = cons(s1, queue);
+                    }
+                    else {
+                        len -= 1;
+                    }
+                }
+            }
         }
     }
 

@@ -144,8 +144,8 @@ describe('Task3', () => {
             seed %= 2137;
         }
 
-        let flag = 0b1n;
-        let value = 1n << 127n;
+        let flag = 0b1101n;
+        let value = 0b1n;
 
         let chunks = [1023, 1023, 900, 950, 990];
 
