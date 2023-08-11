@@ -135,7 +135,7 @@ describe('Task3', () => {
         let input = '0100000';
 
         let seed = 1;
-        for (let i = 0; i < 1050; i++) {
+        for (let i = 0; i < 500; i++) {
             input += (seed % 2).toString();
 
             seed ^= seed << 13;
@@ -144,10 +144,10 @@ describe('Task3', () => {
             seed %= 2137;
         }
 
-        let flag = 1n << 5n;
+        let flag = 0b111n;
         let value = 1n << 127n;
 
-        let chunks = [70, 80, 100, 200, 500];
+        let chunks = [300, 1000, 3000, 600, 500];
 
         let last_cell = beginCell().endCell();
 

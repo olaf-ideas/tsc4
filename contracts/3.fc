@@ -43,136 +43,108 @@ int tlen(tuple t) asm "TLEN";
   return result;
 }
 
-(tuple) reverse_tuple(tuple t) inline_ref {
+(tuple) reverse_lisp(tuple list, int len) {
+  ;; ~strdump("reversing");
   tuple result = empty_tuple();
+  result = cons(-1, result);
 
-  while (t.tlen() > 0) {
-    (t, int last) = tpop(t);
+  repeat(len) {
+    int value = list~list_next();
+    
+    ;; ~dump(value);
 
-    result~tpush(last);
+    result = cons(value, result);
   }
+
+  ;; result~uncons();
+
+  ;; ~dump(result);
 
   return result;
 }
 
-(tuple, int) tpopfront(tuple t) inline_ref {
-  ~strdump("tpopfront");
-  int x = t.at(0);
+global int n, int m, int value_copy, tuple flagT, tuple valueT, tuple window, int timer, slice data, tuple pi, tuple occ, int idx, int j;
 
-  int len = tlen(t);
-  int idx = 1;
-  
-  ;; ~dump(t);
-  ;; ~dump(x);
+(int) skip_data_from_stream(int cnt) {
+  int len = data.slice_bits();
 
-  tuple result = empty_tuple();
-  while (idx < len) {
-    int value = t.at(idx);
+  ;; ~strdump("cnt: ");
+  ;; ~dump(cnt);
+  ;; ~strdump("len: ");
+  ;; ~dump(len);   
 
-    ;; ~dump(len - idx);
-    ;; ~dump(value);
+  if (len < cnt) {
+    data = begin_parse(preload_ref(data));
+    ;; ~strdump("skipping whole block and recurse"); 
 
-    result~tpush(value);
-    idx += 1;
+    skip_data_from_stream(cnt - len);
+  }
+  else {
+    data~skip_bits(cnt);
+    ;; ~strdump("skipping bits");
+    ;; ~dump(cnt);
   }
 
-  return (result, x);
+  return cnt;
 }
 
-(int) check_tuple_equality(tuple a, tuple b) inline_ref {
-  int lena = tlen(a);
-  int lenb = tlen(b);
-
-  if (lena != lenb) {
-    return false;
-  }
-
-  repeat (lena) {
-    (a, int A) = tpop(a);
-    (b, int B) = tpop(b);
-
-    if (A != B) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-global tuple flagT, tuple valueT, tuple window, int timer, slice data;
-
-(cell) _find_and_replace() {
-  ~strdump("starting the replace");
-
+(cell) construct_answer() {
   builder result = begin_cell();
 
-  while (~ data.slice_empty?()) {
+  while (idx < j) {
+    int nxt = car(occ);
 
-    ~strdump("while data loop");
-    ~dump(flagT.tlen());
-    ~dump(window);
-    ~dump(result.builder_bits()); 
+    ;; ~strdump("nxt: ");
+    ;; ~dump(nxt);
+    ;; ~strdump("idx: ");
+    ;; ~dump(idx);
 
-    window = reverse_tuple(window);
-
-    ;; pop front element from window
-    while (window.tlen() >= flagT.tlen()) {
-      ;; ~strdump("window >= flagT");
-
-      if (result.builder_bits() == 1023) {
-        window = reverse_tuple(window);
-
-        cell c = _find_and_replace();
-        result = store_ref(result, c);
-        return result.end_cell();
-      }
-
-      (window, int x) = tpop(window);
-
-      result = store_uint(result, x, 1);
-
-      if (timer > 0) {
-        timer -= 1;
-      }
-    }
-
-    window = reverse_tuple(window);
-
-    ;; ~strdump("window < flagT");
-    if (data.slice_data_empty?()) {
+    if (data.slice_empty?()) {
       cell next = preload_ref(data);
       data = begin_parse(next);
     }
 
-    int bit = data~load_uint(1);
+    if (nxt == idx) {
+      int xxx = occ~list_next();
 
-    window~tpush(bit);
+      ;; ~strdump("found index of flag => deleting it from occ");
+      ;; ~dump(xxx);
+      ;; ~dump(occ);
 
-    if (timer == 0) {
-      if (check_tuple_equality(window, flagT) == true) {
-        ;; ~strdump("found flag");
-        window = valueT;
-        timer = valueT.tlen();
-      }
-    }
-  }
+      ;; ~strdump("xd");
+      idx += skip_data_from_stream(n);
+      ;; ~strdump("dx");
 
-  window = reverse_tuple(window);
+      ;; ~strdump("idx:");
+      ;; ~dump(idx);
 
-  while (window.tlen() > 0) {
-    if (result.builder_bits() == 1023) {
-      window = reverse_tuple(window);
+      cell sus = construct_answer();
 
-      cell c = _find_and_replace();
+      cell between = begin_cell()
+            .store_uint(value_copy, m)
+            .store_ref(sus)
+            .end_cell();
 
-      result = store_ref(result, c);
+      result = result.store_ref(between);
 
       return result.end_cell();
     }
-    
-    (window, int x) = tpop(window);
+    else {
+      if (result.builder_bits() == 1023) {
+        ;; ~strdump("builder if full, creating new one and refing it");
+        cell sus = construct_answer();
+        result = result.store_ref(sus);
 
-    result = store_uint(result, x, 1);
+        return result.end_cell();
+      }
+
+      int x = data~load_uint(1);
+      ;; ~strdump("x: ");
+      ;; ~dump(x);
+
+      result = store_uint(result, x, 1);
+      idx += 1;
+    }
   }
 
   return result.end_cell();
@@ -189,11 +161,84 @@ global tuple flagT, tuple valueT, tuple window, int timer, slice data;
   window = empty_tuple();
   timer = 0;
   data = linked_list.begin_parse();
+  value_copy = value;
+  
+  pi = empty_tuple();
+  pi~tpush(0);
 
-  ~strdump("flagT");
-  ~dump(flagT);
-  ~strdump("valueT");
-  ~dump(valueT);
+  int i = 1;
+  int d = 0;
+  n = flagT.tlen();
+  m = valueT.tlen();
 
-  return _find_and_replace();
+  flagT~tpush(-1);
+
+  while (i < n) {
+
+    while ((d > 0) & (flagT.at(i) != flagT.at(d))) {
+      d = pi.at(d - 1);
+    }
+
+    if (flagT.at(i) == flagT.at(d)) {
+      d += 1;
+    }
+    
+    pi~tpush(d);
+    i += 1;
+  }
+
+  ;; ~strdump("pi: ");
+  ;; ~dump(pi);
+
+  d = 0;
+
+  occ = empty_tuple();
+  occ~tpush(-100000000000000);
+
+  int occ_len = 0;
+
+  j = 0;
+  while (~ data.slice_empty?()) {
+    if (data.slice_data_empty?()) {
+      data = begin_parse(preload_ref(data));  
+    }
+
+    int bit = data~load_uint(1);
+
+    while ((d > 0) & ((d == n) | (bit != flagT.at(d)))) {
+      d = pi.at(d - 1);
+    }
+
+    if (bit == flagT.at(d)) {
+      d += 1;
+    }
+
+    if (d == n) {
+      if (j - n + 1 > car(occ) + n - 1) {
+        occ = cons(j - n + 1, occ);
+        occ_len += 1;
+      }
+    }
+
+    j += 1;
+  }
+
+  ~dump(occ);
+
+  if (occ_len == 0) {
+    return linked_list;
+  }
+
+  occ = reverse_lisp(occ, occ_len);
+
+  data = linked_list.begin_parse();
+
+  idx = 0;
+
+  ~dump(occ);
+  ~dump(data);
+  ~strdump("occ size: ");
+  ~dump(occ_len);
+
+  return construct_answer();
 }
