@@ -34,10 +34,10 @@ int log2(int n) {
   return result;
 }
 
-tuple to_tuple(int mask) {
+tuple to_tuple(int mask, int len) {
   tuple result = empty_tuple();
 
-  while (mask > 0) {
+  repeat(len) {
     result~tpush(mask % 2);
     mask >>= 1;
   }
@@ -161,8 +161,10 @@ cell solve(tuple flag, tuple value, int timer, tuple window, slice data, tuple d
 (cell) find_and_replace(int flag, int value, cell linked_list) inline method_id {
   slice data = linked_list.begin_parse();
 
-  tuple flagT = to_tuple(flag);
-  tuple valueT = to_tuple(value);
+  int flag_len = log2(flag);
+
+  tuple flagT = to_tuple(flag, flag_len);
+  tuple valueT = to_tuple(value, flag_len);
   tuple window = empty_tuple();
 
   tuple data_sizes = empty_tuple();
