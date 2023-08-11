@@ -27,8 +27,12 @@ int is_null(tuple t) asm "ISNULL";
 
         int sons = slice_refs(adj);
 
-        repeat (slice_refs(adj)) {
-            queue = cons(adj~load_ref(), queue);
+        if (sons > 0) {
+            repeat (sons - 1) {
+                queue = cons(adj~load_ref(), queue);
+            }
+
+            queue = cons(adj.preload_ref(), queue);
         }
     }
 
