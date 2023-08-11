@@ -25,14 +25,8 @@ int is_null(tuple t) asm "ISNULL";
 
         slice adj = begin_parse(node);
 
-        int sons = slice_refs(adj);
-
-        if (sons > 0) {
-            repeat (sons - 1) {
-                queue = cons(adj~load_ref(), queue);
-            }
-
-            queue = cons(adj.preload_ref(), queue);
+        repeat (slice_refs(adj)) {
+            queue = cons(adj~load_ref(), queue);
         }
     }
 
