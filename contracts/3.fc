@@ -17,7 +17,6 @@
 -}
 
 forall X -> (tuple, X) tpop(tuple t) asm "TPOP";
-forall X -> (tuple, X) ~tpop(tuple t) asm "TPOP";
 
 int tlen(tuple t) asm "TLEN";
 
@@ -38,17 +37,17 @@ int log2(int n) {
 tuple to_tuple(int mask) {
   tuple result = empty_tuple();
 
-  ;; while (mask > 0) {
-  ;;   result~tpush(mask % 2);
-  ;;   mask >>= 1;
-  ;; }
-
-  int len = log2(mask);
-
-  while (len > 0) {
-    len -= 1;
-    result~tpush((mask >> len) % 2);
+  while (mask > 0) {
+    result~tpush(mask % 2);
+    mask >>= 1;
   }
+
+  ;; int len = log2(mask);
+
+  ;; while (len > 0) {
+  ;;   len -= 1;
+  ;;   result~tpush((mask >> len) % 2);
+  ;; }
 
   return result;
 }

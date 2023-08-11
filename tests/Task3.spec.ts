@@ -181,7 +181,7 @@ describe('Task3', () => {
         
         let list = ''
 
-        let cellA = '10100001111';
+        let cellA = '10100001011';
         for (let i = 0; i < cellA.length; i++) {
             let x = Number(cellA[i])
 
@@ -190,7 +190,7 @@ describe('Task3', () => {
             linked_list1.storeBit(x);
         }
 
-        let cellB = '11111000111111';
+        let cellB = '10101000111111';
         for (let i = 0; i < cellB.length; i++) {
             
             let x = Number(cellB[i]);
@@ -206,7 +206,7 @@ describe('Task3', () => {
 
         let linked_list_cell1 = linked_list1.endCell();
 
-        let flag =  0b101110101;
+        let flag =  0b101011101;
         let value = 0b111111111;
 
         console.log("input : ", list);
