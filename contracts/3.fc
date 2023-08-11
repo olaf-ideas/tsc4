@@ -134,7 +134,7 @@ cell solve(tuple flag, tuple value, slice data, tuple window, int timer) {
 
   int window_len = tlen(window);
   repeat(window_len) {
-    if (builder_bits(result) == 1023) {
+    if (builder_bits(result) == 128) {
       cell c = solve(flag, value, data, window, timer);
 
       result = store_ref(result, c);
