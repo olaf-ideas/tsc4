@@ -73,6 +73,7 @@ int tlen(tuple t) asm "TLEN";
   builder result = begin_cell();
   int done = 0;
 
+
   while (~ slice_empty?(data)) {
     if (done == 1000) {
       cell _result = _find_and_replace(flag, value, window, timer, data);
@@ -87,6 +88,7 @@ int tlen(tuple t) asm "TLEN";
       (window, int front) = pop_front(window);
 
       result = store_uint(result, front, 1);
+      done += 1;
 
       if (timer > 0) {
         timer -= 1;
@@ -120,12 +122,13 @@ int tlen(tuple t) asm "TLEN";
 
       result = store_ref(result, _result);
 
-      return end_cell(result);
+      return result.end_cell();
     }
     
     (window, int front) = pop_front(window);
     
     result = store_uint(result, front, 1);
+    done += 1;
   }
 
   return end_cell(result);
