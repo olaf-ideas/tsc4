@@ -55,7 +55,7 @@ describe('Task3', () => {
 
         let linked_list_cell = linked_list.endCell();
 
-        let flag =  0b0001n;
+        let flag =  0b1000n;
         let value = 0b1111n;
 
         let hexToBin = require('hex-to-binary');

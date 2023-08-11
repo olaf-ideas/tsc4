@@ -18,26 +18,20 @@
 
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) inline method_id {
-  if (k == 0) {
-    return empty_tuple();
-  }
-
-  int a = 0;
-  int b = 1;
-
-  if (n == 0) {
-    a = 1;
-    b = 0;
-  }
-  else {
-    repeat(n - 1) {
-      int c = a + b;
-      a = b;
-      b = c;
-    }
-  }
-
   tuple result = empty_tuple();
+
+  if (k == 0) {
+    return result;
+  }
+
+  int a = 1;
+  int b = 0;
+
+  repeat(n) {
+    int c = a + b;
+    a = b;
+    b = c;
+  }
 
   result~tpush(b);
 
