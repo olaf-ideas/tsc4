@@ -45,14 +45,14 @@ describe('Task3', () => {
     it('small test on one cell', async () => {
         let input = '';
 
-        for (let i = 0; i < 2000; i++) {
+        for (let i = 0; i < 500; i++) {
             input += Math.round(Math.random()).toString();
         }
 
-        let flag = 0b101011n;
-        let value = 0b1011001101n;
+        let flag = 1011n;
+        let value = 10101101011011101n;
 
-        let chunks = [200, 300, 400, 200, 500];
+        let chunks = [200, 100, 800, 200, 500];
 
         let last_cell = beginCell().endCell();
 
@@ -90,7 +90,7 @@ describe('Task3', () => {
 
         console.log("result list: ", result);
 
-        let answer_bits = solve(Number(flag).toString(2), Number(value).toString(2), input);
+        let answer_bits = solve(Number(flag).toString(), Number(value).toString(), input);
 
         let result_bits = '';
         let node = result;

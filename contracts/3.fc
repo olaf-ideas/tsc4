@@ -26,8 +26,8 @@ int tlen(tuple t) asm "TLEN";
   tuple t = empty_tuple();
   
   while (key > 0) {
-    t = tpush(t, key % 2);
-    key /= 2;
+    t = tpush(t, key % 10);
+    key /= 10;
   }
 
   ;; return t;
