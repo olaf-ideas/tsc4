@@ -6,26 +6,17 @@
   this branch should be returned. Return empty cell if the branch is not found.
 -}
 
-;; #include "imports/stdlib.fc";
-
-int cell_hash(cell c) asm "HASHCU";
-slice begin_parse(cell c) asm "CTOS";
-int slice_refs_empty?(slice s) asm "SREMPTY";
-forall X -> X null() asm "PUSHNULL";
-forall X -> (tuple, X) list_next(tuple list) asm( -> 1 0) "UNCONS";
-forall X -> tuple cons(X head, tuple tail) asm "CONS";
-forall X, Y -> [X, Y] pair(X x, Y y) asm "PAIR";
-cell preload_ref(slice s) asm "PLDREF";
-
 () recv_internal() {
 }
+
+int is_null(tuple t) asm "ISNULL";
 
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) inline method_id {
 
-    tuple queue = cons(tree, empty_tuple());
+    tuple queue = cons(tree, null());
 
-    repeat(cell_depth(tree)) {
+    while (~ is_null(queue)) {
         cell node = queue~list_next();
         
         if (hash == cell_hash(node)) {
@@ -36,12 +27,8 @@ cell preload_ref(slice s) asm "PLDREF";
 
         int sons = slice_refs(adj);
 
-        if (sons) {
-            repeat(sons - 1) {
-                queue = cons(adj~load_ref(), queue);
-            }
-
-            queue = cons(adj.preload_ref(), queue);
+        repeat (slice_refs(adj)) {
+            queue = cons(adj~load_ref(), queue);
         }
     }
 
