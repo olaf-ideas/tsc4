@@ -95,13 +95,13 @@ cell solve(tuple flag, tuple value, tuple window, slice data) {
   
   while (~ slice_empty?(data)) {
     if (tlen(window) == tlen(flag)) {
-      ;; if (result.builder_bits() == 1023) {
-      ;;   cell next_chunk = solve(flag, value, window, data);
+      if (result.builder_bits() == 1023) {
+        cell next_chunk = solve(flag, value, window, data);
 
-      ;;   result = result.store_ref(next_chunk);
+        result = result.store_ref(next_chunk);
 
-      ;;   return result.end_cell();
-      ;; }
+        return result.end_cell();
+      }
 
       (window, int save) = pop_front(window);
 
@@ -128,13 +128,13 @@ cell solve(tuple flag, tuple value, tuple window, slice data) {
   }
 
   while (tlen(window) > 0) {
-    ;; if (result.builder_bits() == 1023) {
-    ;;   cell next_chunk = solve(flag, value, window, data);
+    if (result.builder_bits() == 1023) {
+      cell next_chunk = solve(flag, value, window, data);
 
-    ;;   result = result.store_ref(next_chunk);
+      result = result.store_ref(next_chunk);
 
-    ;;   return result.end_cell();
-    ;; }
+      return result.end_cell();
+    }
 
     (window, int save) = pop_front(window);
 
