@@ -1,3 +1,4 @@
+import { setUncaughtExceptionCaptureCallback } from 'process';
 import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from 'ton-core';
 
 export type Task3Config = {};
@@ -32,8 +33,10 @@ export class Task3 implements Contract {
             { type: 'int', value: flag },
             { type: 'int', value: value },
             { type: 'cell', cell: linked_list },
-        ])).stack;
+        ]));
 
-        return result.readCell();
+        console.log("gas used: ", result.gasUsed);
+
+        return result.stack.readCell();
     }
 }
