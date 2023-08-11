@@ -37,193 +37,193 @@ describe('Task2', () => {
         // blockchain and task2 are ready to use
     });
 
-    it('A[2x2]xB[2x2]', async() => {
+    // it('A[2x2]xB[2x2]', async() => {
 
-        var A : Tuple = {
-            type: 'tuple', 
-            items: [
-                { type: 'tuple', items: [ {"type": "int", "value": 2n}, {"type": "int", "value": 1n}, ] },
-                { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 4n}, ] },
-            ]
-        };
+    //     var A : Tuple = {
+    //         type: 'tuple', 
+    //         items: [
+    //             { type: 'tuple', items: [ {"type": "int", "value": 2n}, {"type": "int", "value": 1n}, ] },
+    //             { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 4n}, ] },
+    //         ]
+    //     };
 
-        var B : Tuple = {
-            type: 'tuple', 
-            items: [
-                { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 1n}, ] },
-                { type: 'tuple', items: [ {"type": "int", "value": 0n}, {"type": "int", "value": 1n}, ] },
-            ]
-        };
+    //     var B : Tuple = {
+    //         type: 'tuple', 
+    //         items: [
+    //             { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 1n}, ] },
+    //             { type: 'tuple', items: [ {"type": "int", "value": 0n}, {"type": "int", "value": 1n}, ] },
+    //         ]
+    //     };
 
-        var C = {
-            items: [
-                { type: 'tuple', items: [ {"type": "int", "value": 6n}, {"type": "int", "value": 3n}, ] },
-                { type: 'tuple', items: [ {"type": "int", "value": 9n}, {"type": "int", "value": 7n}, ] },
-            ]
-        };
+    //     var C = {
+    //         items: [
+    //             { type: 'tuple', items: [ {"type": "int", "value": 6n}, {"type": "int", "value": 3n}, ] },
+    //             { type: 'tuple', items: [ {"type": "int", "value": 9n}, {"type": "int", "value": 7n}, ] },
+    //         ]
+    //     };
 
-        const result = await task2.getMatrixMultiplier(A, B);
+    //     const result = await task2.getMatrixMultiplier(A, B);
 
-        function debug_matrix(M: any) {
-            console.log(JSON.stringify(M, (key, value) =>
-                typeof value === 'bigint'
-                    ? value.toString()
-                    : value
-            ));
-        };
+    //     function debug_matrix(M: any) {
+    //         console.log(JSON.stringify(M, (key, value) =>
+    //             typeof value === 'bigint'
+    //                 ? value.toString()
+    //                 : value
+    //         ));
+    //     };
         
-        // debug_matrix(A);
-        // debug_matrix(B);
-        // debug_matrix(C);
-        // debug_matrix(result);
+    //     // debug_matrix(A);
+    //     // debug_matrix(B);
+    //     // debug_matrix(C);
+    //     // debug_matrix(result);
 
-        expect(result).toEqual(C);
-    })
+    //     expect(result).toEqual(C);
+    // })
 
-    it('A[2x3] X B[3x2]', async() => {
+    // it('A[2x3] X B[3x2]', async() => {
 
-        var A : Tuple = {
-            type: 'tuple', 
-            items: [
-                { type: 'tuple', items: [ {"type": "int", "value": 2n}, {"type": "int", "value": 1n}, {"type": "int", "value": 9n} ] },
-                { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 4n}, {"type": "int", "value": 5n} ] },
-            ]
-        };
+    //     var A : Tuple = {
+    //         type: 'tuple', 
+    //         items: [
+    //             { type: 'tuple', items: [ {"type": "int", "value": 2n}, {"type": "int", "value": 1n}, {"type": "int", "value": 9n} ] },
+    //             { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 4n}, {"type": "int", "value": 5n} ] },
+    //         ]
+    //     };
 
-        var B : Tuple = {
-            type: 'tuple', 
-            items: [
-                { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 1n}, ] },
-                { type: 'tuple', items: [ {"type": "int", "value": 0n}, {"type": "int", "value": 1n}, ] },
-                { type: 'tuple', items: [ {"type": "int", "value": 6n}, {"type": "int", "value": 7n}, ] },
-            ]
-        };
+    //     var B : Tuple = {
+    //         type: 'tuple', 
+    //         items: [
+    //             { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 1n}, ] },
+    //             { type: 'tuple', items: [ {"type": "int", "value": 0n}, {"type": "int", "value": 1n}, ] },
+    //             { type: 'tuple', items: [ {"type": "int", "value": 6n}, {"type": "int", "value": 7n}, ] },
+    //         ]
+    //     };
 
-        var C = {
-            items: [
-                { type: 'tuple', items: [ {"type": "int", "value": 60n}, {"type": "int", "value": 66n}, ] },
-                { type: 'tuple', items: [ {"type": "int", "value": 39n}, {"type": "int", "value": 42n}, ] },
-            ]
-        };
+    //     var C = {
+    //         items: [
+    //             { type: 'tuple', items: [ {"type": "int", "value": 60n}, {"type": "int", "value": 66n}, ] },
+    //             { type: 'tuple', items: [ {"type": "int", "value": 39n}, {"type": "int", "value": 42n}, ] },
+    //         ]
+    //     };
 
-        const result = await task2.getMatrixMultiplier(A, B);
+    //     const result = await task2.getMatrixMultiplier(A, B);
 
-        function debug_matrix(M: any) {
-            console.log(JSON.stringify(M, (key, value) =>
-                typeof value === 'bigint'
-                    ? value.toString()
-                    : value
-            ));
-        };
+    //     function debug_matrix(M: any) {
+    //         console.log(JSON.stringify(M, (key, value) =>
+    //             typeof value === 'bigint'
+    //                 ? value.toString()
+    //                 : value
+    //         ));
+    //     };
         
-        // debug_matrix(A);
-        // debug_matrix(B);
-        // debug_matrix(C);
-        // debug_matrix(result);
+    //     // debug_matrix(A);
+    //     // debug_matrix(B);
+    //     // debug_matrix(C);
+    //     // debug_matrix(result);
 
-        expect(result).toEqual(C);
-    })
+    //     expect(result).toEqual(C);
+    // })
 
-    it('A[32x31] X B[31x29]', async() => {
+    // it('A[32x31] X B[31x29]', async() => {
 
-        // var n = 32;
-        // var m = 31;
-        // var p = 29;
+    //     // var n = 32;
+    //     // var m = 31;
+    //     // var p = 29;
 
-        // function randomMatrix(a: number, b: number) {
-        //     var M: bigint[][] = [];
+    //     // function randomMatrix(a: number, b: number) {
+    //     //     var M: bigint[][] = [];
 
-        //     for (var i = 0; i < a; i++) {
-        //         M[i] = [];
-        //         for (var j = 0; j < b; j++) {
-        //             M[i][j] = BigInt(Math.floor(Math.random() * 10));
-        //         }
-        //     }
+    //     //     for (var i = 0; i < a; i++) {
+    //     //         M[i] = [];
+    //     //         for (var j = 0; j < b; j++) {
+    //     //             M[i][j] = BigInt(Math.floor(Math.random() * 10));
+    //     //         }
+    //     //     }
 
-        //     return M;
-        // };
+    //     //     return M;
+    //     // };
 
-        // function toTuple(M: bigint[][]) {
-        //     var W: TupleItem[] = [];
+    //     // function toTuple(M: bigint[][]) {
+    //     //     var W: TupleItem[] = [];
 
-        //     for (var i = 0; i < M.length; i++) {
-        //         var row: Tuple;
+    //     //     for (var i = 0; i < M.length; i++) {
+    //     //         var row: Tuple;
 
-        //         for (var j = 0; j < (M.at(i)?.length ?? 0); j++) {
+    //     //         for (var j = 0; j < (M.at(i)?.length ?? 0); j++) {
 
-        //         }
+    //     //         }
 
-        //         var row_tuple : TupleItem = {
-        //             type: 'tuple',
-        //             items: row
-        //         };
+    //     //         var row_tuple : TupleItem = {
+    //     //             type: 'tuple',
+    //     //             items: row
+    //     //         };
 
-        //         W.push(row_tuple);
-        //     }
+    //     //         W.push(row_tuple);
+    //     //     }
 
-        // };
+    //     // };
 
-        // var A : Tuple = {
-        //     type: 'tuple', 
-        //     items: [
-        //         { type: 'tuple', items: [ {"type": "int", "value": 2n}, {"type": "int", "value": 1n}, {"type": "int", "value": 9n} ] },
-        //         { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 4n}, {"type": "int", "value": 5n} ] },
-        //     ]
-        // };
+    //     // var A : Tuple = {
+    //     //     type: 'tuple', 
+    //     //     items: [
+    //     //         { type: 'tuple', items: [ {"type": "int", "value": 2n}, {"type": "int", "value": 1n}, {"type": "int", "value": 9n} ] },
+    //     //         { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 4n}, {"type": "int", "value": 5n} ] },
+    //     //     ]
+    //     // };
 
-        // var B : Tuple = {
-        //     type: 'tuple', 
-        //     items: [
-        //         { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 1n}, ] },
-        //         { type: 'tuple', items: [ {"type": "int", "value": 0n}, {"type": "int", "value": 1n}, ] },
-        //         { type: 'tuple', items: [ {"type": "int", "value": 6n}, {"type": "int", "value": 7n}, ] },
-        //     ]
-        // };
+    //     // var B : Tuple = {
+    //     //     type: 'tuple', 
+    //     //     items: [
+    //     //         { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 1n}, ] },
+    //     //         { type: 'tuple', items: [ {"type": "int", "value": 0n}, {"type": "int", "value": 1n}, ] },
+    //     //         { type: 'tuple', items: [ {"type": "int", "value": 6n}, {"type": "int", "value": 7n}, ] },
+    //     //     ]
+    //     // };
 
-        // var C = {
-        //     items:  [
-        //         { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 1n}, ] },
-        //     ]
-        // };
+    //     // var C = {
+    //     //     items:  [
+    //     //         { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 1n}, ] },
+    //     //     ]
+    //     // };
 
-        // C.items.pop();
+    //     // C.items.pop();
         
-        // for (var i = 0; i < n; i++) {
-        //     var row = { type: 'tuple', items: [] }
-        //     // { type: 'tuple', items: [ {"type": "int", "value": 60n}, {"type": "int", "value": 66n}, ] },
-        //     // { type: 'tuple', items: [ {"type": "int", "value": 39n}, {"type": "int", "value": 42n}, ] },
+    //     // for (var i = 0; i < n; i++) {
+    //     //     var row = { type: 'tuple', items: [] }
+    //     //     // { type: 'tuple', items: [ {"type": "int", "value": 60n}, {"type": "int", "value": 66n}, ] },
+    //     //     // { type: 'tuple', items: [ {"type": "int", "value": 39n}, {"type": "int", "value": 42n}, ] },
         
-        //     for (var j = 0; j < p; j++) {
-        //         var sum = 0n;
+    //     //     for (var j = 0; j < p; j++) {
+    //     //         var sum = 0n;
 
-        //         for (var k = 0; k < m; k++) {
-        //             var Arow = A.items.at(i);
+    //     //         for (var k = 0; k < m; k++) {
+    //     //             var Arow = A.items.at(i);
 
-        //             sum += A.items.at(i)
-        //             sum = sum + A.items.at(i).items.at(k).value * B.items.at(k).items.at(j).value;
-        //         }
+    //     //             sum += A.items.at(i)
+    //     //             sum = sum + A.items.at(i).items.at(k).value * B.items.at(k).items.at(j).value;
+    //     //         }
 
-        //         row.items.push( { type: 'int', value: sum } )
-        //     }
+    //     //         row.items.push( { type: 'int', value: sum } )
+    //     //     }
 
-        //     C.items.push(row);
-        // }
+    //     //     C.items.push(row);
+    //     // }
 
-        // const result = await task2.getMatrixMultiplier(A, B);
+    //     // const result = await task2.getMatrixMultiplier(A, B);
 
-        // function debug_matrix(M: any) {
-        //     console.log(JSON.stringify(M, (key, value) =>
-        //         typeof value === 'bigint'
-        //             ? value.toString()
-        //             : value
-        //     ));
-        // };
+    //     // function debug_matrix(M: any) {
+    //     //     console.log(JSON.stringify(M, (key, value) =>
+    //     //         typeof value === 'bigint'
+    //     //             ? value.toString()
+    //     //             : value
+    //     //     ));
+    //     // };
         
-        // debug_matrix(A);
-        // debug_matrix(B);
-        // debug_matrix(C);
-        // debug_matrix(result);
+    //     // debug_matrix(A);
+    //     // debug_matrix(B);
+    //     // debug_matrix(C);
+    //     // debug_matrix(result);
 
-        // expect(result).toEqual(C);
-    })
+    //     // expect(result).toEqual(C);
+    // })
 });

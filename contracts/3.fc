@@ -38,17 +38,17 @@ int log2(int n) {
 tuple to_tuple(int mask) {
   tuple result = empty_tuple();
 
-  ;; while (mask > 0) {
-  ;;   result~tpush(mask % 2);
-  ;;   mask >>= 1;
-  ;; }
-
-  int len = log2(mask);
-
-  while (len > 0) {
-    len -= 1;
-    result~tpush((mask >> len) % 2);
+  while (mask > 0) {
+    result~tpush(mask % 2);
+    mask >>= 1;
   }
+
+  ;; int len = log2(mask);
+
+  ;; while (len > 0) {
+  ;;   len -= 1;
+  ;;   result~tpush((mask >> len) % 2);
+  ;; }
 
   return result;
 }
@@ -90,13 +90,13 @@ int tuple_equal(tuple a, tuple b) {
   return true;
 }
 
-cell solve(tuple flag, tuple value, tuple window, slice data) {
+cell solve(tuple flag, tuple value, int timer, tuple window, slice data) {
   builder result = begin_cell();
   
   while (~ slice_empty?(data)) {
     if (tlen(window) == tlen(flag)) {
       if (result.builder_bits() == 1023) {
-        cell next_chunk = solve(flag, value, window, data);
+        cell next_chunk = solve(flag, value, timer, window, data);
 
         result = result.store_ref(next_chunk);
 
@@ -104,6 +104,10 @@ cell solve(tuple flag, tuple value, tuple window, slice data) {
       }
 
       (window, int save) = pop_front(window);
+
+      if (timer > 0) {
+        timer -= 1;
+      }
 
       result = store_uint(result, save, 1);
     }
@@ -122,14 +126,17 @@ cell solve(tuple flag, tuple value, tuple window, slice data) {
       window~tpush(bit);
     }
 
-    if (tuple_equal(window, flag) == true) {
-      window = value;
+    if (timer == 0) {
+      if (tuple_equal(window, flag) == true) {
+        window = value;
+        timer = tlen(value);
+      }
     }
   }
 
   while (tlen(window) > 0) {
     if (result.builder_bits() == 1023) {
-      cell next_chunk = solve(flag, value, window, data);
+      cell next_chunk = solve(flag, value, timer, window, data);
 
       result = result.store_ref(next_chunk);
 
@@ -152,5 +159,5 @@ cell solve(tuple flag, tuple value, tuple window, slice data) {
   tuple valueT = to_tuple(value);
   tuple window = empty_tuple();
 
-  return solve(flagT, valueT, window, data);
+  return solve(flagT, valueT, 0, window, data);
 }

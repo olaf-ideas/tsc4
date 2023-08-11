@@ -47,7 +47,7 @@ describe('Task3', () => {
 
         for (let i = 0; i < len; i++) {
 
-            let value: number = (i % 4 < 3 ? 0 : 1);
+            let value: number = i % 2;
             list += value.toString();
 
             linked_list.storeBit(value);
@@ -55,7 +55,7 @@ describe('Task3', () => {
 
         let linked_list_cell = linked_list.endCell();
 
-        let flag =  0b1000n;
+        let flag =  0b1010n;
         let value = 0b1001n;
 
         let hexToBin = require('hex-to-binary');

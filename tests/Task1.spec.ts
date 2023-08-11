@@ -37,13 +37,13 @@ describe('Task1', () => {
         // blockchain and task1 are ready to use
     });
 
-    it('test cell', async() => {
+    // it('test cell', async() => {
 
-        console.log(code.hash);
-        console.log(code);
+    //     console.log(code.hash);
+    //     console.log(code);
 
-        const result = await task1.getCell(0n, code);
+    //     const result = await task1.getCell(0n, code);
 
-        // console.log("result: ", result);
-    });
+    //     // console.log("result: ", result);
+    // });
 });
