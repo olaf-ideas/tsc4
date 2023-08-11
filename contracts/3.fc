@@ -32,16 +32,16 @@ tuple to_tuple(int key) {
     key >>= 1;
   }
 
-  ;; tuple result = empty_tuple();
+  tuple result = empty_tuple();
 
-  ;; while (tlen(t) > 0) {
-  ;;   (t, int last) = tpop(t);
-  ;;   result~tpush(last);
-  ;; }
+  while (tlen(t) > 0) {
+    (t, int last) = tpop(t);
+    result~tpush(last);
+  }
 
-  return t;
+  ;; return t;
 
-  ;; return result;
+  return result;
 }
 
 (tuple, int) pop_front(tuple t) {
@@ -85,7 +85,7 @@ cell solve(tuple flag, tuple value, slice data, tuple window, int timer) {
   while (~ slice_empty?(data)) {
 
     if (tlen(window) >= tlen(flag)) {
-      if (builder_bits(result) == 128) {
+      if (builder_bits(result) == 1023) {
         cell c = solve(flag, value, data, window, timer);
 
         result = store_ref(result, c);
@@ -117,7 +117,7 @@ cell solve(tuple flag, tuple value, slice data, tuple window, int timer) {
         }
       }
 
-      ifnot (slice_empty?(data)) {
+      ifnot (slice_data_empty?(data)) {
         int next_value = data~load_uint(1);
 
         window~tpush(next_value);
@@ -133,8 +133,8 @@ cell solve(tuple flag, tuple value, slice data, tuple window, int timer) {
   }
 
   int window_len = tlen(window);
-  repeat(window_len) {
-    if (builder_bits(result) == 128) {
+  repeat (window_len) {
+    if (builder_bits(result) == 1023) {
       cell c = solve(flag, value, data, window, timer);
 
       result = store_ref(result, c);
@@ -160,7 +160,5 @@ cell solve(tuple flag, tuple value, slice data, tuple window, int timer) {
 
   slice data = linked_list.begin_parse();
 
-  linked_list = solve(flag_t, value_t, data, window, 0);
-
-  return linked_list;
+  return solve(flag_t, value_t, data, window, 0);
 }
