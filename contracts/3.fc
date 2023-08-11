@@ -68,7 +68,7 @@ int tlen(tuple t) asm "TLEN";
     return false;
   }
 
-  repeat(lena) {
+  repeat (lena) {
     (a, int A) = tpop(a);
     (b, int B) = tpop(b);
 
@@ -90,7 +90,7 @@ global tuple flagT, tuple valueT, tuple window, int timer, slice data;
     ;; ~strdump("while data loop");
     ;; ~dump(window);
 
-    if (result.builder_bits() == 1023) {
+    if (result.builder_bits() == 10) {
       cell c = _find_and_replace();
       result = store_ref(result, c);
       return result.end_cell();
@@ -131,7 +131,7 @@ global tuple flagT, tuple valueT, tuple window, int timer, slice data;
   }
 
   while (window.tlen() > 0) {
-    if (result.builder_bits() == 1023) {
+    if (result.builder_bits() == 10) {
       cell c = _find_and_replace();
 
       result = store_ref(result, c);
