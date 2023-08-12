@@ -28,15 +28,11 @@ cell solve(int shift, cell text) inline {
       }
     }
     else {
-    if (65 <= x) { 
-      if (x <= 90) {
-        x = x + shift;
+      x = x + shift;
 
-        if (x > 90) {
-          x -= 26;
-        }
+      if (x > 90) {
+        x -= 26;
       }
-    }
     }
 
     result = store_uint(result, x, 8);
@@ -80,15 +76,11 @@ cell solve(int shift, cell text) inline {
       }
     }
     else {
-    if (65 <= x) { 
-      if (x <= 90) {
-        x = x + shift;
+      x = x + shift;
 
-        if (x > 90) {
-          x -= 26;
-        }
+      if (x > 90) {
+        x -= 26;
       }
-    }
     }
 
     result = store_uint(result, x, 8);

@@ -22,67 +22,75 @@
 forall X -> (tuple, X) tpop(tuple t) asm "TPOP";
 int tlen(tuple t) asm "TLEN";
 
-(int, tuple) make_tuple(int key) inline {
+(tuple) make_tuple(int key) {
   tuple t = empty_tuple();
-  int len = 0;
-
+  
+  ;; ~dump(key);
   while (key > 0) {
-    t~tpush(key & 1);
-    key >>= 1;
-    len += 1;
+    t = tpush(t, key % 2);
+    
+    key /= 2;
   }
 
   tuple result = empty_tuple();
 
-  repeat(len) {
+  while (tlen(t) > 0) {
     (t, int last) = tpop(t);
 
-    result~tpush(last);
+    result = tpush(result, last);
   }
 
-  return (len, result);
+  return result;
 }
 
-(tuple) reverse_lisp(tuple list, int len) inline {
+(tuple) reverse_lisp(tuple list, int len) {
+  ;; ~strdump("reversing");
   tuple result = empty_tuple();
+  result = cons(-1, result);
 
   repeat(len) {
     int value = list~list_next();
+    
+    ;; ~dump(value);
+
     result = cons(value, result);
   }
+
+  ;; result~uncons();
+
+  ;; ~dump(result);
 
   return result;
 }
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id {
-  
-  (int n, tuple pattern) = make_tuple(flag);
+  ;; ~dump(flag);
+  ;; ~dump(value);
+  ;; ~dump(linked_list);
+  tuple flagT = make_tuple(flag);
+  tuple valueT = make_tuple(value);
+  tuple window = empty_tuple();
+  int timer = 0;
   slice data = linked_list.begin_parse();
-
+  
   tuple pi = empty_tuple();
   pi~tpush(0);
 
   int i = 1;
   int d = 0;
-  int m = 0;
-  while ((1 << m) <= value) {
-    m += 1;
-  }
-  m -= 1;
+  int n = flagT.tlen();
+  int m = valueT.tlen();
 
-  ~strdump("m: ");
-  ~dump(m);
-
-  pattern~tpush(-1);
+  flagT~tpush(-1);
 
   while (i < n) {
 
-    while ((d > 0) & (pattern.at(i) != pattern.at(d))) {
+    while ((d > 0) & (flagT.at(i) != flagT.at(d))) {
       d = pi.at(d - 1);
     }
 
-    if (pattern.at(i) == pattern.at(d)) {
+    if (flagT.at(i) == flagT.at(d)) {
       d += 1;
     }
     
@@ -90,13 +98,17 @@ int tlen(tuple t) asm "TLEN";
     i += 1;
   }
 
+  ;; ~strdump("pi: ");
+  ;; ~dump(pi);
+
+  int d = 0;
+
   tuple occ = empty_tuple();
+  occ~tpush(-100000000000000);
 
   int occ_len = 0;
 
   int j = 0;
-  
-  d = 0;
   while (~ data.slice_empty?()) {
     if (data.slice_data_empty?()) {
       data = begin_parse(preload_ref(data));  
@@ -104,11 +116,11 @@ int tlen(tuple t) asm "TLEN";
 
     int bit = data~load_uint(1);
 
-    while ((d > 0) & ((d == n) | (bit != pattern.at(d)))) {
+    while ((d > 0) & ((d == n) | (bit != flagT.at(d)))) {
       d = pi.at(d - 1);
     }
 
-    if (bit == pattern.at(d)) {
+    if (bit == flagT.at(d)) {
       d += 1;
     }
 
@@ -122,6 +134,9 @@ int tlen(tuple t) asm "TLEN";
     j += 1;
   }
 
+  ;; ~strdump("occ:" );
+  ;; ~dump(occ);
+
   if (occ_len == 0) {
     return linked_list;
   }
@@ -132,6 +147,11 @@ int tlen(tuple t) asm "TLEN";
 
   int idx = 0;
 
+  ;; ~dump(occ);
+  ;; ~dump(data);
+  ;; ~strdump("occ size: ");
+  ;; ~dump(occ_len);
+
   tuple cell_list = empty_tuple();
   int cell_list_len = 0;
 
@@ -140,10 +160,22 @@ int tlen(tuple t) asm "TLEN";
   while (idx < j) {
     int nxt = car(occ);
 
+    ;; ~strdump("nxt: ");
+    ;; ~dump(nxt);
+    ;; ~strdump("idx: ");
+    ;; ~dump(idx);
+
     if (nxt == idx) {
+      ;; ~strdump("aaa");
       int xxx = occ~list_next();
+
+      ;; ~strdump("found index of flag => deleting it from occ");
+      ;; ~dump(xxx);
+      ;; ~dump(occ);
+
+      ;; ~strdump("xd");
+
       int cnt = n;
-      
       while (cnt > 0) {
         int len = data.slice_bits();
 
@@ -158,6 +190,11 @@ int tlen(tuple t) asm "TLEN";
       }
       
       idx += n;
+      
+      ;; ~strdump("dx");
+
+      ;; ~strdump("idx:");
+      ;; ~dump(idx);
 
       if (result.builder_bits() + m > 1023) {
         cell_list = cons(result.end_cell(), cell_list);
@@ -165,23 +202,42 @@ int tlen(tuple t) asm "TLEN";
 
         result = begin_cell();
       }
+      
+      ;; ~dump(m);
+      ;; ~dump(result.builder_bits());
+      ;; ~strdump(" @> ");
       result = result.store_uint(value, m);
+      ;; ~dump(result.builder_bits());
     
     }
     else {
+      ;; ~strdump("bbb");
       if (result.builder_bits() + 1 > 1023) {
+        ;; ~strdump("builder if full, creating new one and refing it");
         cell_list = cons(result.end_cell(), cell_list);
         cell_list_len += 1;
         result = begin_cell();
       }
 
+      ;; ~strdump("ccc");
       if (data.slice_data_empty?()) {
+        ;; ~strdump("loading data");
         cell next = preload_ref(data);
         data = begin_parse(next);
       }
 
+      ;; ~strdump("ddd");
+      ;; ~dump(data.slice_bits());
+
+      ;; ~dump(data.slice_bits());
       int x = data~load_uint(1);
+      ;; ~strdump("x: ");
+      ;; ~dump(x);
+
+      ;; ~dump(result.builder_bits());
+      ;; ~strdump(" => ");
       result = store_uint(result, x, 1);
+      ;; ~dump(result.builder_bits());
       idx += 1;
     }
   }
@@ -197,6 +253,10 @@ int tlen(tuple t) asm "TLEN";
 
   repeat(cell_list_len - 1) {
     cell top = cell_list~list_next();
+
+    ;; ~strdump("changing to cell chail");
+    ;; ~dump(top.begin_parse().slice_bits());
+
     cell next = begin_cell().store_ref(last).store_slice(top.begin_parse()).end_cell();
   
     last = next;
