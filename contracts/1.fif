@@ -1,0 +1,45 @@
+"Asm.fif" include
+// automatically generated from `contracts/1.fc` 
+PROGRAM{
+  DECLPROC recv_internal
+  92939 DECLMETHOD find_branch_by_hash
+  recv_internal PROC:<{
+    // 
+  }>
+  find_branch_by_hash PROCINLINE:<{
+    CONT:<{
+      c2 SAVE
+      SAMEALTSAVE	//  hash tree
+      PUSHNULL	//  hash tree _3
+      SWAP	//  hash _3 tree
+      CONS	//  hash queue
+      UNTIL:<{
+        UNCONS	//  hash queue node
+        DUP	//  hash queue node node
+        HASHCU	//  hash queue node _7
+        s3 s(-1) PUXC	//  hash queue node hash _7
+        EQUAL	//  hash queue node _8
+        IFJMP:<{	//  hash queue node
+          2 1 BLKDROP2	//  node
+          RETALT
+        }>	//  hash queue node
+        CTOS	//  hash queue adj
+        DUP	//  hash queue adj adj
+        SREFS	//  hash queue adj _11
+        REPEAT:<{	//  hash queue adj
+          LDREF	//  hash queue _12 adj
+          -ROT	//  hash adj queue _12
+          CONS	//  hash adj queue
+          SWAP	//  hash queue adj
+        }>
+        DROP	//  hash queue
+        DUP	//  hash queue queue
+        ISNULL	//  hash queue _15
+      }>	//  hash queue
+      2DROP	// 
+      NEWC	//  _16
+      ENDC	//  _17
+    }>
+    EXECUTE
+  }>
+}END>c

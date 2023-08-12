@@ -60,13 +60,16 @@ slice begin_parse(cell c) asm "CTOS";
 ;;         }>
 ;; """;
 
+forall X -> (tuple, X) xdd(tuple list) asm "UNCONS";
+forall X -> tuple dxx(tuple tail, X head) asm "CONS";
+
 (cell) find_branch_by_hash(int hash, cell tree) inline method_id {
 
-    tuple queue = cons(tree, null());
+    tuple queue = dxx(null(), tree);
 
     do {
-        cell node = queue~list_next();
-        
+        (queue, cell node) = xdd(queue);
+
         if (hash == cell_hash(node)) {
             return node;
         }
@@ -74,7 +77,7 @@ slice begin_parse(cell c) asm "CTOS";
         slice adj = begin_parse(node);
 
         repeat (slice_refs(adj)) {
-            queue = cons(adj~load_ref(), queue);
+            queue = dxx(queue, adj~load_ref());
         }
     } until (is_null(queue));
 
