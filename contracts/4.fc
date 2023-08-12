@@ -28,7 +28,7 @@
     if (ds.slice_data_empty?()) {
       ds = ds.preload_ref().begin_parse();
 
-      list = cons(block.end_cell(), list);
+      list = cons(block, list);
       block = begin_cell();
       len += 1;
     }
@@ -62,12 +62,9 @@
   cell result = block.end_cell();
 
   repeat (len) {
-    cell top = list~list_next();
+    builder top = list~list_next();
 
-    cell next = begin_cell()
-                .store_ref(result)
-                .store_slice(top.begin_parse())
-                .end_cell();
+    cell next = top.store_ref(result).end_cell();
     
     result = next;
   }
