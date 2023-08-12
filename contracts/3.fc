@@ -197,7 +197,7 @@ int tlen(tuple t) asm "TLEN";
       ;; ~dump(idx);
 
       if (result.builder_bits() + m > 1023) {
-        cell_list = cons(result.end_cell(), cell_list);
+        cell_list = cons(result, cell_list);
         cell_list_len += 1;
 
         result = begin_cell();
@@ -212,9 +212,9 @@ int tlen(tuple t) asm "TLEN";
     }
     else {
       ;; ~strdump("bbb");
-      if (result.builder_bits() + 1 > 1023) {
+      if (result.builder_bits() > 1022) {
         ;; ~strdump("builder if full, creating new one and refing it");
-        cell_list = cons(result.end_cell(), cell_list);
+        cell_list = cons(result, cell_list);
         cell_list_len += 1;
         result = begin_cell();
       }
@@ -245,21 +245,15 @@ int tlen(tuple t) asm "TLEN";
   ;; ~dump("end of building");
 
   if (result.builder_bits() > 0) {
-    cell_list = cons(result.end_cell(), cell_list);
+    cell_list = cons(result, cell_list);
     cell_list_len += 1;
   }
 
-  cell last = cell_list~list_next();
+  cell last = cell_list~list_next().end_cell();
 
   repeat(cell_list_len - 1) {
-    cell top = cell_list~list_next();
-
-    ;; ~strdump("changing to cell chail");
-    ;; ~dump(top.begin_parse().slice_bits());
-
-    cell next = begin_cell().store_ref(last).store_slice(top.begin_parse()).end_cell();
-  
-    last = next;
+    builder top = cell_list~list_next();
+    last = top.store_ref(last).end_cell();
   }
 
   return last;
