@@ -17,7 +17,7 @@
 }
 
 ;; testable
-(tuple) fibonacci_sequence (int n, int k) {
+(tuple) fibonacci_sequence (int n, int k) method_id {
   return empty_tuple();
 }
 

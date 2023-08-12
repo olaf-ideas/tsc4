@@ -37,92 +37,92 @@ describe('Task2', () => {
         // blockchain and task2 are ready to use
     });
 
-    // it('A[2x2]xB[2x2]', async() => {
+    it('A[2x2]xB[2x2]', async() => {
 
-    //     var A : Tuple = {
-    //         type: 'tuple', 
-    //         items: [
-    //             { type: 'tuple', items: [ {"type": "int", "value": 2n}, {"type": "int", "value": 1n}, ] },
-    //             { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 4n}, ] },
-    //         ]
-    //     };
+        var A : Tuple = {
+            type: 'tuple', 
+            items: [
+                { type: 'tuple', items: [ {"type": "int", "value": 2n}, {"type": "int", "value": 1n}, ] },
+                { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 4n}, ] },
+            ]
+        };
 
-    //     var B : Tuple = {
-    //         type: 'tuple', 
-    //         items: [
-    //             { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 1n}, ] },
-    //             { type: 'tuple', items: [ {"type": "int", "value": 0n}, {"type": "int", "value": 1n}, ] },
-    //         ]
-    //     };
+        var B : Tuple = {
+            type: 'tuple', 
+            items: [
+                { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 1n}, ] },
+                { type: 'tuple', items: [ {"type": "int", "value": 0n}, {"type": "int", "value": 1n}, ] },
+            ]
+        };
 
-    //     var C = {
-    //         items: [
-    //             { type: 'tuple', items: [ {"type": "int", "value": 6n}, {"type": "int", "value": 3n}, ] },
-    //             { type: 'tuple', items: [ {"type": "int", "value": 9n}, {"type": "int", "value": 7n}, ] },
-    //         ]
-    //     };
+        var C = {
+            items: [
+                { type: 'tuple', items: [ {"type": "int", "value": 6n}, {"type": "int", "value": 3n}, ] },
+                { type: 'tuple', items: [ {"type": "int", "value": 9n}, {"type": "int", "value": 7n}, ] },
+            ]
+        };
 
-    //     const result = await task2.getMatrixMultiplier(A, B);
+        const result = await task2.getMatrixMultiplier(A, B);
 
-    //     function debug_matrix(M: any) {
-    //         console.log(JSON.stringify(M, (key, value) =>
-    //             typeof value === 'bigint'
-    //                 ? value.toString()
-    //                 : value
-    //         ));
-    //     };
+        function debug_matrix(M: any) {
+            console.log(JSON.stringify(M, (key, value) =>
+                typeof value === 'bigint'
+                    ? value.toString()
+                    : value
+            ));
+        };
         
-    //     // debug_matrix(A);
-    //     // debug_matrix(B);
-    //     // debug_matrix(C);
-    //     // debug_matrix(result);
+        // debug_matrix(A);
+        // debug_matrix(B);
+        // debug_matrix(C);
+        // debug_matrix(result);
 
-    //     expect(result).toEqual(C);
-    // })
+        expect(result).toEqual(C);
+    })
 
-    // it('A[2x3] X B[3x2]', async() => {
+    it('A[2x3] X B[3x2]', async() => {
 
-    //     var A : Tuple = {
-    //         type: 'tuple', 
-    //         items: [
-    //             { type: 'tuple', items: [ {"type": "int", "value": 2n}, {"type": "int", "value": 1n}, {"type": "int", "value": 9n} ] },
-    //             { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 4n}, {"type": "int", "value": 5n} ] },
-    //         ]
-    //     };
+        var A : Tuple = {
+            type: 'tuple', 
+            items: [
+                { type: 'tuple', items: [ {"type": "int", "value": 2n}, {"type": "int", "value": 1n}, {"type": "int", "value": 9n} ] },
+                { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 4n}, {"type": "int", "value": 5n} ] },
+            ]
+        };
 
-    //     var B : Tuple = {
-    //         type: 'tuple', 
-    //         items: [
-    //             { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 1n}, ] },
-    //             { type: 'tuple', items: [ {"type": "int", "value": 0n}, {"type": "int", "value": 1n}, ] },
-    //             { type: 'tuple', items: [ {"type": "int", "value": 6n}, {"type": "int", "value": 7n}, ] },
-    //         ]
-    //     };
+        var B : Tuple = {
+            type: 'tuple', 
+            items: [
+                { type: 'tuple', items: [ {"type": "int", "value": 3n}, {"type": "int", "value": 1n}, ] },
+                { type: 'tuple', items: [ {"type": "int", "value": 0n}, {"type": "int", "value": 1n}, ] },
+                { type: 'tuple', items: [ {"type": "int", "value": 6n}, {"type": "int", "value": 7n}, ] },
+            ]
+        };
 
-    //     var C = {
-    //         items: [
-    //             { type: 'tuple', items: [ {"type": "int", "value": 60n}, {"type": "int", "value": 66n}, ] },
-    //             { type: 'tuple', items: [ {"type": "int", "value": 39n}, {"type": "int", "value": 42n}, ] },
-    //         ]
-    //     };
+        var C = {
+            items: [
+                { type: 'tuple', items: [ {"type": "int", "value": 60n}, {"type": "int", "value": 66n}, ] },
+                { type: 'tuple', items: [ {"type": "int", "value": 39n}, {"type": "int", "value": 42n}, ] },
+            ]
+        };
 
-    //     const result = await task2.getMatrixMultiplier(A, B);
+        const result = await task2.getMatrixMultiplier(A, B);
 
-    //     function debug_matrix(M: any) {
-    //         console.log(JSON.stringify(M, (key, value) =>
-    //             typeof value === 'bigint'
-    //                 ? value.toString()
-    //                 : value
-    //         ));
-    //     };
+        function debug_matrix(M: any) {
+            console.log(JSON.stringify(M, (key, value) =>
+                typeof value === 'bigint'
+                    ? value.toString()
+                    : value
+            ));
+        };
         
-    //     // debug_matrix(A);
-    //     // debug_matrix(B);
-    //     // debug_matrix(C);
-    //     // debug_matrix(result);
+        // debug_matrix(A);
+        // debug_matrix(B);
+        // debug_matrix(C);
+        // debug_matrix(result);
 
-    //     expect(result).toEqual(C);
-    // })
+        expect(result).toEqual(C);
+    })
 
     // it('A[32x31] X B[31x29]', async() => {
 

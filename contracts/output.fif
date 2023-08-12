@@ -1,0 +1,85 @@
+// automatically generated from `contracts/2.fc` 
+DECLPROC recv_internal
+90041 DECLMETHOD matrix_multiplier
+recv_internal PROC:<{
+}>
+matrix_multiplier PROC:<{
+  OVER
+  TLEN
+  OVER
+  TLEN
+  s2 PUSH
+  FIRST
+  TLEN
+  NIL
+  0 PUSHINT
+  WHILE:<{
+    s0 s2 PUSH2
+    LESS
+  }>DO<{
+    NIL
+    0 PUSHINT
+    WHILE:<{
+      s0 s5 PUSH2
+      LESS
+    }>DO<{
+      s7 s0 PUSH2
+      INDEXVAR
+      s3 PUSH
+      INDEXVAR
+      s1 s2 XCHG
+      TPUSH
+      SWAP
+      INC
+    }>
+    DROP
+    s1 s2 XCHG
+    TPUSH
+    SWAP
+    INC
+  }>
+  DROP
+  s4 POP
+  NIL
+  0 PUSHINT
+  WHILE:<{
+    s0 s4 PUSH2
+    LESS
+  }>DO<{
+    NIL
+    0 PUSHINT
+    WHILE:<{
+      s0 s4 PUSH2
+      LESS
+    }>DO<{
+      s8 s2 PUSH2
+      INDEXVAR
+      s8 s1 PUSH2
+      INDEXVAR
+      0 PUSHINT
+      s8 PUSH
+      REPEAT:<{
+        s0 s2 XCHG
+        TPOP
+        s0 s2 XCHG
+        TPOP
+        s1 s3 XCHG
+        MUL
+        s1 s3 XCHG
+        ADD
+      }>
+      2 1 BLKDROP2
+      s1 s2 XCHG
+      TPUSH
+      SWAP
+      INC
+    }>
+    DROP
+    s1 s2 XCHG
+    TPUSH
+    SWAP
+    INC
+  }>
+  s1 s6 XCHG
+  6 BLKDROP
+}>
