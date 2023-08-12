@@ -9,7 +9,45 @@
 () recv_internal() {
 }
 
-forall X -> (tuple, X) tpop(tuple t) asm "TPOP";
+global slice ds, int _shift, int x;
+
+(cell) encrypt() inline {
+  builder result = begin_cell();
+
+  repeat (ds.slice_bits() >> 3) {
+    x = ds~load_uint(8);
+    
+    if (97 <= x) {
+      if (x <= 122) {
+        x += _shift;
+
+        if (x > 122) {
+          x -= 26;
+        }
+      }
+    }
+    else {
+      if (65 <= x) { 
+        if (x <= 90) {
+          x += _shift;
+
+          if (x > 90) {
+            x -= 26;
+          }
+        }
+      }
+    }
+
+    result = store_uint(result, x, 8);
+  }
+
+  ifnot (ds.slice_refs_empty?()) {
+    ds = preload_ref(ds).begin_parse();
+    result = store_ref(result, encrypt());
+  }
+
+  return result.end_cell(); 
+}
 
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) inline method_id {
@@ -19,67 +57,11 @@ forall X -> (tuple, X) tpop(tuple t) asm "TPOP";
     shift += 26;
   }
 
-  slice ds = text.begin_parse().skip_bits(32);
+  _shift = shift;
 
-  builder block = begin_cell().store_uint(0, 32);
+  slice ds = text.begin_parse();
 
-  tuple list = empty_tuple();
-  int ok = true;
-
-  int len = 0;
-
-  while (ok) {
-    int rep = ds.slice_bits() >> 3;
-
-    repeat (rep) {
-      int x = ds~load_uint(8);
-
-      if (97 <= x) {
-        if (x <= 122) {
-          x += shift;
-
-          if (x > 122) {
-            x -= 26;
-          }
-        }
-      }
-      else {
-        if (65 <= x) {
-          if (x <= 90) {
-            x += shift;
-
-            if (x > 90) {
-              x -= 26;
-            }
-          }
-        }
-      }
-
-      block = store_uint(block, x, 8);
-    }
-
-    if (ds.slice_refs_empty?()) {
-      ok = false;
-    }
-    else {
-      ds = ds.preload_ref().begin_parse();
-
-      list~tpush(block);
-      len += 1;
-
-      block = begin_cell();
-    }
-  }
-
-  cell result = block.end_cell();
-
-  repeat (len) {
-    (list, builder top) = tpop(list);
-
-    result = top.store_ref(result).end_cell();
-  }
-
-  return result;
+  return encrypt();
 }
 
 ;; testable
