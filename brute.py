@@ -15,15 +15,15 @@ def fib(n):
   return a
 
 def jazda(l, r):
-  if (abs(r - l) < 20):
+  if (abs(r - l) < 15):
     if (l <= 127):
       print(l, "SUBINT")
     else:
       print(l, "PUSHINT")
       print("SUB")
 
+    print(fib(l - 1), "PUSHINT")
     print(fib(l), "PUSHINT")
-    print(fib(l + 1), "PUSHINT")
     return
 
   m = (l + r) >> 1
