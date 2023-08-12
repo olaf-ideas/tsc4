@@ -9,6 +9,8 @@
 () recv_internal() {
 }
 
+forall X -> (tuple, X) tpop(tuple t) asm "TPOP";
+
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) inline method_id {
   shift %= 26;
@@ -22,12 +24,12 @@
   builder block = begin_cell().store_uint(0, 32);
 
   tuple list = empty_tuple();
-  int len = 0;
-
   int ok = true;
 
+  int len = 0;
+
   while (ok) {
-    int rep = (ds.slice_bits() >> 3);
+    int rep = ds.slice_bits() >> 3;
 
     repeat (rep) {
       int x = ds~load_uint(8);
@@ -62,20 +64,19 @@
     else {
       ds = ds.preload_ref().begin_parse();
 
-      list = cons(block, list);
-      block = begin_cell();
+      list~tpush(block);
       len += 1;
+
+      block = begin_cell();
     }
   }
 
   cell result = block.end_cell();
 
   repeat (len) {
-    builder top = list~list_next();
+    (list, builder top) = tpop(list);
 
-    cell next = top.store_ref(result).end_cell();
-
-    result = next;
+    result = top.store_ref(result).end_cell();
   }
 
   return result;
