@@ -19,7 +19,7 @@ global slice ds, int _shift, int x;
 
     if (97 <= x) {
       if (x <= 122) {
-        x += _shift;
+        x = x + _shift;
 
         if (x > 122) {
           x -= 26;
@@ -29,7 +29,7 @@ global slice ds, int _shift, int x;
     else {
       if (65 <= x) { 
         if (x <= 90) {
-          x += _shift;
+          x = x + _shift;
 
           if (x > 90) {
             x -= 26;
