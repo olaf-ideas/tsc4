@@ -9,17 +9,18 @@
 () recv_internal() {
 }
 
-global slice ds, int _shift, int x;
+cell solve(int shift, cell text) inline {
+  slice ds = text.begin_parse();
 
-(cell) encrypt() inline {
   builder result = begin_cell();
 
-  repeat (ds.slice_bits() >> 3) {
-    x = ds~load_uint(8);
+  int len = ds.slice_bits() >> 3;
+  repeat(len) {
+    int x = ds~load_uint(8);
 
     if (97 <= x) {
       if (x <= 122) {
-        x = x + _shift;
+        x = x + shift;
 
         if (x > 122) {
           x -= 26;
@@ -27,26 +28,27 @@ global slice ds, int _shift, int x;
       }
     }
     else {
-      if (65 <= x) { 
-        if (x <= 90) {
-          x = x + _shift;
+    if (65 <= x) { 
+      if (x <= 90) {
+        x = x + shift;
 
-          if (x > 90) {
-            x -= 26;
-          }
+        if (x > 90) {
+          x -= 26;
         }
       }
+    }
     }
 
     result = store_uint(result, x, 8);
   }
 
-  ifnot (ds.slice_refs_empty?()) {
-    ds = preload_ref(ds).begin_parse();
-    result = store_ref(result, encrypt());
+  if (ds.slice_refs_empty?() == false) {
+    cell next = preload_ref(ds);
+    cell rest = solve(shift, next);
+    result = store_ref(result, rest);
   }
 
-  return result.end_cell(); 
+  return result.end_cell();
 }
 
 ;; testable
@@ -57,18 +59,20 @@ global slice ds, int _shift, int x;
     shift += 26;
   }
 
-  _shift = shift;
+  slice ds = text.begin_parse();
 
-  ds = text.begin_parse().skip_bits(32);
+  int len = (ds.slice_bits() - 32) >> 3;
+
+  ds = skip_bits(ds, 32);
 
   builder result = begin_cell().store_uint(0, 32);
-
-  repeat (ds.slice_bits() >> 3) {
-    x = ds~load_uint(8);
+  
+  repeat(len) {
+    int x = ds~load_uint(8);
 
     if (97 <= x) {
       if (x <= 122) {
-        x += _shift;
+        x = x + shift;
 
         if (x > 122) {
           x -= 26;
@@ -76,26 +80,27 @@ global slice ds, int _shift, int x;
       }
     }
     else {
-      if (65 <= x) { 
-        if (x <= 90) {
-          x += _shift;
+    if (65 <= x) { 
+      if (x <= 90) {
+        x = x + shift;
 
-          if (x > 90) {
-            x -= 26;
-          }
+        if (x > 90) {
+          x -= 26;
         }
       }
+    }
     }
 
     result = store_uint(result, x, 8);
   }
 
-  ifnot (ds.slice_refs_empty?()) {
-    ds = preload_ref(ds).begin_parse();
-    result = store_ref(result, encrypt());
+  if (ds.slice_refs_empty?() == false) {
+    cell next = preload_ref(ds);
+    cell rest = solve(shift, next);
+    result = store_ref(result, rest);
   }
 
-  return result.end_cell(); 
+  return result.end_cell();
 }
 
 ;; testable
