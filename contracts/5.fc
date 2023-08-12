@@ -16,18 +16,136 @@
 () recv_internal() {
 }
 
+(tuple) _fibonacci_sequence (int n, int k) asm """
+// n, k
+s0 PUSH
+// n, k, k
+0 EQINT
+// n, k, k=0
+IF:<{
+  // n, k
+  DROP2
+  //
+  NIL
+}>ELSE<{
+  // n, k
+  s0 PUSH
+  // n, k, k
+  1 EQINT
+  // n, k, k=1
+  IF:<{
+    // n, k
+    DROP
+    // n
+    1 PUSHINT
+    0 PUSHINT
+    // n, f_-1, f_0
+    ROT
+    // f_-1, f_0, n
+    REPEAT:<{
+      // f_i-1, f_i
+      TUCK 
+      // f_i, f_i-1, f_i
+      ADD
+      // f_i, f_i+1
+    }>
+    SWAP
+    // f_n, f_n-1
+    DROP
+    // f_n
+    SINGLE
+    // (f_n)
+  }>ELSE<{
+    s0 PUSH
+    255 EQINT
+    IF:<{
+      // n, k
+      1 SUBINT
+      // n, k - 1
+
+      SWAP // k, n
+      0 PUSHINT // k, n, a
+      1 PUSHINT // k, n, a, b
+      ROT // k, a, b, n
+      REPEAT:<{ // k, a, b
+        TUCK // k, b, a, b
+        ADD // k, b, a + b
+      }>
+      // k, f_n, f_n + 1
+      s2 PUSH
+      // k, f_n, f_n + 1, k
+      2 SUBCONST
+      // k, f_n, f_n + 1, k - 2 remember to if 1
+      REPEAT:<{
+        // k, f_n, f_n + 1
+        DUP2
+        ADD
+        s3 s2 XCHG
+      }>
+      // f_n, f_n + 1, ... f_n + k - 3, k, f_n + k - 2, f_n + k - 1
+      ROT
+      // f_n, f_n + 1, ... f_n + k - 3, f_n + k - 2, f_n + k - 1, k
+      TUPLEVAR
+      // (f_n, f_n + 1, ..., f_n + k - 1)
+
+      s0 PUSH
+      // t t
+      253 PUSHINT
+      // t t 253
+      INDEXVAR
+      // t t(253)
+      s1 PUSH
+      // t t(253) t
+      LAST
+      // t t(253) t(254)
+      ADD
+      // t f_n+k-1
+      TPUSH
+      // t
+    }>ELSE<{
+      SWAP // k, n
+      0 PUSHINT // k, n, a
+      1 PUSHINT // k, n, a, b
+      ROT // k, a, b, n
+      REPEAT:<{ // k, a, b
+        TUCK // k, b, a, b
+        ADD // k, b, a + b
+      }>
+      // k, f_n, f_n + 1
+      s2 PUSH
+      // k, f_n, f_n + 1, k
+      2 SUBCONST
+      // k, f_n, f_n + 1, k - 2 remember to if 1
+      REPEAT:<{
+        // k, f_n, f_n + 1
+        DUP2
+        ADD
+        s3 s2 XCHG
+      }>
+      // f_n, f_n + 1, ... f_n + k - 3, k, f_n + k - 2, f_n + k - 1
+      ROT
+      // f_n, f_n + 1, ... f_n + k - 3, f_n + k - 2, f_n + k - 1, k
+      TUPLEVAR
+      // (f_n, f_n + 1, ..., f_n + k - 1)
+    }>
+  }>
+}>
+""";
+
+(tuple, ()) ~tpush(tuple t, int value) asm "TPUSH";
+int last(tuple t) asm "LAST";
+int tlen(tuple t) asm "TLEN";
+
 ;; testable
-(tuple) fibonacci_sequence (int n, int k) method_id {
-  return empty_tuple();
+(tuple) fibonacci_sequence (int n, int k) inline method_id {
+  if (k == 255) {
+    tuple t = _fibonacci_sequence(n, k - 1);
+    int a = t.at(252);
+    int b = t.last();
+    t~tpush(a + b);
+    return t;
+  }
+  else {
+    return _fibonacci_sequence(n, k);
+  }
 }
-
-;; testable
-;; (tuple) fibonacci_sequence (int n, int k) asm """
-;;   POP s0
-;;   POP s0
-;;   NIL
-;; """;
-
-;; (int) testing_assembly() asm """
-;;   PUSHINT 10
-;; """;

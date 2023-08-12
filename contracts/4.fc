@@ -9,6 +9,15 @@
 () recv_internal() {
 }
 
+slice begin_parse(cell c) asm "CTOS";
+slice skip_bits(slice s, int len) asm "SDSKIPFIRST";
+cell end_cell(builder b) asm "ENDC";
+builder store_ref(builder b, cell c) asm(c b) "STREF";
+cell preload_ref(slice s) asm "PLDREF";
+int slice_refs_empty?(slice s) asm "SREMPTY";
+int slice_bits(slice s) asm "SBITS";
+builder begin_cell() asm "NEWC";
+
 cell solve(int shift, cell text) inline {
   slice ds = text.begin_parse();
 
