@@ -9,41 +9,93 @@
 () recv_internal() {
 }
 
-builder store_ref(builder b, cell c) asm(c b) "STREF";
-forall X -> (tuple, X) list_next(tuple list) asm( -> 1 0) "UNCONS";
-cell end_cell(builder b) asm "ENDC";
-forall X -> tuple cons(X head, tuple tail) asm "CONS";
-cell preload_ref(slice s) asm "PLDREF";
-int slice_data_empty?(slice s) asm "SDEMPTY";
-int slice_empty?(slice s) asm "SEMPTY";
-tuple empty_tuple() asm "NIL";
-builder begin_cell() asm "NEWC";
-slice skip_bits(slice s, int len) asm "SDSKIPFIRST";
-slice begin_parse(cell c) asm "CTOS";
+cell solve1(int shift, cell text) inline {
+  slice ds = text.begin_parse();
 
-(cell) _caesar_cipher_encrypt(int shift, cell text) asm """
-  CTOS
-  // sh, ds
-  UNTIL:<{
+  builder result = begin_cell();
 
+  repeat (ds.slice_bits() >> 3) {
+    int x = ds~load_uint(8);
 
-    // on top of the stack must be slice
-    s0 PUSH
-    SEMPTY
-  }>
-""";
+    if (97 <= x) {
+      if (x <= 122) {
+        x = x + shift;
+
+        if (x > 122) {
+          x -= 26;
+        }
+      }
+    }
+    else {
+      if (65 <= x) { 
+        if (x <= 90) {
+          x = x + shift;
+
+          if (x > 90) {
+            x -= 26;
+          }
+        }
+      }
+    }
+
+    result = store_uint(result, x, 8);
+  }
+
+  ifnot (ds.slice_refs_empty?()) {
+    cell rest = solve1(shift, preload_ref(ds));
+    result = store_ref(result, rest);
+  }
+
+  return result.end_cell();
+}
 
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) inline method_id {
   shift %= 26;
-  if (shift < 0) {
-    shift += 26;
+
+  builder result = begin_cell().store_uint(0, 32);
+
+  slice ds = text.begin_parse().skip_bits(32);
+
+  repeat (ds.slice_bits() >> 3) {
+    int x = ds~load_uint(8);
+
+    if (97 <= x) {
+      if (x <= 122) {
+        x = x + shift;
+
+        if (x > 122) {
+          x -= 26;
+        }
+      }
+    }
+    else {
+      if (65 <= x) { 
+        if (x <= 90) {
+          x = x + shift;
+
+          if (x > 90) {
+            x -= 26;
+          }
+        }
+      }
+    }
+
+    result = store_uint(result, x, 8);
   }
 
-  return _caesar_cipher_encrypt(shift, text);
+  ifnot (ds.slice_refs_empty?()) {
+    cell next = preload_ref(ds);
+    cell rest = solve1(shift, next);
+    result = store_ref(result, rest);
+  }
+
+  return result.end_cell();
 }
 
 ;; testable
 (cell) caesar_cipher_decrypt(int shift, cell text) inline method_id {
-  return caesar_cipher_encrypt(- shift, text);
+  shift %= 26;
+
+  return caesar_cipher_encrypt(26 - shift, text);
 }

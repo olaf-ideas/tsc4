@@ -31,17 +31,21 @@ export class Task4 implements Contract {
         const result = (await provider.get('caesar_cipher_encrypt', [
             { type: 'int', value: shift },
             { type: 'cell', cell: text },
-        ])).stack
+        ]));
         
-        return result.readCell();
+        console.log("gas used: ", result.gasUsed);
+        
+        return result.stack.readCell();
     }
     
     async getCeasarDecyption(provider: ContractProvider, shift: bigint, text: Cell) : Promise<Cell> {
         const result = (await provider.get('caesar_cipher_decrypt', [
             { type: 'int', value: shift },
             { type: 'cell', cell: text },
-        ])).stack
+        ]));
         
-        return result.readCell();
+        console.log("gas used: ", result.gasUsed);
+
+        return result.stack.readCell();
     }
 }
