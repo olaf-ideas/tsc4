@@ -16,7 +16,7 @@ global slice ds, int _shift, int x;
 
   repeat (ds.slice_bits() >> 3) {
     x = ds~load_uint(8);
-    
+
     if (97 <= x) {
       if (x <= 122) {
         x += _shift;
@@ -59,9 +59,43 @@ global slice ds, int _shift, int x;
 
   _shift = shift;
 
-  slice ds = text.begin_parse();
+  ds = text.begin_parse().skip_bits(32);
 
-  return encrypt();
+  builder result = begin_cell().store_uint(0, 32);
+
+  repeat (ds.slice_bits() >> 3) {
+    x = ds~load_uint(8);
+
+    if (97 <= x) {
+      if (x <= 122) {
+        x += _shift;
+
+        if (x > 122) {
+          x -= 26;
+        }
+      }
+    }
+    else {
+      if (65 <= x) { 
+        if (x <= 90) {
+          x += _shift;
+
+          if (x > 90) {
+            x -= 26;
+          }
+        }
+      }
+    }
+
+    result = store_uint(result, x, 8);
+  }
+
+  ifnot (ds.slice_refs_empty?()) {
+    ds = preload_ref(ds).begin_parse();
+    result = store_ref(result, encrypt());
+  }
+
+  return result.end_cell(); 
 }
 
 ;; testable
