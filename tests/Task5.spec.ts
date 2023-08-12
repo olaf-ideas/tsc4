@@ -41,7 +41,7 @@ describe('Task5', () => {
     it('should work', async() => {
         const result = await task5.getFibonacciSequence(1n, 3n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
     });
 
     it('should pass this test', async() => {
@@ -153,19 +153,19 @@ describe('Task5', () => {
     it('just show me the results', async() => {
         const result = await task5.getFibonacciSequence(116n, 254n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
     })
 
     it('just show me the results', async() => {
         const result = await task5.getFibonacciSequence(0n, 255n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
     })
 
     it('just show me the results', async() => {
         const result = await task5.getFibonacciSequence(116n, 255n);
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
     })
 
     it('test all', async() => {
