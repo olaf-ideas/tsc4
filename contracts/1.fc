@@ -64,7 +64,7 @@ slice begin_parse(cell c) asm "CTOS";
 
     tuple queue = cons(tree, null());
 
-    while (~ is_null(queue)) {
+    do {
         cell node = queue~list_next();
         
         if (hash == cell_hash(node)) {
@@ -76,7 +76,7 @@ slice begin_parse(cell c) asm "CTOS";
         repeat (slice_refs(adj)) {
             queue = cons(adj~load_ref(), queue);
         }
-    }
+    } until (is_null(queue));
 
     return begin_cell().end_cell();
 }

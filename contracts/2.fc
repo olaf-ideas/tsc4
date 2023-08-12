@@ -19,7 +19,7 @@ forall X -> (tuple, ()) ~tpush(tuple t, X value) asm "TPUSH";
 tuple empty_tuple() asm "NIL";
 
 ;; testable
-(tuple) _matrix_multiplier(tuple matrixA, tuple matrixB) asm """
+(tuple) matrix_multiplier(tuple matrixA, tuple matrixB) asm """
 OVER
 TLEN
 OVER
