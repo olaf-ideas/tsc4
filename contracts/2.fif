@@ -15,98 +15,29 @@ PROGRAM{
     s2 PUSH	//  matrixA matrixB n m matrixB
     FIRST	//  matrixA matrixB n m _7
     TLEN	//  matrixA matrixB n m p
-    2DUP	//  matrixA matrixB n m p m p
-    MUL	//  matrixA matrixB n m p _9
-    8 PUSHPOW2DEC	//  matrixA matrixB n m p _9 _10=255
-    LEQ	//  matrixA matrixB n m p _11
-    IFJMP:<{	//  matrixA matrixB n m p
-      NIL	//  matrixA matrixB n m p B
-      0 PUSHINT	//  matrixA matrixB n m p B i=0
-      s2 PUSH	//  matrixA matrixB n m p B i=0 p
-      REPEAT:<{	//  matrixA matrixB n m p B i
-        0 PUSHINT	//  matrixA matrixB n m p B i j=0
-        s4 PUSH	//  matrixA matrixB n m p B i j=0 m
-        REPEAT:<{	//  matrixA matrixB n m p B i j
-          s6 s0 PUSH2	//  matrixA matrixB n m p B i j matrixB j
-          INDEXVAR	//  matrixA matrixB n m p B i j _19
-          s2 PUSH	//  matrixA matrixB n m p B i j _19 i
-          INDEXVAR	//  matrixA matrixB n m p B i j _20
-          s1 s3 XCHG	//  matrixA matrixB n m p j i B _20
-          TPUSH	//  matrixA matrixB n m p j i B
-          s0 s2 XCHG	//  matrixA matrixB n m p B i j
-          INC	//  matrixA matrixB n m p B i j
-        }>
-        DROP	//  matrixA matrixB n m p B i
-        INC	//  matrixA matrixB n m p B i
-      }>
-      DROP
-      s4 POP	//  matrixA B n m p
-      NIL	//  matrixA B n m p C
-      0 PUSHINT	//  matrixA B n m p C i=0
-      s0 s4 XCHG	//  matrixA B i=0 m p C n
-      REPEAT:<{	//  matrixA B i m p C
-        NIL	//  matrixA B i m p C C_row
-        s6 s4 PUSH2	//  matrixA B i m p C C_row matrixA i
-        INDEXVAR	//  matrixA B i m p C C_row A_row
-        0 PUSHINT	//  matrixA B i m p C C_row A_row j=0
-        s4 PUSH	//  matrixA B i m p C C_row A_row j=0 p
-        REPEAT:<{	//  matrixA B i m p C C_row A_row j
-          0 PUSHINT	//  matrixA B i m p C C_row A_row j value=0
-          s0 s6 PUSH2	//  matrixA B i m p C C_row A_row j value=0 k=0 m
-          REPEAT:<{	//  matrixA B i m p C C_row A_row j value k
-            s3 s0 PUSH2	//  matrixA B i m p C C_row A_row j value k A_row k
-            INDEXVAR	//  matrixA B i m p C C_row A_row j value k _40
-            s1 s3 PUSH2	//  matrixA B i m p C C_row A_row j value k _40 k j
-            ADD	//  matrixA B i m p C C_row A_row j value k _40 _41
-            s11 s(-1) PUXC	//  matrixA B i m p C C_row A_row j value k _40 B _41
-            INDEXVAR	//  matrixA B i m p C C_row A_row j value k _40 _42
-            MUL	//  matrixA B i m p C C_row A_row j value k _43
-            s1 s2 XCHG	//  matrixA B i m p C C_row A_row j k value _43
-            ADD	//  matrixA B i m p C C_row A_row j k value
-            SWAP	//  matrixA B i m p C C_row A_row j value k
-            INC	//  matrixA B i m p C C_row A_row j value k
-          }>
-          DROP	//  matrixA B i m p C C_row A_row j value
-          s1 s3 XCHG	//  matrixA B i m p C j A_row C_row value
-          TPUSH	//  matrixA B i m p C j A_row C_row
-          s2 s5 XCPU	//  matrixA B i m p C C_row A_row j m
-          ADD	//  matrixA B i m p C C_row A_row j
-        }>
-        2DROP	//  matrixA B i m p C C_row
-        s0 s4 XCHG	//  matrixA B C_row m p C i
-        INC	//  matrixA B C_row m p C i
-        s0 s4 XCHG	//  matrixA B i m p C C_row
-        TPUSH	//  matrixA B i m p C
-      }>
-      5 1 BLKDROP2	//  C
-    }>	//  matrixA matrixB n m p
     NIL	//  matrixA matrixB n m p matrixBT
     0 PUSHINT	//  matrixA matrixB n m p matrixBT x=0
-    WHILE:<{
-      s0 s2 PUSH2	//  matrixA matrixB n m p matrixBT x x p
-      LESS	//  matrixA matrixB n m p matrixBT x _58
-    }>DO<{	//  matrixA matrixB n m p matrixBT x
+    s2 PUSH	//  matrixA matrixB n m p matrixBT x=0 p
+    REPEAT:<{	//  matrixA matrixB n m p matrixBT x
       NIL	//  matrixA matrixB n m p matrixBT x row
       0 PUSHINT	//  matrixA matrixB n m p matrixBT x row y=0
-      WHILE:<{
-        s0 s5 PUSH2	//  matrixA matrixB n m p matrixBT x row y y m
-        LESS	//  matrixA matrixB n m p matrixBT x row y _63
-      }>DO<{	//  matrixA matrixB n m p matrixBT x row y
+      s5 PUSH	//  matrixA matrixB n m p matrixBT x row y=0 m
+      REPEAT:<{	//  matrixA matrixB n m p matrixBT x row y
         s7 s0 PUSH2	//  matrixA matrixB n m p matrixBT x row y matrixB y
-        INDEXVAR	//  matrixA matrixB n m p matrixBT x row y _65
-        s3 PUSH	//  matrixA matrixB n m p matrixBT x row y _65 x
-        INDEXVAR	//  matrixA matrixB n m p matrixBT x row y _66
-        s1 s2 XCHG	//  matrixA matrixB n m p matrixBT x y row _66
+        INDEXVAR	//  matrixA matrixB n m p matrixBT x row y _18
+        s3 PUSH	//  matrixA matrixB n m p matrixBT x row y _18 x
+        INDEXVAR	//  matrixA matrixB n m p matrixBT x row y _19
+        s1 s2 XCHG	//  matrixA matrixB n m p matrixBT x y row _19
         TPUSH	//  matrixA matrixB n m p matrixBT x y row
         SWAP	//  matrixA matrixB n m p matrixBT x row y
         INC	//  matrixA matrixB n m p matrixBT x row y
-      }>	//  matrixA matrixB n m p matrixBT x row y
+      }>
       DROP	//  matrixA matrixB n m p matrixBT x row
       s1 s2 XCHG	//  matrixA matrixB n m p x matrixBT row
       TPUSH	//  matrixA matrixB n m p x matrixBT
       SWAP	//  matrixA matrixB n m p matrixBT x
       INC	//  matrixA matrixB n m p matrixBT x
-    }>	//  matrixA matrixB n m p matrixBT x
+    }>
     DROP
     s4 POP	//  matrixA matrixBT n m p
     NIL	//  matrixA matrixBT n m p C
@@ -129,8 +60,8 @@ PROGRAM{
           s0 s2 XCHG	//  matrixA matrixBT i m p C C_row j value a A_row B_row
           TPOP	//  matrixA matrixBT i m p C C_row j value a A_row B_row b
           s1 s3 XCHG	//  matrixA matrixBT i m p C C_row j value B_row A_row a b
-          MUL	//  matrixA matrixBT i m p C C_row j value B_row A_row _92
-          s1 s3 XCHG	//  matrixA matrixBT i m p C C_row j A_row B_row value _92
+          MUL	//  matrixA matrixBT i m p C C_row j value B_row A_row _45
+          s1 s3 XCHG	//  matrixA matrixBT i m p C C_row j A_row B_row value _45
           ADD	//  matrixA matrixBT i m p C C_row j A_row B_row value
         }>
         2 1 BLKDROP2	//  matrixA matrixBT i m p C C_row j value

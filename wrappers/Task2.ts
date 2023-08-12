@@ -28,7 +28,9 @@ export class Task2 implements Contract {
     }
 
     async getMatrixMultiplier(provider: ContractProvider, a: Tuple, b: Tuple) : Promise<TupleReader> {
-        const result = (await provider.get("matrix_multiplier", [ a, b ])).stack;
-        return result.readTuple();
+        const result = (await provider.get("matrix_multiplier", [ a, b ]));
+        console.log("gas used: ", result.gasUsed);
+
+        return result.stack.readTuple();
     }
 }

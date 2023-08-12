@@ -32,60 +32,14 @@ tuple cdr(tuple list) asm "CDR";
   int m = tlen(matrixB);
   int p = tlen(first(matrixB));
 
-  if (m * p <= 255) {
-    tuple B = empty_tuple();
-
-    int i = 0;
-    repeat (p) {
-      int j = 0;
-      repeat (m) {
-        B~tpush(matrixB.at(j).at(i));
-        j += 1;
-      }
-      i += 1;
-    }
-
-    tuple C = empty_tuple();
-    
-    int i = 0;
-    repeat (n) {
-      tuple C_row = empty_tuple();
-      tuple A_row = matrixA.at(i);
-
-      int j = 0;
-      repeat (p) {
-
-        int value = 0;
-
-        int k = 0;
-
-        repeat (m) {
-          value += A_row.at(k) * B.at(k + j);
-
-          k += 1;
-        }
-
-        C_row~tpush(value);
-
-        j += m;
-      }
-
-      i += 1;
-
-      C~tpush(C_row);
-    }
-
-    return C;
-  }
-
   tuple matrixBT = empty_tuple();
 
   int x = 0;
-  while (x < p) {
+  repeat (p) {
     tuple row = empty_tuple();
 
     int y = 0;
-    while (y < m) {
+    repeat (m) {
       row~tpush(matrixB.at(y).at(x));
 
       y += 1;
