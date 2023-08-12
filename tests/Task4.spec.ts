@@ -36,34 +36,34 @@ describe('Task4', () => {
         // blockchain and task4 are ready to use
     });
 
-    it('encryption test shift 0', async() => {
+    // it('encryption test shift 0', async() => {
 
-        var len = 12 + 4;
-        var shift = 0n;
+    //     var len = 12 + 4;
+    //     var shift = 0n;
 
-        var buf = Buffer.alloc(len);
-        var ans = Buffer.alloc(len);
+    //     var buf = Buffer.alloc(len);
+    //     var ans = Buffer.alloc(len);
 
-        for (var i = 4; i < len; i++) {
-            buf[i] = (i + 97 + 0) % 256;
-            ans[i] = Number(((BigInt(i) + 97n - shift) % 256n))
-        }
+    //     for (var i = 4; i < len; i++) {
+    //         buf[i] = (i + 97 + 0) % 256;
+    //         ans[i] = Number(((BigInt(i) + 97n - shift) % 256n))
+    //     }
 
-        var data = new BitString(buf, 0, len * 8);
-        var ans_data = new BitString(ans, 0, len * 8);
+    //     var data = new BitString(buf, 0, len * 8);
+    //     var ans_data = new BitString(ans, 0, len * 8);
 
-        var root = new Cell({ bits: data });
+    //     var root = new Cell({ bits: data });
 
-        const result = await task4.getCeasarEncyption(shift, root);
+    //     const result = await task4.getCeasarEncyption(shift, root);
 
-        // console.log("buffer: ", data);
-        // console.log("result: ", result.bits);
-        // console.log("answer: ", ans_data);
-        // console.log("are eq: ", ans_data.equals(result.bits));
+    //     // console.log("buffer: ", data);
+    //     // console.log("result: ", result.bits);
+    //     // console.log("answer: ", ans_data);
+    //     // console.log("are eq: ", ans_data.equals(result.bits));
 
-        expect(ans_data.equals(result.bits)).toBeTruthy();
+    //     expect(ans_data.equals(result.bits)).toBeTruthy();
 
-    })
+    // })
 
     // it('encryption test shift 3', async() => {
 

@@ -16,6 +16,12 @@
 () recv_internal() {
 }
 
+
+(int, int) fib(int a, int b) inline asm(b a) "OVER ADD";
+;; (int, int) fib(int a, int b) asm "DUP2 ADD";
+
+;; (tuple) stack_tuple(int n) asm "TUPLEVAR";
+
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) inline method_id {
   tuple result = empty_tuple();
@@ -47,10 +53,8 @@
     }
   }
 
-  repeat(n) {
-    int c = a + b;
-    a = b;
-    b = c;
+  repeat (n) {
+    (a, b) = fib(a, b);
   }
 
   result~tpush(b);
