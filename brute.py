@@ -47,14 +47,60 @@ print ("testing big")
 print(fib(369))
 # print(fib_fast(369))
 # print(fib_fast(370))
-print(fib(99))
+
+print(fib( 99))
 print(fib(100))
-print(fib(101))
 
 print(fib(199))
 print(fib(200))
-print(fib(201))
 
 print(fib(299))
 print(fib(300))
+
+
+
+print(fib(100))
+print(fib(101))
+
+print(fib(200))
+print(fib(201))
+
+print(fib(300))
 print(fib(301))
+
+    
+#     s0 PUSH
+#     100 GEQINT
+#     IF:<{
+#       s0 PUSH
+#       200 PUSHINT
+#       GEQ
+#       IF:<{
+#         s0 PUSH
+#         300 PUSHINT
+#         GEQ
+#         IF:<{
+#           300 PUSHINT
+#           SUB
+#           222232244629420445529739893461909967206666939096499764990979600 PUSHINT
+#           359579325206583560961765665172189099052367214309267232255589801 PUSHINT
+          
+#         }>ELSE<{
+#           200 PUSHINT
+#           SUB
+#           280571172992510140037611932413038677189525 PUSHINT
+#           453973694165307953197296969697410619233826 PUSHINT
+#         }>
+#       }>ELSE<{
+#         100 SUBCONST
+#         354224848179261915075 PUSHINT
+#         573147844013817084101 PUSHINT
+#       }>
+#     }>ELSE<{
+#       1 PUSHINT
+#       0 PUSHINT
+#     }>
+
+#     (tuple, ()) ~tpush(tuple t, int value) asm "TPUSH";
+# int last(tuple t) asm "LAST";
+# int tlen(tuple t) asm "TLEN";

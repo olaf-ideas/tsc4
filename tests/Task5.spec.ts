@@ -103,6 +103,12 @@ describe('Task5', () => {
         );
     })
 
+    it ('should work on every single', async() => {
+        for (let n = 0n; n <= 370n; n += 1n) {
+            const result = await task5.getFibonacciSequence(n, 1n);
+        }
+    })
+
     it('should pass this test 5', async() => {
 
         const result = await task5.getFibonacciSequence(369n, 1n);

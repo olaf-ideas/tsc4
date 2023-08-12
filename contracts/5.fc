@@ -37,8 +37,19 @@ IF:<{
     // n, k
     DROP
     // n
-    1 PUSHINT
-    0 PUSHINT
+
+    s0 PUSH
+    100 GEQINT
+    IF:<{
+      100 SUBINT
+
+      218922995834555169026 PUSHINT
+      354224848179261915075 PUSHINT
+    }>ELSE<{
+      1 PUSHINT
+      0 PUSHINT
+    }>
+
     // n, f_-1, f_0
     ROT
     // f_-1, f_0, n
@@ -56,78 +67,42 @@ IF:<{
     SINGLE
     // (f_n)
   }>ELSE<{
+    SWAP // k, n
+
     s0 PUSH
-    255 EQINT
+    100 GEQINT
     IF:<{
-      // n, k
-      1 SUBINT
-      // n, k - 1
+      100 SUBINT
 
-      SWAP // k, n
-      0 PUSHINT // k, n, a
-      1 PUSHINT // k, n, a, b
-      ROT // k, a, b, n
-      REPEAT:<{ // k, a, b
-        TUCK // k, b, a, b
-        ADD // k, b, a + b
-      }>
-      // k, f_n, f_n + 1
-      s2 PUSH
-      // k, f_n, f_n + 1, k
-      2 SUBCONST
-      // k, f_n, f_n + 1, k - 2 remember to if 1
-      REPEAT:<{
-        // k, f_n, f_n + 1
-        DUP2
-        ADD
-        s3 s2 XCHG
-      }>
-      // f_n, f_n + 1, ... f_n + k - 3, k, f_n + k - 2, f_n + k - 1
-      ROT
-      // f_n, f_n + 1, ... f_n + k - 3, f_n + k - 2, f_n + k - 1, k
-      TUPLEVAR
-      // (f_n, f_n + 1, ..., f_n + k - 1)
-
-      s0 PUSH
-      // t t
-      253 PUSHINT
-      // t t 253
-      INDEXVAR
-      // t t(253)
-      s1 PUSH
-      // t t(253) t
-      LAST
-      // t t(253) t(254)
-      ADD
-      // t f_n+k-1
-      TPUSH
-      // t
+      354224848179261915075 PUSHINT
+      573147844013817084101 PUSHINT
     }>ELSE<{
-      SWAP // k, n
-      0 PUSHINT // k, n, a
-      1 PUSHINT // k, n, a, b
-      ROT // k, a, b, n
-      REPEAT:<{ // k, a, b
-        TUCK // k, b, a, b
-        ADD // k, b, a + b
-      }>
-      // k, f_n, f_n + 1
-      s2 PUSH
-      // k, f_n, f_n + 1, k
-      2 SUBCONST
-      // k, f_n, f_n + 1, k - 2 remember to if 1
-      REPEAT:<{
-        // k, f_n, f_n + 1
-        DUP2
-        ADD
-        s3 s2 XCHG
-      }>
-      // f_n, f_n + 1, ... f_n + k - 3, k, f_n + k - 2, f_n + k - 1
-      ROT
-      // f_n, f_n + 1, ... f_n + k - 3, f_n + k - 2, f_n + k - 1, k
-      TUPLEVAR
-      // (f_n, f_n + 1, ..., f_n + k - 1)
+      0 PUSHINT
+      1 PUSHINT
     }>
+
+    
+    ROT // k, a, b, n
+    REPEAT:<{ // k, a, b
+      TUCK // k, b, a, b
+      ADD // k, b, a + b
+    }>
+    // k, f_n, f_n + 1
+    s2 PUSH
+    // k, f_n, f_n + 1, k
+    2 SUBCONST
+    // k, f_n, f_n + 1, k - 2 remember to if 1
+    REPEAT:<{
+      // k, f_n, f_n + 1
+      DUP2
+      ADD
+      s3 s2 XCHG
+    }>
+    // f_n, f_n + 1, ... f_n + k - 3, k, f_n + k - 2, f_n + k - 1
+    ROT
+    // f_n, f_n + 1, ... f_n + k - 3, f_n + k - 2, f_n + k - 1, k
+    TUPLEVAR
+    // (f_n, f_n + 1, ..., f_n + k - 1)
   }>
 }>
 """;
