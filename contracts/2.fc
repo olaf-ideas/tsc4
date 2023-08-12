@@ -30,69 +30,98 @@ tuple cdr(tuple list) asm "CDR";
 
   int n = tlen(matrixA);
   int m = tlen(matrixB);
-
-  tuple A = empty_tuple();
-
-  {
-    int i = n - 1;
-    repeat (n) {
-      tuple row = empty_tuple();
-
-      int j = 0;
-
-      repeat (m) {
-        row = cons(matrixA.at(i).at(j), row);
-        j += 1;
-      }
-
-      A = cons(row, A);
-
-      i -= 1;
-    }
-  }
-
   int p = tlen(first(matrixB));
 
-  tuple B = empty_tuple();
+  if (m * p <= 255) {
+    tuple B = empty_tuple();
 
-  {
-    int i = p - 1;
+    int i = 0;
     repeat (p) {
-      tuple row = empty_tuple();
-
       int j = 0;
-
       repeat (m) {
-        row = cons(matrixB.at(j).at(i), row);
+        B~tpush(matrixB.at(j).at(i));
         j += 1;
       }
-
-      B = cons(row, B);
-
-      i -= 1;
+      i += 1;
     }
+
+    tuple C = empty_tuple();
+    
+    int i = 0;
+    repeat (n) {
+      tuple C_row = empty_tuple();
+      tuple A_row = matrixA.at(i);
+
+      int j = 0;
+      repeat (p) {
+
+        int value = 0;
+
+        int k = 0;
+
+        repeat (m) {
+          value += A_row.at(k) * B.at(k + j);
+
+          k += 1;
+        }
+
+        C_row~tpush(value);
+
+        j += m;
+      }
+
+      i += 1;
+
+      C~tpush(C_row);
+    }
+
+    return C;
+  }
+
+  tuple matrixBT = empty_tuple();
+
+  int x = 0;
+  while (x < p) {
+    tuple row = empty_tuple();
+
+    int y = 0;
+    while (y < m) {
+      row~tpush(matrixB.at(y).at(x));
+
+      y += 1;
+    }
+
+    matrixBT~tpush(row);
+
+    x += 1;
   }
 
   tuple C = empty_tuple();
 
+  int i = 0;
   repeat (n) {
     tuple C_row = empty_tuple();
-    tuple B_copy = B;
+
+    int j = 0;
     repeat (p) {
-      tuple B_row = B_copy~list_next();
-      tuple A_row = car(A);
+      tuple A_row = matrixA.at(i);
+      tuple B_row = matrixBT.at(j);
 
       int value = 0;
+    
       repeat (m) {
-        value += B_row~list_next() * A_row~list_next();
+        (A_row, int a) = tpop(A_row);
+        (B_row, int b) = tpop(B_row);
+
+        value += a * b;
       }
 
       C_row~tpush(value);
+      j += 1;
     }
 
-    A = cdr(A);
-
     C~tpush(C_row);
+    i += 1;
   }
 
   return C;
