@@ -24,39 +24,48 @@
   tuple list = empty_tuple();
   int len = 0;
 
-  while (~ ds.slice_empty?()) {
-    if (ds.slice_data_empty?()) {
+  int ok = true;
+
+  while (ok) {
+    int rep = (ds.slice_bits() >> 3);
+
+    repeat (rep) {
+      int x = ds~load_uint(8);
+
+      if (97 <= x) {
+        if (x <= 122) {
+          x += shift;
+
+          if (x > 122) {
+            x -= 26;
+          }
+        }
+      }
+      else {
+        if (65 <= x) {
+          if (x <= 90) {
+            x += shift;
+
+            if (x > 90) {
+              x -= 26;
+            }
+          }
+        }
+      }
+
+      block = store_uint(block, x, 8);
+    }
+
+    if (ds.slice_refs_empty?()) {
+      ok = false;
+    }
+    else {
       ds = ds.preload_ref().begin_parse();
 
       list = cons(block, list);
       block = begin_cell();
       len += 1;
     }
-
-    int x = ds~load_uint(8);
-
-    if (97 <= x) {
-      if (x <= 122) {
-        x += shift;
-
-        if (x > 122) {
-          x -= 26;
-        }
-      }
-    }
-    else {
-      if (65 <= x) {
-        if (x <= 90) {
-          x += shift;
-
-          if (x > 90) {
-            x -= 26;
-          }
-        }
-      }
-    }
-
-    block = store_uint(block, x, 8);
   }
 
   cell result = block.end_cell();
@@ -65,7 +74,7 @@
     builder top = list~list_next();
 
     cell next = top.store_ref(result).end_cell();
-    
+
     result = next;
   }
 
