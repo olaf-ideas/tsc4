@@ -9,18 +9,19 @@
 () recv_internal() {
 }
 
-cell solve(int shift, cell text) inline {
-  slice ds = text.begin_parse();
+global int _shift, slice ds, int len, int x;
 
+cell solve() inline {
   builder result = begin_cell();
 
-  int len = ds.slice_bits() >> 3;
-  repeat(len) {
-    int x = ds~load_uint(8);
+  len = ds.slice_bits() >> 3;
+
+  repeat (len) {
+    x = ds~load_uint(8);
 
     if (97 <= x) {
       if (x <= 122) {
-        x = x + shift;
+        x = x + _shift;
 
         if (x > 122) {
           x -= 26;
@@ -28,24 +29,24 @@ cell solve(int shift, cell text) inline {
       }
     }
     else {
-    if (65 <= x) { 
-      if (x <= 90) {
-        x = x + shift;
+      if (65 <= x) { 
+        if (x <= 90) {
+          x = x + _shift;
 
-        if (x > 90) {
-          x -= 26;
+          if (x > 90) {
+            x -= 26;
+          }
         }
       }
-    }
     }
 
     result = store_uint(result, x, 8);
   }
 
   if (ds.slice_refs_empty?() == false) {
-    cell next = preload_ref(ds);
-    cell rest = solve(shift, next);
-    result = store_ref(result, rest);
+    ds = ds.preload_ref().begin_parse();
+
+    result = store_ref(result, solve());
   }
 
   return result.end_cell();
@@ -59,16 +60,18 @@ cell solve(int shift, cell text) inline {
     shift += 26;
   }
 
-  slice ds = text.begin_parse();
+  _shift = shift;
 
-  int len = (ds.slice_bits() - 32) >> 3;
+  ds = text.begin_parse();
+
+  int len1 = (ds.slice_bits() - 32) >> 3;
 
   ds = skip_bits(ds, 32);
 
   builder result = begin_cell().store_uint(0, 32);
   
-  repeat(len) {
-    int x = ds~load_uint(8);
+  repeat (len1) {
+    x = ds~load_uint(8);
 
     if (97 <= x) {
       if (x <= 122) {
@@ -80,24 +83,24 @@ cell solve(int shift, cell text) inline {
       }
     }
     else {
-    if (65 <= x) { 
-      if (x <= 90) {
-        x = x + shift;
+      if (65 <= x) { 
+        if (x <= 90) {
+          x += shift;
 
-        if (x > 90) {
-          x -= 26;
+          if (x > 90) {
+            x -= 26;
+          }
         }
       }
-    }
     }
 
     result = store_uint(result, x, 8);
   }
 
   if (ds.slice_refs_empty?() == false) {
-    cell next = preload_ref(ds);
-    cell rest = solve(shift, next);
-    result = store_ref(result, rest);
+    ds = ds.preload_ref().begin_parse();
+
+    result = store_ref(result, solve());
   }
 
   return result.end_cell();
