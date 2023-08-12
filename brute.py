@@ -1,73 +1,48 @@
 def fib(n):
-    a, b = 0, 1
-    for i in range(n):
-        c = a + b
-        a = b
-        b = c
+  if n == -1:
+    return 1
 
-        assert c < 2**257
-        assert a < 2**257
-        assert b < 2**257
+  a, b = 0, 1
+  for i in range(n):
+    c = a + b
+    a = b
+    b = c
 
-    return a
+    # assert c < 2**257
+    # assert a < 2**257
+    # assert b < 2**257
 
-def fib_fast(n):
-    b, a, p, q = 1, 0, 0, 1
+  return a
 
-    while n > 0:
-        if n % 2 == 1:
-            print("hee")
-            bq = b * q
-            b = a * q + bq + b * p
-            a = a * p + bq
-        
-        if n > 1:
-            print("hmm")
-            qq = q * q
-            q = 2 * p * q + qq
-            p = p * p + qq
+def jazda(l, r):
+  if (abs(r - l) < 20):
+    if (l <= 127):
+      print(l, "SUBINT")
+    else:
+      print(l, "PUSHINT")
+      print("SUB")
 
-        print(a, b, p, q)
+    print(fib(l), "PUSHINT")
+    print(fib(l + 1), "PUSHINT")
+    return
 
-        assert p < 2**257
-        assert q < 2**257
-        assert a < 2**257
-        assert b < 2**257
-        
-        n >>= 1
+  m = (l + r) >> 1
+  print("s0 PUSH")
+  
+  if (m < 2**7):
+    print(m, "LEQINT")
+  else:
+    print(m, "PUSHINT")
+    print("LEQ")
 
-    return a, b
-
-for i in range(370):
-    assert(fib(i) == fib_fast(i)[0])
-    print(fib(i), fib_fast(i))
-
-print ("testing big")
-
-print(fib(369))
-# print(fib_fast(369))
-# print(fib_fast(370))
-
-print(fib( 99))
-print(fib(100))
-
-print(fib(199))
-print(fib(200))
-
-print(fib(299))
-print(fib(300))
+  print("IF:<{")
+  jazda(l, m)
+  print("}>ELSE<{")
+  jazda(m + 1, r)
+  print("}>")
 
 
-
-print(fib(100))
-print(fib(101))
-
-print(fib(200))
-print(fib(201))
-
-print(fib(300))
-print(fib(301))
-
+jazda(0, 370 - 1)
     
 #     s0 PUSH
 #     100 GEQINT
