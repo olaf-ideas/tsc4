@@ -28,6 +28,12 @@ export class Task5 implements Contract {
         });
     }
 
+    // async getTest(provider: ContractProvider) : Promise<BigInt> {
+    //     const result = (await provider.get('testing_assembly', [])).stack;
+        
+    //     return result.readBigNumber();
+    // }
+
     async getFibonacciSequence(provider: ContractProvider, n: bigint, k: bigint) : Promise<TupleReader> {
         const result = (await provider.get('fibonacci_sequence', [
             { type: 'int', value: n },

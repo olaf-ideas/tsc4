@@ -16,58 +16,18 @@
 () recv_internal() {
 }
 
-
-(int, int) fib(int a, int b) inline asm(b a) "OVER ADD";
-;; (int, int) fib(int a, int b) asm "DUP2 ADD";
-
-;; (tuple) stack_tuple(int n) asm "TUPLEVAR";
-
 ;; testable
-(tuple) fibonacci_sequence (int n, int k) inline method_id {
-  tuple result = empty_tuple();
-
-  if (k == 0) {
-    return result;
-  }
-
-  int a = 1;
-  int b = 0;
-  
-  if (n >= 100) {
-    if (n < 200) {
-      a = 218922995834555169026;
-      b = 354224848179261915075;
-      n -= 100;
-    }
-    else {
-      if (n < 300) {
-        a = 173402521172797813159685037284371942044301;
-        b = 280571172992510140037611932413038677189525;
-        n -= 200;
-      }
-      else {
-        a = 137347080577163115432025771710279131845700275212767467264610201;
-        b = 222232244629420445529739893461909967206666939096499764990979600;
-        n -= 300;
-      }
-    }
-  }
-
-  repeat (n) {
-    (a, b) = fib(a, b);
-  }
-
-  result~tpush(b);
-
-  repeat(k - 1) {
-    int c = a + b;
-
-    a = b;
-    b = c;
-
-    result~tpush(b);
-  }
-
-  return result;
+(tuple) fibonacci_sequence (int n, int k) {
+  return empty_tuple();
 }
 
+;; testable
+;; (tuple) fibonacci_sequence (int n, int k) asm """
+;;   POP s0
+;;   POP s0
+;;   NIL
+;; """;
+
+;; (int) testing_assembly() asm """
+;;   PUSHINT 10
+;; """;
