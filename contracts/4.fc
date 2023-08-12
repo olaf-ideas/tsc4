@@ -9,44 +9,6 @@
 () recv_internal() {
 }
 
-cell solve(int shift, cell text) inline {
-  slice ds = text.begin_parse();
-
-  builder result = begin_cell();
-
-  int len = ds.slice_bits() >> 3;
-  repeat(len) {
-    int x = ds~load_uint(8);
-
-    if (97 <= x) {
-      if (x <= 122) {
-        x = x + shift;
-
-        if (x > 122) {
-          x -= 26;
-        }
-      }
-    }
-    else {
-      x = x + shift;
-
-      if (x > 90) {
-        x -= 26;
-      }
-    }
-
-    result = store_uint(result, x, 8);
-  }
-
-  if (ds.slice_refs_empty?() == false) {
-    cell next = preload_ref(ds);
-    cell rest = solve(shift, next);
-    result = store_ref(result, rest);
-  }
-
-  return result.end_cell();
-}
-
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) inline method_id {
   shift %= 26;
@@ -55,20 +17,27 @@ cell solve(int shift, cell text) inline {
     shift += 26;
   }
 
-  slice ds = text.begin_parse();
+  slice ds = text.begin_parse().skip_bits(32);
 
-  int len = (ds.slice_bits() - 32) >> 3;
+  builder block = begin_cell().store_uint(0, 32);
 
-  ds = skip_bits(ds, 32);
+  tuple list = empty_tuple();
+  int len = 0;
 
-  builder result = begin_cell().store_uint(0, 32);
-  
-  repeat(len) {
+  while (~ ds.slice_empty?()) {
+    if (ds.slice_data_empty?()) {
+      ds = ds.preload_ref().begin_parse();
+
+      list = cons(block.end_cell(), list);
+      block = begin_cell();
+      len += 1;
+    }
+
     int x = ds~load_uint(8);
 
     if (97 <= x) {
       if (x <= 122) {
-        x = x + shift;
+        x += shift;
 
         if (x > 122) {
           x -= 26;
@@ -76,23 +45,34 @@ cell solve(int shift, cell text) inline {
       }
     }
     else {
-      x = x + shift;
+      if (65 <= x) {
+        if (x <= 90) {
+          x += shift;
 
-      if (x > 90) {
-        x -= 26;
+          if (x > 90) {
+            x -= 26;
+          }
+        }
       }
     }
 
-    result = store_uint(result, x, 8);
+    block = store_uint(block, x, 8);
   }
 
-  if (ds.slice_refs_empty?() == false) {
-    cell next = preload_ref(ds);
-    cell rest = solve(shift, next);
-    result = store_ref(result, rest);
+  cell result = block.end_cell();
+
+  repeat (len) {
+    cell top = list~list_next();
+
+    cell next = begin_cell()
+                .store_ref(result)
+                .store_slice(top.begin_parse())
+                .end_cell();
+    
+    result = next;
   }
 
-  return result.end_cell();
+  return result;
 }
 
 ;; testable
