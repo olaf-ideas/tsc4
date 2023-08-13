@@ -62,7 +62,8 @@ def best_value(l, r):
 
   # print("calculating: ", l, r)
 
-  best_cost = (r - l + 1) * (pushint_gas(l) + 18 + pushint_gas(fib(l - 1)) + pushint_gas(fib(l))) + brute_all(l, r)
+  best_cost = (r - l + 1) * (pushint_gas(l) + 18 + pushint_gas(fib(l - 1)) + pushint_gas(fib(l))) + brute_all(l, r) + \
+              pushint_gas(l) + 18 + 18 + pushint_gas(fib(l - 1)) + 18 + pushint_gas(fib(l)) + 18
 
   best_data = str(l) + ' INT\n' + \
               'SUB\n' + \
@@ -71,23 +72,28 @@ def best_value(l, r):
 
   for k in range(l, r):
     new_data = 'DUP\n'
+    new_cost = 18
 
     if k < 2**7:
       new_data += str(k) + ' GTINT\n'
+      new_cost += pushint_gas(k) + 26
     else:
       new_data += str(k) + ' INT\n' + \
                   'GREATER\n'
+      new_cost += pushint_gas(k) + 18 + 18
 
     (L_data, L_cost) = best_value(l, k + 0)
     (R_data, R_cost) = best_value(k + 1, r)
 
-    new_cost = gt_int_gas(k) * (r - l + 1) + L_cost + R_cost
+    new_cost += gt_int_gas(k) * (r - l + 1) + L_cost + R_cost
 
     new_data += 'IF:<{\n'
     new_data += R_data
     new_data += '}>ELSE<{\n'
     new_data += L_data
     new_data += '}>\n'
+
+    new_cost += 18 + 18
 
     if best_cost > new_cost:
       best_cost = new_cost
