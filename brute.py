@@ -26,13 +26,17 @@ def pushint_gas(x):
   l = int(ceil(log(x, 8)))
   return 10 + 8 * l + 32
 
-def gt_int(x):
+def gt_int_gas(x):
   if x < 2**7:
     return 26
   return pushint_gas(x) + 18
 
+def rest(n1, n2):
+  assert n1 <= n2
+  return 18 + 26 + 18 + (n2 - n1) * (18 + 18 + 26)
+
 def jazda(l, r):
-  if (abs(r - l) <= 22):
+  if (abs(r - l) <= 20):
     if (l <= 127):
       print(l, "SUBINT")
     else:
