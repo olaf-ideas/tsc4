@@ -15,7 +15,7 @@ def fib(n):
   return a
 
 def jazda(l, r):
-  if (abs(r - l) < 15):
+  if (abs(r - l) < 20):
     if (l <= 127):
       print(l, "SUBINT")
     else:
@@ -42,7 +42,7 @@ def jazda(l, r):
   print("}>")
 
 
-jazda(0, 370 - 1)
+jazda(0, 370)
     
 #     s0 PUSH
 #     100 GEQINT
