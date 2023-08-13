@@ -48,7 +48,7 @@ describe('Task3', () => {
             console.log("test: ", xx);
             let input = '';
 
-            let xddd = Math.round(Math.random() * 1000);
+            let xddd = 3000; // Math.round(Math.random() * 3000);
 
             let seed = xx;
             for (let i = 0; i < xddd; i++) {
@@ -61,13 +61,13 @@ describe('Task3', () => {
             }
 
             let flag = BigInt(Math.round(Math.random() * 10) + 1);
-            let value = BigInt(Math.round(Math.random() * 100) + 1);
+            let value = BigInt(Math.round(Math.random() * 10000000) + 1);
 
             console.log("len: ", input.length);
             console.log("flag: ", flag.toString(2));
             console.log("value: ", value.toString(2));
 
-            let chunks = [5, 2, 150, 160, 300, 200, 500];
+            let chunks = [1023, 2, 3, 160, 10, 200, 500];
 
             let last_cell = beginCell().endCell();
 

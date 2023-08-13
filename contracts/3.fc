@@ -32,9 +32,7 @@ builder store_zeros(builder b, int cnt) asm "STZEROES";
 
 (tuple, builder) store_request(tuple list, builder b, int bits) {
   if (b.builder_bits() + bits > 1023) {
-    ~strdump("aaa");
     list~push_back(b);
-    ~strdump("bbb");
     b = begin_cell();
   }
 
@@ -83,16 +81,23 @@ builder store_zeros(builder b, int cnt) asm "STZEROES";
       }
     }
     else {
-      if (ds.slice_refs() > 0) {
-        cell next = ds~load_ref();
-        slice next_ds = next.begin_parse();
-        int to_load = min(next_ds.slice_bits(), 1023 - w.slice_bits());
+      if (ds.slice_bits() > 0) {
+        int to_load = min(1023 - w.slice_bits(), ds.slice_bits());
 
-        w = begin_cell().store_slice(w).store_slice(next_ds~load_bits(to_load)).end_cell().begin_parse();
-        ds = next_ds;
+        w = begin_cell().store_slice(w).store_slice(ds~load_bits(to_load)).end_cell().begin_parse();
       }
       else {
-        ok = false;
+        if (ds.slice_refs() > 0) {
+          cell next = ds~load_ref();
+          slice next_ds = next.begin_parse();
+          int to_load = min(next_ds.slice_bits(), 1023 - w.slice_bits());
+
+          w = begin_cell().store_slice(w).store_slice(next_ds~load_bits(to_load)).end_cell().begin_parse();
+          ds = next_ds;
+        }
+        else {
+          ok = false;
+        }
       }
     }
   }
