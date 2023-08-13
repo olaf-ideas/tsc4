@@ -1,3 +1,5 @@
+import math
+
 def fib(n):
   if n == -1:
     return 1
@@ -13,6 +15,21 @@ def fib(n):
     # assert b < 2**257
 
   return a
+
+def pushint_gas(x):
+  if x <= 10:
+    return 18
+  if x <= 127:
+    return 26
+  if x < 2**15
+    return 34
+  l = int(ceil(log(x, 8)))
+  return 10 + 8 * l + 32
+
+def gt_int(x):
+  if x < 2**7:
+    return 26
+  return pushint_gas(x) + 18
 
 def jazda(l, r):
   if (abs(r - l) <= 19):
