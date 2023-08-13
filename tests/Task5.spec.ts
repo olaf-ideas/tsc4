@@ -168,6 +168,22 @@ describe('Task5', () => {
         // console.log("result: ", result);
     })
 
+    it('show me the cost', async() => {
+
+        let cost = 0n;
+        
+        for (var n = 300; n <= 370; n++) {
+            for (var k = 0; k <= 255; k++) {
+                if (n < 0 || n > 370 || n + k < 0 || n + k > 371 || k < 0 || k > 255)
+                    continue;
+                
+                cost += await task5.getFibonaaciSequenceCost(BigInt(n), BigInt(k));
+            }
+        }
+
+        console.log("COST: ", cost);
+    })
+
     it('test all', async() => {
         //  sequence from N to N+K terms (0<=N<=370; 0<=N+K<=370; 0<=K<=255). 
         for (var n = 365; n <= 370; n++) {

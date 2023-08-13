@@ -1,4 +1,4 @@
-import math
+from math import *
 
 def fib(n):
   if n == -1:
@@ -23,17 +23,80 @@ def pushint_gas(x):
     return 26
   if x < 2**15:
     return 34
+
   l = int(ceil(log(x, 8)))
   return 10 + 8 * l + 32
 
 def gt_int_gas(x):
+  # adding the IF and s0 PUSH 
   if x < 2**7:
-    return 26
-  return pushint_gas(x) + 18
+    return 18 + 18 + 26
 
-def rest(n1, n2):
+  return 18 + pushint_gas(x) + 18 + 18
+
+def rest_gas(n1, n2):
   assert n1 <= n2
-  return 18 + 26 + 18 + (n2 - n1) * (18 + 18 + 26)
+  """
+    ROT
+    REPEAT
+      TUCK
+      ADD
+    ROT
+    s0 PUSH
+    1 SUBCONST
+    ... rest is k dependent  
+  """
+  return 18 + 18 + (18 + 18) * (n2 - n1) + 18 + 18 + 18
+
+def brute_all(l, r):
+  cost = 0
+  for i in range(l, r + 1):
+    cost += rest_gas(l, r)
+  return cost
+
+cache = dict([])
+
+def best_value(l, r):
+  if (l, r) in cache:
+    return cache[(l, r)]
+
+  # print("calculating: ", l, r)
+
+  best_cost = (r - l + 1) * (pushint_gas(l) + 18 + pushint_gas(fib(l - 1)) + pushint_gas(fib(l))) + brute_all(l, r)
+
+  best_data = str(l) + ' INT\n' + \
+              'SUB\n' + \
+              str(fib(l - 1)) + ' INT\n' + \
+              str(fib(l)) + ' INT\n'
+
+  for k in range(l, r):
+    new_data = 'DUP\n'
+
+    if k < 2**7:
+      new_data += str(k) + ' GTINT\n'
+    else:
+      new_data += str(k) + ' INT\n' + \
+                  'GREATER\n'
+
+    (L_data, L_cost) = best_value(l, k + 0)
+    (R_data, R_cost) = best_value(k + 1, r)
+
+    new_cost = gt_int_gas(k) * (r - l + 1) + L_cost + R_cost
+
+    new_data += 'IF:<{\n'
+    new_data += R_data
+    new_data += '}>ELSE<{\n'
+    new_data += L_data
+    new_data += '}>\n'
+
+    if best_cost > new_cost:
+      best_cost = new_cost
+      best_data = new_data
+  
+  cache[(l, r)] = (best_data, best_cost)
+
+  return (best_data, best_cost)
+
 
 def jazda(l, r):
   if (abs(r - l) <= 20):
@@ -63,7 +126,12 @@ def jazda(l, r):
   print("}>")
 
 
-jazda(0, 370)
+(data, cost) = best_value(0, 370)
+
+print(data)
+print("cost: ", cost)
+
+# jazda(0, 370)
     
 #     s0 PUSH
 #     100 GEQINT

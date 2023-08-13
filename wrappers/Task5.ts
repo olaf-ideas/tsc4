@@ -34,6 +34,13 @@ export class Task5 implements Contract {
     //     return result.readBigNumber();
     // }
 
+    async getFibonaaciSequenceCost(provider: ContractProvider, n: bigint, k: bigint) : Promise<bigint> {
+        return (await provider.get('fibonacci_sequence', [
+            { type: 'int', value: n },
+            { type: 'int', value: k },
+        ])).gasUsed!;
+    }
+
     async getFibonacciSequence(provider: ContractProvider, n: bigint, k: bigint) : Promise<TupleReader> {
         const result = (await provider.get('fibonacci_sequence', [
             { type: 'int', value: n },
