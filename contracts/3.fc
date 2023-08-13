@@ -16,213 +16,88 @@
 
 -}
 
+int is_null(tuple t) asm "ISNULL";
+int ilen(int x) asm "BITSIZE";
+int is_prefix(slice pattern, slice text) asm "SDPFX";
+forall X -> (tuple, ()) push_back(tuple tail, X head) asm "CONS";
+forall X -> (tuple, X) pop_back(tuple list) asm( -> 1 0) "UNCONS";
+
+int load_zeros(slice s) asm "LDZEROES";
+builder store_one(builder s) asm "STONE";
+builder store_zeros(builder s, int cnt) asm "STZEROES";
+
 () recv_internal() {
 }
 
-forall X -> (tuple, X) tpop(tuple t) asm "TPOP";
-int tlen(tuple t) asm "TLEN";
-int is_null(tuple t) asm "ISNULL";
-
-(tuple) make_tuple(int key) {
-  tuple t = empty_tuple();
-  
-  ;; ~dump(key);
-  while (key > 0) {
-    t = tpush(t, key % 2);
-    
-    key /= 2;
+(tuple, builder) store_request(tuple list, builder b, int bits) {
+  if (b.builder_bits() + bits > 1023) {
+    list~push_back(b);
+    b = begin_cell();
   }
 
-  tuple result = empty_tuple();
-
-  while (tlen(t) > 0) {
-    (t, int last) = tpop(t);
-
-    result = tpush(result, last);
-  }
-
-  return result;
-}
-
-(tuple) reverse_lisp(tuple list, int len) {
-  ;; ~strdump("reversing");
-  tuple result = empty_tuple();
-  result = cons(-1, result);
-
-  repeat(len) {
-    int value = list~list_next();
-    
-    ;; ~dump(value);
-
-    result = cons(value, result);
-  }
-
-  ;; result~uncons();
-
-  ;; ~dump(result);
-
-  return result;
+  return (list, b);
 }
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id {
-  ;; ~dump(flag);
-  ;; ~dump(value);
-  ;; ~dump(linked_list);
-  tuple flagT = make_tuple(flag);
-  tuple valueT = make_tuple(value);
-  tuple window = empty_tuple();
-  int timer = 0;
-  slice data = linked_list.begin_parse();
   
-  tuple pi = empty_tuple();
-  pi~tpush(0);
+  int F = ilen(flag);
+  int V = ilen(value);
 
-  int i = 1;
-  int d = 0;
-  int n = flagT.tlen();
-  int m = valueT.tlen();
+  slice df = begin_cell().store_uint(flag,  F).end_cell().begin_parse();
+  slice dv = begin_cell().store_uint(value, V).end_cell().begin_parse();
+  
+  slice ds = linked_list.begin_parse();
+  slice w = ds~load_bits(ds.slice_bits());
 
-  while (i < n) {
-    int xx = false;
+  tuple l = null();
+  builder b = begin_cell();
 
-    do {
-      xx = true;
+  int ok = true;
 
-      if (d > 0) {
-        if (flagT.at(i) != flagT.at(d)) {
-          d = pi.at(d - 1);
-          xx = false;
-        }
+  while (ok) {
+    if (w.slice_bits() >= F) {
+      int zeros = w.load_zeros();
+
+      if (zeros > 0) {
+        (l, b) = store_request(l, b, zeros);
+        b = b.store_zeros(zeros);
       }
+      else {
+        if (is_prefix(df, w)) {
+          w~skip_bits(F);
 
-    } until (xx);
-
-    if (flagT.at(i) == flagT.at(d)) {
-      d += 1;
-    }
-    
-    pi~tpush(d);
-    i += 1;
-  }
-
-  int d = 0;
-
-  tuple occ = empty_tuple();
-
-  int occ_len = 0;
-
-  int j = 0;
-
-  do {
-    if (data.slice_data_empty?()) {
-      data = begin_parse(preload_ref(data));  
-    }
-
-    int bit = data~load_uint(1);
-
-    int xx = false;
-
-    do {
-      xx = true;
-
-      if (d > 0) {
-        if (d == n) {
-          d = pi.at(d - 1);
-          xx = false;
+          (l, b) = store_request(l, b, V);
+          b = b.store_slice(dv);
         }
         else {
-          if (bit != flagT.at(d)) {
-            d = pi.at(d - 1);
-            xx = false;
-          }
+          w~skip_bits(1);
+        
+          (l, b) = store_request(l, b, 1);
+          b = b.store_uint(1, 1);
         }
       }
-    } until (xx);
-
-    if (bit == flagT.at(d)) {
-      d += 1;
-    }
-
-    if (d == n) {
-      if (j - n + 1 > car(occ) + n - 1) {
-        occ = cons(j - n + 1, occ);
-        occ_len += 1;
-      }
-    }
-
-    j += 1;
-  } until (data.slice_empty?());
-
-  if (occ_len == 0) {
-    return linked_list;
-  }
-
-  occ = reverse_lisp(occ, occ_len);
-
-  data = linked_list.begin_parse();
-
-  int idx = 0;
-
-  tuple cell_list = null();
-  int cell_list_len = 0;
-
-  builder result = begin_cell();
-
-  repeat (j) {
-    int nxt = car(occ);
-
-    if (nxt == idx) {
-      int xxx = occ~list_next();
-
-      int cnt = n;
-      while (cnt > 0) {
-        int len = data.slice_bits();
-
-        if (len < cnt) {
-          data = begin_parse(preload_ref(data));
-          cnt -= len;
-        }
-        else {
-          data~skip_bits(cnt);
-          cnt = 0;
-        }
-      }
-      
-      idx += n;
-
-      if (result.builder_bits() + m > 1023) {
-        cell_list = cons(result, cell_list);
-        result = begin_cell();
-      }
-      result = result.store_uint(value, m);
     }
     else {
-      if (result.builder_bits() > 1022) {
-        cell_list = cons(result, cell_list);
-        result = begin_cell();
-      }
-      if (data.slice_data_empty?()) {
-        cell next = preload_ref(data);
-        data = begin_parse(next);
-      }
+      if (ds.slice_refs() > 0) {
+        cell next = ds~load_ref();
+        slice next_ds = next.begin_parse();
+        int to_load = min(next_ds.slice_bits(), 1023 - w.slice_bits());
 
-      int x = data~load_uint(1);
-      result = store_uint(result, x, 1);
-      idx += 1;
+        w = begin_cell().store_slice(w).store_slice(next_ds~load_bits(to_load)).end_cell().begin_parse();
+        ds = next_ds;
+      }
     }
   }
 
-  if (result.builder_bits() > 0) {
-    cell_list = cons(result, cell_list);
+  (l, b) = store_request(l, b, w.slice_bits());
+
+  cell result = b.store_slice(w).end_cell();
+
+  while (~ is_null(l)) {
+    builder last = l~pop_back();
+    result = last.store_ref(result).end_cell();
   }
 
-  cell last = cell_list~list_next().end_cell();
-
-  while (~ is_null(cell_list)) {
-    builder top = cell_list~list_next();
-    last = top.store_ref(last).end_cell();
-  }
-
-  return last;
+  return result;
 }
