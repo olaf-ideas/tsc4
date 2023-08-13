@@ -46,15 +46,23 @@ def rest_gas(n1, n2):
     1 SUBCONST
     ... rest is k dependent  
   """
-  return 18 + 18 + (18 + 18) * (n2 - n1) + 18 + 18 + 18
+  return (18 + 18 + (18 + 18) * (n2 - n1) + 18 + 18 + 18) * (370 - n1 + 1)
+
+def hmmm(l, r):
+  result = 0
+  for i in range(l, r + 1):
+    result += 370 - i + 1
+  return result
 
 def brute_all(l, r):
   cost = 0
   for i in range(l, r + 1):
-    cost += rest_gas(l, r)
+    cost += rest_gas(l, r) * (370 - i + 1)
   return cost
 
 cache = dict([])
+
+eee = hmmm(0, 370)
 
 def best_value(l, r):
   if (l, r) in cache:
@@ -62,8 +70,8 @@ def best_value(l, r):
 
   # print("calculating: ", l, r)
 
-  best_cost = (r - l + 1) * (pushint_gas(l) + 18 + pushint_gas(fib(l - 1)) + pushint_gas(fib(l))) + brute_all(l, r) + \
-              pushint_gas(l) + 18 + 18 + pushint_gas(fib(l - 1)) + 18 + pushint_gas(fib(l)) + 18
+  best_cost = hmmm(l, r) * (pushint_gas(l) + 18 + pushint_gas(fib(l - 1)) + pushint_gas(fib(l))) + brute_all(l, r) + \
+              (pushint_gas(l) + 18 + 18 + pushint_gas(fib(l - 1)) + 18 + pushint_gas(fib(l)) + 18) * eee
 
   best_data = str(l) + ' INT\n' + \
               'SUB\n' + \
@@ -72,20 +80,20 @@ def best_value(l, r):
 
   for k in range(l, r):
     new_data = 'DUP\n'
-    new_cost = 18
+    new_cost = 18 * eee
 
     if k < 2**7:
       new_data += str(k) + ' GTINT\n'
-      new_cost += pushint_gas(k) + 26
+      new_cost += (pushint_gas(k) + 26) * eee
     else:
       new_data += str(k) + ' INT\n' + \
                   'GREATER\n'
-      new_cost += pushint_gas(k) + 18 + 18
+      new_cost += (pushint_gas(k) + 18 + 18) * eee
 
     (L_data, L_cost) = best_value(l, k + 0)
     (R_data, R_cost) = best_value(k + 1, r)
 
-    new_cost += gt_int_gas(k) * (r - l + 1) + L_cost + R_cost
+    new_cost += gt_int_gas(k) * hmmm(l, r) + L_cost + R_cost
 
     new_data += 'IF:<{\n'
     new_data += R_data
@@ -93,7 +101,7 @@ def best_value(l, r):
     new_data += L_data
     new_data += '}>\n'
 
-    new_cost += 18 + 18
+    new_cost += (18 + 18) * eee
 
     if best_cost > new_cost:
       best_cost = new_cost
@@ -132,10 +140,12 @@ def jazda(l, r):
   print("}>")
 
 
-(data, cost) = best_value(0, 370)
+jazda(0, 370)
 
-print(data)
-print("cost: ", cost)
+# (data, cost) = best_value(0, 370)
+
+# print(data)
+# print("cost: ", cost)
 
 # jazda(0, 370)
     
