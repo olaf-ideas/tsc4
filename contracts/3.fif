@@ -1,0 +1,177 @@
+// automatically generated from `./contracts/3.fc` 
+DECLPROC recv_internal
+DECLPROC store_request
+124428 DECLMETHOD find_and_replace
+recv_internal PROC:<{
+}>
+store_request PROC:<{
+  OVER
+  BBITS
+  SWAP
+  ADD
+  10 PUSHPOW2DEC
+  GREATER
+  IF:<{
+    CONS
+    NEWC
+  }>
+}>
+find_and_replace PROC:<{
+  s2 PUSH
+  UBITSIZE
+  s2 PUSH
+  UBITSIZE
+  s0 s4 XCHG
+  NEWC
+  s2 PUSH
+  STUX
+  ENDC
+  CTOS
+  s0 s3 XCHG
+  NEWC
+  s5 PUSH
+  STUX
+  ENDC
+  CTOS
+  s0 s2 XCHG
+  CTOS
+  DUP
+  SBITS
+  LDSLICEX
+  PUSHNULL
+  NEWC
+  UNTIL:<{
+    WHILE:<{
+      s3 PUSH
+      SBITS
+      s5 PUSH
+      GEQ
+    }>DO<{
+      s0 s3 XCHG
+      LDZEROES
+      OVER
+      0 GTINT
+      IF:<{
+        s2 s4 s2 XC2PU
+        store_request CALLDICT
+        ROT
+        STZEROES
+      }>ELSE<{
+        NIP
+        s6 s0 PUSH2
+        SDPFX
+        IF:<{
+          s4 PUSH
+          SDSKIPFIRST
+          s3 s7 XCPU
+          store_request CALLDICT
+          s5 PUSH
+          STSLICER
+        }>ELSE<{
+          1 PUSHINT
+          SDSKIPFIRST
+          s0 s3 XCHG
+          1 PUSHINT
+          store_request CALLDICT
+          1 PUSHINT
+          SWAP
+          1 STU
+        }>
+      }>
+    }>
+    FALSE
+    UNTIL:<{
+      s3 PUSH
+      SBITS
+      0 GTINT
+      IF:<{
+        NEWC
+        s5 PUSH
+        STSLICER
+        10 PUSHPOW2DEC
+        s0 s6 XCHG
+        SBITS
+        s1 s6 XCHG
+        SUB
+        s4 PUSH
+        SBITS
+        MIN
+        s1 s4 XCHG
+        LDSLICEX
+        s5 s5 XCHG2
+        STSLICER
+        ENDC
+        CTOS
+      }>ELSE<{
+        s3 PUSH
+        SREFS
+        0 GTINT
+        IF:<{
+          s0 s3 XCHG
+          LDREF
+          DROP
+          CTOS
+          NEWC
+          s5 PUSH
+          STSLICER
+          OVER
+          SBITS
+          10 PUSHPOW2DEC
+          s0 s7 XCHG
+          SBITS
+          s1 s7 XCHG
+          SUB
+          s1 s6 XCHG
+          MIN
+          LDSLICEX
+          s5 s5 XCHG2
+          STSLICER
+          ENDC
+          CTOS
+        }>ELSE<{
+          DROP
+          s2 s3 XCHG
+          TRUE
+          s0 s3 XCHG
+        }>
+      }>
+      DUP
+      SBITS
+      s6 PUSH
+      GEQ
+      IF:<{
+        TRUE
+        s4 POP
+      }>
+      s0 s4 XCHG
+      s3 s0 XCPU
+    }>
+    DROP
+    s3 PUSH
+    SBITS
+    s5 PUSH
+    LESS
+  }>
+  s2 POP
+  3 3 BLKDROP2
+  s3 POP
+  OVER
+  SBITS
+  s2 s3 XCHG
+  store_request CALLDICT
+  ROT
+  STSLICER
+  ENDC
+  WHILE:<{
+    OVER
+    ISNULL
+    NOT
+  }>DO<{
+    SWAP
+    UNCONS
+    s1 s2 XCHG
+    STREF
+    ENDC
+  }>
+  NIP
+}>

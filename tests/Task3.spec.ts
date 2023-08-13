@@ -60,8 +60,8 @@ describe('Task3', () => {
                 seed %= 1024;
             }
 
-            let flag = BigInt(Math.round(Math.random() * 10) + 1);
-            let value = BigInt(Math.round(Math.random() * 10000000) + 1);
+            let flag = 0b101n; // BigInt(Math.round(Math.random() * 10) + 1);
+            let value = 0b101011111n; // BigInt(Math.round(Math.random() * 10000000) + 1);
 
             console.log("len: ", input.length);
             console.log("flag: ", flag.toString(2));
