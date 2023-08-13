@@ -17,21 +17,24 @@
 -}
 
 int is_null(tuple t) asm "ISNULL";
-int ilen(int x) asm "BITSIZE";
+int ilen(int x) asm "UBITSIZE";
 int is_prefix(slice pattern, slice text) asm "SDPFX";
-forall X -> (tuple, ()) push_back(tuple tail, X head) asm "CONS";
-forall X -> (tuple, X) pop_back(tuple list) asm( -> 1 0) "UNCONS";
 
-int load_zeros(slice s) asm "LDZEROES";
-builder store_one(builder s) asm "STONE";
-builder store_zeros(builder s, int cnt) asm "STZEROES";
+(tuple, ()) push_back(tuple tail, builder head) asm "CONS";
+(tuple, builder) pop_back(tuple list) asm "UNCONS";
+
+(int, slice) load_zeros(slice s) asm "LDZEROES";
+builder store_one(builder b) asm "STONE";
+builder store_zeros(builder b, int cnt) asm "STZEROES";
 
 () recv_internal() {
 }
 
 (tuple, builder) store_request(tuple list, builder b, int bits) {
   if (b.builder_bits() + bits > 1023) {
+    ~strdump("aaa");
     list~push_back(b);
+    ~strdump("bbb");
     b = begin_cell();
   }
 
@@ -43,7 +46,7 @@ builder store_zeros(builder s, int cnt) asm "STZEROES";
   
   int F = ilen(flag);
   int V = ilen(value);
-
+  
   slice df = begin_cell().store_uint(flag,  F).end_cell().begin_parse();
   slice dv = begin_cell().store_uint(value, V).end_cell().begin_parse();
   
@@ -56,8 +59,9 @@ builder store_zeros(builder s, int cnt) asm "STZEROES";
   int ok = true;
 
   while (ok) {
+
     if (w.slice_bits() >= F) {
-      int zeros = w.load_zeros();
+      (int zeros, w) = w.load_zeros();
 
       if (zeros > 0) {
         (l, b) = store_request(l, b, zeros);
@@ -87,15 +91,22 @@ builder store_zeros(builder s, int cnt) asm "STZEROES";
         w = begin_cell().store_slice(w).store_slice(next_ds~load_bits(to_load)).end_cell().begin_parse();
         ds = next_ds;
       }
+      else {
+        ok = false;
+      }
     }
   }
+
+  ;; ~strdump("here");
 
   (l, b) = store_request(l, b, w.slice_bits());
 
   cell result = b.store_slice(w).end_cell();
 
   while (~ is_null(l)) {
+    ;; ~strdump("1 popback");
     builder last = l~pop_back();
+    ;; ~strdump("2 popback");
     result = last.store_ref(result).end_cell();
   }
 
