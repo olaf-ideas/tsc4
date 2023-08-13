@@ -54,11 +54,9 @@ builder store_zeros(builder b, int cnt) asm "STZEROES";
   tuple l = null();
   builder b = begin_cell();
 
-  int ok = true;
+  do {
 
-  while (ok) {
-
-    if (w.slice_bits() >= F) {
+    while (w.slice_bits() >= F) {
       (int zeros, w) = w.load_zeros();
 
       if (zeros > 0) {
@@ -80,38 +78,38 @@ builder store_zeros(builder b, int cnt) asm "STZEROES";
         }
       }
     }
-    else {
-      if (ds.slice_bits() > 0) {
-        int to_load = min(1023 - w.slice_bits(), ds.slice_bits());
 
-        w = begin_cell().store_slice(w).store_slice(ds~load_bits(to_load)).end_cell().begin_parse();
+    int ok = false;
+
+    do {
+      if (ds.slice_bits() > 0) {
+        w = begin_cell().store_slice(w).store_slice(ds~load_bits(min(1023 - w.slice_bits(), ds.slice_bits()))).end_cell().begin_parse();
       }
       else {
         if (ds.slice_refs() > 0) {
-          cell next = ds~load_ref();
-          slice next_ds = next.begin_parse();
-          int to_load = min(next_ds.slice_bits(), 1023 - w.slice_bits());
-
-          w = begin_cell().store_slice(w).store_slice(next_ds~load_bits(to_load)).end_cell().begin_parse();
+          slice next_ds = (ds~load_ref()).begin_parse();
+          w = begin_cell().store_slice(w).store_slice(next_ds~load_bits(min(next_ds.slice_bits(), 1023 - w.slice_bits()))).end_cell().begin_parse();
           ds = next_ds;
         }
         else {
-          ok = false;
+          ok = true;
         }
       }
-    }
-  }
 
-  ;; ~strdump("here");
+      if (w.slice_bits() >= F) {
+        ok = true;
+      }
+
+    } until (ok);
+
+  } until (w.slice_bits() < F);
 
   (l, b) = store_request(l, b, w.slice_bits());
 
   cell result = b.store_slice(w).end_cell();
 
   while (~ is_null(l)) {
-    ;; ~strdump("1 popback");
     builder last = l~pop_back();
-    ;; ~strdump("2 popback");
     result = last.store_ref(result).end_cell();
   }
 
