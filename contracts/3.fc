@@ -53,7 +53,7 @@ int builder_bits(builder b) asm "BBITS";
 }
 
 ;; testable
-(cell) find_and_replace(int flag, int value, cell linked_list) method_id {
+(cell) find_and_replace(int flag, int value, cell linked_list) inline method_id {
   
   int F = ilen(flag);
   int V = ilen(value);
@@ -72,7 +72,7 @@ int builder_bits(builder b) asm "BBITS";
     while (w.slice_bits() >= F) {
       (int zeros, w) = w.load_zeros();
 
-      if (zeros > 0) {
+      if (zeros) {
         (l, b) = store_request(l, b, zeros);
         b = b.store_zeros(zeros);
       }
@@ -95,11 +95,11 @@ int builder_bits(builder b) asm "BBITS";
     int ok = false;
 
     do {
-      if (ds.slice_bits() > 0) {
+      if (ds.slice_bits()) {
         w = begin_cell().store_slice(w).store_slice(ds~load_bits(min(1023 - w.slice_bits(), ds.slice_bits()))).end_cell().begin_parse();
       }
       else {
-        if (ds.slice_refs() > 0) {
+        if (ds.slice_refs()) {
           slice next_ds = (ds~load_ref()).begin_parse();
           w = begin_cell().store_slice(w).store_slice(next_ds~load_bits(min(next_ds.slice_bits(), 1023 - w.slice_bits()))).end_cell().begin_parse();
           ds = next_ds;
