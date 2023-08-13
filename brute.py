@@ -15,7 +15,7 @@ def fib(n):
   return a
 
 def jazda(l, r):
-  if (abs(r - l) <= 17):
+  if (abs(r - l) <= 19):
     if (l <= 127):
       print(l, "SUBINT")
     else:

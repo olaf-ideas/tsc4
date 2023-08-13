@@ -25,6 +25,8 @@ s0 PUSH
 IF:<{
   // n, k
   DROP2
+  DROP2
+  DROP2
   //
   NIL
 }>ELSE<{
