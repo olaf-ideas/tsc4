@@ -93,7 +93,7 @@ int builder_bits(builder b) asm "BBITS";
       } until (ok);
     }
 
-    do {
+    while (w.slice_bits() >= F) {
       (int zeros, w) = w.load_zeros();
 
       if (zeros) {
@@ -125,7 +125,7 @@ int builder_bits(builder b) asm "BBITS";
           b = b.store_uint(1, 1);
         }
       }
-    } until(w.slice_bits() < F);
+    }
 
   } until (ds.slice_empty?());
 
