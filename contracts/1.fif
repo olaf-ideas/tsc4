@@ -10,43 +10,36 @@ PROGRAM{
       c2 SAVE
       SAMEALTSAVE	//  hash tree
       PUSHNULL	//  hash tree queue
-      OVER	//  hash tree queue tree
-      CONS	//  hash tree queue
+      SWAP	//  hash queue tree
+      CONS	//  hash queue
       UNTIL:<{
-        UNCONS	//  hash tree queue node
-        CTOS	//  hash tree queue adj
-        DUP	//  hash tree queue adj adj
-        SREFS	//  hash tree queue adj _11
-        REPEAT:<{	//  hash tree queue adj
-          LDREF	//  hash tree queue neigh adj
-          OVER	//  hash tree queue neigh adj neigh
-          HASHCU	//  hash tree queue neigh adj _15
-          s5 s(-1) PUXC	//  hash tree queue neigh adj hash _15
-          EQUAL	//  hash tree queue neigh adj _16
-          IFJMP:<{	//  hash tree queue neigh adj
-            s1 s4 XCHG
-            4 BLKDROP	//  neigh
-            RETALT
-          }>	//  hash tree queue neigh adj
-          -ROT	//  hash tree adj queue neigh
-          CONS	//  hash tree adj queue
-          SWAP	//  hash tree queue adj
+        UNCONS	//  hash queue node
+        DUP	//  hash queue node node
+        CTOS	//  hash queue node adj
+        DUP	//  hash queue node adj adj
+        SREFS	//  hash queue node adj _11
+        REPEAT:<{	//  hash queue node adj
+          LDREF	//  hash queue node _13 adj
+          s3 s3 XCHG2	//  hash adj node queue _13
+          CONS	//  hash adj node queue
+          s0 s2 XCHG	//  hash queue node adj
         }>
-        DROP	//  hash tree queue
-        DUP	//  hash tree queue queue
-        ISNULL	//  hash tree queue _19
-      }>	//  hash tree queue
-      DROP	//  hash tree
-      DUP	//  hash tree tree
-      HASHCU	//  hash tree _20
-      s1 s2 XCHG	//  tree hash _20
-      EQUAL	//  tree _21
-      IF:<{	//  tree
-      }>ELSE<{	//  tree
-        DROP	// 
-        NEWC	//  _22
-        ENDC	//  _23
-      }>
+        DROP	//  hash queue node
+        DUP	//  hash queue node node
+        HASHCU	//  hash queue node _16
+        s3 s(-1) PUXC	//  hash queue node hash _16
+        EQUAL	//  hash queue node _17
+        IFJMP:<{	//  hash queue node
+          2 1 BLKDROP2	//  node
+          RETALT
+        }>	//  hash queue node
+        DROP	//  hash queue
+        DUP	//  hash queue queue
+        ISNULL	//  hash queue _18
+      }>	//  hash queue
+      2DROP	// 
+      NEWC	//  _19
+      ENDC	//  _20
     }>
     EXECUTE
   }>

@@ -23,29 +23,21 @@ slice begin_parse(cell c) asm "CTOS";
 
 (cell) find_branch_by_hash(int hash, cell tree) inline method_id {
 
-
     tuple queue = null();
     queue~push_back(tree);
 
     do {
         cell node = queue~pop_back();
-
         slice adj = begin_parse(node);
 
         repeat (slice_refs(adj)) {
-            cell neigh = adj~load_ref();
+            queue~push_back(adj~load_ref());
+        }
 
-            if (hash == cell_hash(neigh)) {
-                return neigh;
-            }
-
-            queue~push_back(neigh);
+        if (hash == cell_hash(node)) {
+            return node;
         }
     } until (is_null(queue));
 
-    if (hash == cell_hash(tree)) {
-        return tree;
-    }
-    
     return begin_cell().end_cell();
 }
