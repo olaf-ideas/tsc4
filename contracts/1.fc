@@ -27,16 +27,46 @@ slice begin_parse(cell c) asm "CTOS";
     queue~push_back(tree);
 
     do {
-        cell node = queue~pop_back();
+        cell n1 = queue~pop_back();
 
-        if (hash == cell_hash(node)) {
-            return node;
+        if (hash == n1.cell_hash()) {
+            return n1;
         }
 
-        slice adj = begin_parse(node);
+        slice a1 = n1.begin_parse();
 
-        repeat (slice_refs(adj)) {
-            queue~push_back(adj~load_ref());
+        repeat (slice_refs(a1)) {
+            cell n2 = a1~load_ref();
+
+            if (hash == n2.cell_hash()) {
+                return n2;
+            }
+
+            slice a2 = n2.begin_parse();
+
+            repeat (slice_refs(a2)) {
+                cell n3 = a2~load_ref();
+
+                if (hash == n3.cell_hash()) {
+                    return n3;
+                }
+
+                slice a3 = n3.begin_parse();
+
+                repeat (slice_refs(a3)) {
+                    cell n4 = a3~load_ref();
+
+                    if (hash == n4.cell_hash()) {
+                        return n4;
+                    }
+
+                    slice a4 = n4.begin_parse();
+
+                    repeat (slice_refs(a4)) {
+                        queue~push_back(a4~load_ref());
+                    }
+                }
+            }
         }
     } until (is_null(queue));
 

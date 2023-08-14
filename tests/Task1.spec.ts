@@ -1,5 +1,5 @@
 import { Blockchain, SandboxContract, TreasuryContract } from '@ton-community/sandbox';
-import { Cell, toNano } from 'ton-core';
+import { Cell, toNano, beginCell } from 'ton-core';
 import { Task1 } from '../wrappers/Task1';
 import '@ton-community/test-utils';
 import { compile } from '@ton-community/blueprint';
@@ -37,13 +37,14 @@ describe('Task1', () => {
         // blockchain and task1 are ready to use
     });
 
-    // it('test cell', async() => {
+    it('test cell', async() => {
 
-    //     console.log(code.hash);
-    //     console.log(code);
+        let cell1 = beginCell().endCell();
+        let cell = beginCell().storeRef(cell1).endCell();
+    
 
-    //     const result = await task1.getCell(0n, code);
+        const result = await task1.getCell(0n, cell);
 
-    //     // console.log("result: ", result);
-    // });
+        console.log("result: ", result);
+    });
 });
