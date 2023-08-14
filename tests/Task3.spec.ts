@@ -130,4 +130,93 @@ describe('Task3', () => {
             expect(result_bits).toEqual(answer_bits);
         }
     });
+
+    it('random', async () => {
+        
+        for (let xx = 1; xx <= 10; xx++) {
+            // console.log("test: ", xx);
+            let input = '';
+
+            let xddd = 1500; // Math.round(Math.random() * 3000);
+
+            let seed = xx;
+            for (let i = 0; i < xddd; i++) {
+                input += (seed % 2).toString();
+
+                seed ^= seed << 13;
+                seed ^= seed >> 17;
+                seed ^= seed << 5;
+                seed %= 1024;
+            }
+
+            let flag = BigInt(Math.round(Math.random() * 10) + 1);
+            let value = BigInt(Math.round(Math.random() * 10000000) + 1);
+
+            // console.log("len: ", input.length);
+            // console.log("flag: ", flag.toString(2));
+            // console.log("value: ", value.toString(2));
+
+            let chunks = [100, 2, 3, 160, 10, 200, 500];
+
+            let last_cell = beginCell().endCell();
+
+            let cell_input = input;
+            for (let i = 0; cell_input.length > 0; i++) {
+
+                let len = Math.min(cell_input.length, chunks[i % chunks.length]);
+
+                let memory = cell_input.slice(cell_input.length - len, cell_input.length);
+
+                cell_input = cell_input.slice(0, cell_input.length - len);
+
+                // console.log("memory: ", memory);
+
+                let builder = beginCell();
+
+                for (let j = 0; j < memory.length; j++) {
+                    builder.storeBit(Number(memory[j]));
+                }
+                
+                if (last_cell.bits.length > 0) {
+                    builder.storeRef(last_cell);
+                }
+
+                let next_cell = builder.endCell();
+
+                last_cell = next_cell;
+            }
+
+            // console.log("input:", input);
+
+            // console.log("linked list: ", last_cell);
+
+            const result = await task3.getFindAndReplace(flag, value, last_cell);
+
+            // console.log("result list: ", result);
+
+            let answer_bits = solve(Number(flag).toString(2), Number(value).toString(2), input);
+
+            let result_bits = '';
+            let node = result;
+
+            while (true) {
+                for (let i = 0; i < node.bits.length; i++) {
+                    result_bits += Number(node.bits.at(i));
+                }
+
+                if (node.refs.length == 0) {
+                    break;
+                }
+
+                expect(node.refs.length).toEqual(1);
+
+                node = node.refs[0];
+            }
+
+            // console.log("result bits: ", result_bits);
+            // console.log("answer bits: ", answer_bits);
+
+            expect(result_bits).toEqual(answer_bits);
+        }
+    });
 });

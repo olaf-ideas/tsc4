@@ -1,23 +1,10 @@
+"Asm.fif" include
 // automatically generated from `./contracts/3.fc` 
 PROGRAM{
   DECLPROC recv_internal
-  DECLPROC store_request
   124428 DECLMETHOD find_and_replace
   recv_internal PROC:<{
     // 
-  }>
-  store_request PROCINLINE:<{
-    //  list b bits
-    OVER	//  list b bits b
-    BBITS	//  list b bits _3
-    SWAP	//  list b _3 bits
-    ADD	//  list b _4
-    10 PUSHPOW2DEC	//  list b _4 _5=1023
-    GREATER	//  list b _6
-    IF:<{	//  list b
-      CONS	//  list
-      NEWC	//  list b
-    }>	//  list b
   }>
   find_and_replace PROCINLINE:<{
     //  flag value linked_list
@@ -55,29 +42,57 @@ PROGRAM{
         LDZEROES	//  V df dv F b ds l zeros w
         OVER	//  V df dv F b ds l zeros w zeros
         IF:<{	//  V df dv F b ds l zeros w
-          s2 s4 s2 XC2PU	//  V df dv F w ds zeros l b zeros
-          store_request INLINECALLDICT	//  V df dv F w ds zeros l b
-          ROT	//  V df dv F w ds l b zeros
+          s4 PUSH	//  V df dv F b ds l zeros w b
+          BBITS	//  V df dv F b ds l zeros w _31
+          s2 PUSH	//  V df dv F b ds l zeros w _31 zeros
+          ADD	//  V df dv F b ds l zeros w _32
+          10 PUSHPOW2DEC	//  V df dv F b ds l zeros w _32 _33=1023
+          GREATER	//  V df dv F b ds l zeros w _34
+          IF:<{	//  V df dv F b ds l zeros w
+            s2 s4 XCHG2	//  V df dv F w ds zeros l b
+            CONS	//  V df dv F w ds zeros l
+            NEWC	//  V df dv F w ds zeros l b
+            s2 s4 XCHG2	//  V df dv F b ds l zeros w
+          }>	//  V df dv F b ds l zeros w
+          s4 s4 XCHG2	//  V df dv F w ds l b zeros
           STZEROES	//  V df dv F w ds l b
         }>ELSE<{	//  V df dv F b ds l zeros w
           NIP	//  V df dv F b ds l w
           s6 s0 PUSH2	//  V df dv F b ds l w df w
-          SDPFX	//  V df dv F b ds l w _33
+          SDPFX	//  V df dv F b ds l w _39
           IF:<{	//  V df dv F b ds l w
             s4 PUSH	//  V df dv F b ds l w F
             SDSKIPFIRST	//  V df dv F b ds l w
-            s3 s7 XCPU	//  V df dv F w ds l b V
-            store_request INLINECALLDICT	//  V df dv F w ds l b
-            s5 PUSH	//  V df dv F w ds l b dv
+            s3 PUSH	//  V df dv F b ds l w b
+            BBITS	//  V df dv F b ds l w _42
+            s8 PUSH	//  V df dv F b ds l w _42 V
+            ADD	//  V df dv F b ds l w _43
+            10 PUSHPOW2DEC	//  V df dv F b ds l w _43 _44=1023
+            GREATER	//  V df dv F b ds l w _45
+            IF:<{	//  V df dv F b ds l w
+              s0 s3 XCHG	//  V df dv F w ds l b
+              CONS	//  V df dv F w ds l
+              NEWC	//  V df dv F w ds l b
+              s0 s3 XCHG	//  V df dv F b ds l w
+            }>	//  V df dv F b ds l w
+            s3 s5 XCPU	//  V df dv F w ds l b dv
             STSLICER	//  V df dv F w ds l b
           }>ELSE<{	//  V df dv F b ds l w
-            1 PUSHINT	//  V df dv F b ds l w _39=1
+            1 PUSHINT	//  V df dv F b ds l w _51=1
             SDSKIPFIRST	//  V df dv F b ds l w
-            s0 s3 XCHG
-            1 PUSHINT	//  V df dv F w ds l b _41=1
-            store_request INLINECALLDICT	//  V df dv F w ds l b
-            1 PUSHINT	//  V df dv F w ds l b _43=1
-            SWAP	//  V df dv F w ds l _43=1 b
+            s3 PUSH	//  V df dv F b ds l w b
+            BBITS	//  V df dv F b ds l w _53
+            INC	//  V df dv F b ds l w _55
+            10 PUSHPOW2DEC	//  V df dv F b ds l w _55 _56=1023
+            GREATER	//  V df dv F b ds l w _57
+            IF:<{	//  V df dv F b ds l w
+              s0 s3 XCHG	//  V df dv F w ds l b
+              CONS	//  V df dv F w ds l
+              NEWC	//  V df dv F w ds l b
+              s0 s3 XCHG	//  V df dv F b ds l w
+            }>	//  V df dv F b ds l w
+            1 PUSHINT	//  V df dv F b ds l w _61=1
+            s0 s4 XCHG2	//  V df dv F w ds l _61=1 b
             1 STU	//  V df dv F w ds l b
           }>
         }>
@@ -85,49 +100,49 @@ PROGRAM{
       FALSE	//  V df dv F w ds l b ok
       UNTIL:<{
         s3 PUSH	//  V df dv F w ds l b ok ds
-        SBITS	//  V df dv F w ds l b ok _48
+        SBITS	//  V df dv F w ds l b ok _66
         IF:<{	//  V df dv F w ds l b ok
-          NEWC	//  V df dv F w ds l b ok _49
-          s5 PUSH	//  V df dv F w ds l b ok _49 w
-          STSLICER	//  V df dv F w ds l b ok _50
-          10 PUSHPOW2DEC	//  V df dv F w ds l b ok _50 _52=1023
-          s0 s6 XCHG	//  V df dv F _52=1023 ds l b ok _50 w
-          SBITS	//  V df dv F _52=1023 ds l b ok _50 _53
-          s1 s6 XCHG	//  V df dv F _50 ds l b ok _52=1023 _53
-          SUB	//  V df dv F _50 ds l b ok _54
-          s4 PUSH	//  V df dv F _50 ds l b ok _54 ds
-          SBITS	//  V df dv F _50 ds l b ok _54 _55
-          MIN	//  V df dv F _50 ds l b ok _56
-          s1 s4 XCHG	//  V df dv F _50 ok l b ds _56
-          LDSLICEX	//  V df dv F _50 ok l b _51 ds
-          s5 s5 XCHG2	//  V df dv F ds ok l b _50 _51
-          STSLICER	//  V df dv F ds ok l b _58
-          ENDC	//  V df dv F ds ok l b _59
+          NEWC	//  V df dv F w ds l b ok _67
+          s5 PUSH	//  V df dv F w ds l b ok _67 w
+          STSLICER	//  V df dv F w ds l b ok _68
+          10 PUSHPOW2DEC	//  V df dv F w ds l b ok _68 _70=1023
+          s0 s6 XCHG	//  V df dv F _70=1023 ds l b ok _68 w
+          SBITS	//  V df dv F _70=1023 ds l b ok _68 _71
+          s1 s6 XCHG	//  V df dv F _68 ds l b ok _70=1023 _71
+          SUB	//  V df dv F _68 ds l b ok _72
+          s4 PUSH	//  V df dv F _68 ds l b ok _72 ds
+          SBITS	//  V df dv F _68 ds l b ok _72 _73
+          MIN	//  V df dv F _68 ds l b ok _74
+          s1 s4 XCHG	//  V df dv F _68 ok l b ds _74
+          LDSLICEX	//  V df dv F _68 ok l b _69 ds
+          s5 s5 XCHG2	//  V df dv F ds ok l b _68 _69
+          STSLICER	//  V df dv F ds ok l b _76
+          ENDC	//  V df dv F ds ok l b _77
           CTOS	//  V df dv F ds ok l b w
         }>ELSE<{	//  V df dv F w ds l b ok
           s3 PUSH	//  V df dv F w ds l b ok ds
-          SREFS	//  V df dv F w ds l b ok _61
+          SREFS	//  V df dv F w ds l b ok _79
           IF:<{	//  V df dv F w ds l b ok
             s0 s3 XCHG	//  V df dv F w ok l b ds
-            LDREF	//  V df dv F w ok l b _108 _107
-            DROP	//  V df dv F w ok l b _63
+            LDREF	//  V df dv F w ok l b _127 _126
+            DROP	//  V df dv F w ok l b _81
             CTOS	//  V df dv F w ok l b next_ds
-            NEWC	//  V df dv F w ok l b next_ds _66
-            s5 PUSH	//  V df dv F w ok l b next_ds _66 w
-            STSLICER	//  V df dv F w ok l b next_ds _67
-            OVER	//  V df dv F w ok l b next_ds _67 next_ds
-            SBITS	//  V df dv F w ok l b next_ds _67 _69
-            10 PUSHPOW2DEC	//  V df dv F w ok l b next_ds _67 _69 _70=1023
-            s0 s7 XCHG	//  V df dv F _70=1023 ok l b next_ds _67 _69 w
-            SBITS	//  V df dv F _70=1023 ok l b next_ds _67 _69 _71
-            s1 s7 XCHG	//  V df dv F _69 ok l b next_ds _67 _70=1023 _71
-            SUB	//  V df dv F _69 ok l b next_ds _67 _72
-            s1 s6 XCHG	//  V df dv F _67 ok l b next_ds _69 _72
-            MIN	//  V df dv F _67 ok l b next_ds _73
-            LDSLICEX	//  V df dv F _67 ok l b _68 next_ds
-            s5 s5 XCHG2	//  V df dv F next_ds ok l b _67 _68
-            STSLICER	//  V df dv F next_ds ok l b _75
-            ENDC	//  V df dv F next_ds ok l b _76
+            NEWC	//  V df dv F w ok l b next_ds _84
+            s5 PUSH	//  V df dv F w ok l b next_ds _84 w
+            STSLICER	//  V df dv F w ok l b next_ds _85
+            OVER	//  V df dv F w ok l b next_ds _85 next_ds
+            SBITS	//  V df dv F w ok l b next_ds _85 _87
+            10 PUSHPOW2DEC	//  V df dv F w ok l b next_ds _85 _87 _88=1023
+            s0 s7 XCHG	//  V df dv F _88=1023 ok l b next_ds _85 _87 w
+            SBITS	//  V df dv F _88=1023 ok l b next_ds _85 _87 _89
+            s1 s7 XCHG	//  V df dv F _87 ok l b next_ds _85 _88=1023 _89
+            SUB	//  V df dv F _87 ok l b next_ds _85 _90
+            s1 s6 XCHG	//  V df dv F _85 ok l b next_ds _87 _90
+            MIN	//  V df dv F _85 ok l b next_ds _91
+            LDSLICEX	//  V df dv F _85 ok l b _86 next_ds
+            s5 s5 XCHG2	//  V df dv F next_ds ok l b _85 _86
+            STSLICER	//  V df dv F next_ds ok l b _93
+            ENDC	//  V df dv F next_ds ok l b _94
             CTOS	//  V df dv F ds ok l b w
           }>ELSE<{	//  V df dv F w ds l b ok
             DROP	//  V df dv F w ds l b
@@ -137,9 +152,9 @@ PROGRAM{
           }>
         }>
         DUP	//  V df dv F ds ok l b w w
-        SBITS	//  V df dv F ds ok l b w _79
-        s6 PUSH	//  V df dv F ds ok l b w _79 F
-        GEQ	//  V df dv F ds ok l b w _80
+        SBITS	//  V df dv F ds ok l b w _97
+        10 PUSHPOW2DEC	//  V df dv F ds ok l b w _97 _98=1023
+        EQUAL	//  V df dv F ds ok l b w _99
         IF:<{	//  V df dv F ds ok l b w
           TRUE
           s4 POP	//  V df dv F ds ok l b w
@@ -149,31 +164,40 @@ PROGRAM{
       }>	//  V df dv F w ds l b ok
       DROP	//  V df dv F w ds l b
       s3 PUSH	//  V df dv F w ds l b w
-      SBITS	//  V df dv F w ds l b _82
-      s5 PUSH	//  V df dv F w ds l b _82 F
-      LESS	//  V df dv F w ds l b _83
+      SBITS	//  V df dv F w ds l b _101
+      s5 PUSH	//  V df dv F w ds l b _101 F
+      LESS	//  V df dv F w ds l b _102
     }>	//  V df dv F w ds l b
     s2 POP
     3 3 BLKDROP2
     s3 POP	//  l w b
-    OVER	//  l w b w
-    SBITS	//  l w b _84
-    s2 s3 XCHG	//  w l b _84
-    store_request INLINECALLDICT	//  w l b
-    ROT	//  l b w
-    STSLICER	//  l _87
+    DUP	//  l w b b
+    BBITS	//  l w b _103
+    s2 PUSH	//  l w b _103 w
+    SBITS	//  l w b _103 _104
+    ADD	//  l w b _105
+    10 PUSHPOW2DEC	//  l w b _105 _106=1023
+    GREATER	//  l w b _107
+    IF:<{	//  l w b
+      s1 s2 XCHG	//  w l b
+      CONS	//  w l
+      SWAP
+      NEWC	//  l w b
+    }>	//  l w b
+    SWAP	//  l b w
+    STSLICER	//  l _112
     ENDC	//  l result
     OVER	//  l result l
-    ISNULL	//  l result _89
+    ISNULL	//  l result _114
     IFNOT:<{	//  l result
       UNTIL:<{
         SWAP	//  result l
-        UNCONS	//  result l _90
-        s1 s2 XCHG	//  l result _90
-        STREF	//  l _92
+        UNCONS	//  result l _115
+        s1 s2 XCHG	//  l result _115
+        STREF	//  l _117
         ENDC	//  l result
         OVER	//  l result l
-        ISNULL	//  l result _94
+        ISNULL	//  l result _119
       }>	//  l result
       NIP	//  result
     }>ELSE<{

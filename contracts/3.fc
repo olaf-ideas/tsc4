@@ -19,6 +19,7 @@
 int is_null(tuple t) asm "ISNULL";
 int ilen(int x) asm "UBITSIZE";
 int is_prefix(slice pattern, slice text) asm "SDPFX";
+int slice_empty?(slice s) asm "SEMPTY";
 
 (tuple, ()) push_back(tuple tail, builder head) asm "CONS";
 (tuple, builder) pop_back(tuple list) asm "UNCONS";
@@ -68,8 +69,31 @@ int builder_bits(builder b) asm "BBITS";
   builder b = begin_cell();
 
   do {
+    {
+      int ok = false;
+      do {
+        if (ds.slice_bits()) {
+          w = begin_cell().store_slice(w).store_slice(ds~load_bits(min(1023 - w.slice_bits(), ds.slice_bits()))).end_cell().begin_parse();
+        }
+        else {
+          if (ds.slice_refs()) {
+            slice next_ds = (ds~load_ref()).begin_parse();
+            w = begin_cell().store_slice(w).store_slice(next_ds~load_bits(min(next_ds.slice_bits(), 1023 - w.slice_bits()))).end_cell().begin_parse();
+            ds = next_ds;
+          }
+          else {
+            ok = true;
+          }
+        }
 
-    while (w.slice_bits() >= F) {
+        if (w.slice_bits() == 1023) {
+          ok = true;
+        }
+
+      } until (ok);
+    }
+
+    do {
       (int zeros, w) = w.load_zeros();
 
       if (zeros) {
@@ -101,32 +125,9 @@ int builder_bits(builder b) asm "BBITS";
           b = b.store_uint(1, 1);
         }
       }
-    }
+    } until(w.slice_bits() < F);
 
-    int ok = false;
-
-    do {
-      if (ds.slice_bits()) {
-        w = begin_cell().store_slice(w).store_slice(ds~load_bits(min(1023 - w.slice_bits(), ds.slice_bits()))).end_cell().begin_parse();
-      }
-      else {
-        if (ds.slice_refs()) {
-          slice next_ds = (ds~load_ref()).begin_parse();
-          w = begin_cell().store_slice(w).store_slice(next_ds~load_bits(min(next_ds.slice_bits(), 1023 - w.slice_bits()))).end_cell().begin_parse();
-          ds = next_ds;
-        }
-        else {
-          ok = true;
-        }
-      }
-
-      if (w.slice_bits() == 1023) {
-        ok = true;
-      }
-
-    } until (ok);
-
-  } until (w.slice_bits() < F);
+  } until (ds.slice_empty?());
 
   if (b.builder_bits() + w.slice_bits() > 1023) {
     l~push_back(b);
