@@ -42,17 +42,26 @@ int slice_depth(slice s) asm "SDEPTH";
 (cell) caesar_cipher_encrypt(int shift, cell text) inline method_id {
   shift %= 26;
 
-  slice ds = text.begin_parse().skip_bits(32);
-
   tuple l = null();
   builder b = begin_cell().store_uint(0, 32);
 
-  repeat (slice_depth(ds)) {
-    repeat (ds.slice_bits() >> 3) {
-      int x = ds~load_uint(8);
+  slice ds = text.begin_parse().skip_bits(32);
 
-      if (97 <= x) {
-        if (x <= 122) {
+  repeat (ds.slice_bits() >> 3) {
+    int x = ds~load_uint(8);
+
+    if (x <= 90) {
+      if (65 <= x) {
+        x += shift;
+
+        if (x > 90) {
+          x -= 26;
+        }
+      }
+    }
+    else {
+      if (x <= 122) {
+        if (97 <= x) {
           x += shift;
 
           if (x > 122) {
@@ -60,12 +69,67 @@ int slice_depth(slice s) asm "SDEPTH";
           }
         }
       }
-      else {
-        if (65 <= x) { 
-          if (x <= 90) {
+    }
+
+    b = store_uint(b, x, 8);
+  }
+
+  ifnot (ds.slice_refs_empty?()) {
+    ds = ds~load_ref().begin_parse();
+    l~push_back(b);
+    b = begin_cell();
+
+    repeat (slice_depth(ds)) {
+      repeat (128) {
+        int x = ds~load_uint(8);
+
+        if (x <= 90) {
+          if (65 <= x) {
             x += shift;
 
             if (x > 90) {
+              x -= 26;
+            }
+          }
+        }
+        else {
+          if (x <= 122) {
+            if (97 <= x) {
+              x += shift;
+
+              if (x > 122) {
+                x -= 26;
+              }
+            }
+          }
+        }
+
+        b = store_uint(b, x, 8);
+      }
+
+      ds = ds~load_ref().begin_parse();
+      l~push_back(b);
+      b = begin_cell();
+    }
+
+    repeat (ds.slice_bits() >> 3) {
+      int x = ds~load_uint(8);
+
+      if (x <= 90) {
+        if (65 <= x) {
+          x += shift;
+
+          if (x > 90) {
+            x -= 26;
+          }
+        }
+      }
+      else {
+        if (x <= 122) {
+          if (97 <= x) {
+            x += shift;
+
+            if (x > 122) {
               x -= 26;
             }
           }
@@ -74,37 +138,6 @@ int slice_depth(slice s) asm "SDEPTH";
 
       b = store_uint(b, x, 8);
     }
-
-    ds = ds~load_ref().begin_parse();
-    l~push_back(b);
-    b = begin_cell();
-  }
-
-  repeat (ds.slice_bits() >> 3) {
-    int x = ds~load_uint(8);
-
-    if (97 <= x) {
-      if (x <= 122) {
-        x += shift;
-
-        if (x > 122) {
-          x -= 26;
-        }
-      }
-    }
-    else {
-      if (65 <= x) { 
-        if (x <= 90) {
-          x += shift;
-
-          if (x > 90) {
-            x -= 26;
-          }
-        }
-      }
-    }
-
-    b = store_uint(b, x, 8);
   }
 
   cell result = b.end_cell();
