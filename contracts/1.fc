@@ -63,7 +63,27 @@ slice begin_parse(cell c) asm "CTOS";
                     slice a4 = n4.begin_parse();
 
                     repeat (slice_refs(a4)) {
-                        queue~push_back(a4~load_ref());
+                        cell n5 = a4~load_ref();
+
+                        if (hash == n5.cell_hash()) {
+                            return n5;
+                        }
+
+                        slice a5 = n5.begin_parse();
+
+                        repeat (slice_refs(a5)) {
+                            cell n6 = a5~load_ref();
+
+                            if (hash == n6.cell_hash()) {
+                                return n6;
+                            }
+
+                            slice a6 = n6.begin_parse();
+
+                            repeat (slice_refs(a6)) {
+                                queue~push_back(a6~load_ref());
+                            }
+                        }
                     }
                 }
             }
