@@ -118,7 +118,7 @@ def jazda(l):
 
   print("s0 PUSH")
 
-  m = l + 40
+  m = l + 15
 
   if (m <= 127):
     print(m, "LEQINT")
