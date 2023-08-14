@@ -73,23 +73,30 @@ int builder_bits(builder b) asm "BBITS";
       int ok = false;
       do {
         if (ds.slice_bits()) {
-          w = begin_cell().store_slice(w).store_slice(ds~load_bits(min(1023 - w.slice_bits(), ds.slice_bits()))).end_cell().begin_parse();
+          if (ds.slice_bits() >= 1023 - w.slice_bits()) {
+            w = begin_cell().store_slice(w).store_slice(ds~load_bits(1023 - w.slice_bits())).end_cell().begin_parse();
+            ok = true;
+          }
+          else {
+            w = begin_cell().store_slice(w).store_slice(ds~load_bits(ds.slice_bits())).end_cell().begin_parse();
+          }
         }
         else {
           if (ds.slice_refs()) {
-            slice next_ds = (ds~load_ref()).begin_parse();
-            w = begin_cell().store_slice(w).store_slice(next_ds~load_bits(min(next_ds.slice_bits(), 1023 - w.slice_bits()))).end_cell().begin_parse();
-            ds = next_ds;
+            ds = (ds~load_ref()).begin_parse();
+
+            if (ds.slice_bits() >= 1023 - w.slice_bits()) {
+              w = begin_cell().store_slice(w).store_slice(ds~load_bits(1023 - w.slice_bits())).end_cell().begin_parse();
+              ok = true;
+            }
+            else {
+              w = begin_cell().store_slice(w).store_slice(ds~load_bits(ds.slice_bits())).end_cell().begin_parse();
+            }
           }
           else {
             ok = true;
           }
         }
-
-        if (w.slice_bits() == 1023) {
-          ok = true;
-        }
-
       } until (ok);
     }
 
@@ -122,7 +129,7 @@ int builder_bits(builder b) asm "BBITS";
             l~push_back(b);
             b = begin_cell();
           }
-          b = b.store_uint(1, 1);
+          b = b.store_one();
         }
       }
     }
