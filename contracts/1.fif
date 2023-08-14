@@ -9,41 +9,41 @@ PROGRAM{
     CONT:<{
       c2 SAVE
       SAMEALTSAVE	//  hash tree
+      PUSHNULL	//  hash tree queue
+      OVER	//  hash tree queue tree
+      CONS	//  hash tree queue
+      UNTIL:<{
+        UNCONS	//  hash tree queue node
+        CTOS	//  hash tree queue adj
+        DUP	//  hash tree queue adj adj
+        SREFS	//  hash tree queue adj _11
+        REPEAT:<{	//  hash tree queue adj
+          LDREF	//  hash tree queue neigh adj
+          OVER	//  hash tree queue neigh adj neigh
+          HASHCU	//  hash tree queue neigh adj _15
+          s5 s(-1) PUXC	//  hash tree queue neigh adj hash _15
+          EQUAL	//  hash tree queue neigh adj _16
+          IFJMP:<{	//  hash tree queue neigh adj
+            s1 s4 XCHG
+            4 BLKDROP	//  neigh
+            RETALT
+          }>	//  hash tree queue neigh adj
+          -ROT	//  hash tree adj queue neigh
+          CONS	//  hash tree adj queue
+          SWAP	//  hash tree queue adj
+        }>
+        DROP	//  hash tree queue
+        DUP	//  hash tree queue queue
+        ISNULL	//  hash tree queue _19
+      }>	//  hash tree queue
+      DROP	//  hash tree
       DUP	//  hash tree tree
-      HASHCU	//  hash tree _2
-      s2 s(-1) PUXC	//  hash tree hash _2
-      EQUAL	//  hash tree _3
-      IF:<{	//  hash tree
-        NIP	//  tree
-      }>ELSE<{	//  hash tree
-        PUSHNULL	//  hash tree queue
-        SWAP	//  hash queue tree
-        CONS	//  hash queue
-        UNTIL:<{
-          UNCONS	//  hash queue node
-          CTOS	//  hash queue adj
-          DUP	//  hash queue adj adj
-          SREFS	//  hash queue adj _13
-          REPEAT:<{	//  hash queue adj
-            LDREF	//  hash queue neigh adj
-            OVER	//  hash queue neigh adj neigh
-            HASHCU	//  hash queue neigh adj _17
-            s4 s(-1) PUXC	//  hash queue neigh adj hash _17
-            EQUAL	//  hash queue neigh adj _18
-            IFJMP:<{	//  hash queue neigh adj
-              s1 s3 XCHG
-              3 BLKDROP	//  neigh
-              RETALT
-            }>	//  hash queue neigh adj
-            -ROT	//  hash adj queue neigh
-            CONS	//  hash adj queue
-            SWAP	//  hash queue adj
-          }>
-          DROP	//  hash queue
-          DUP	//  hash queue queue
-          ISNULL	//  hash queue _21
-        }>	//  hash queue
-        2DROP	// 
+      HASHCU	//  hash tree _20
+      s1 s2 XCHG	//  tree hash _20
+      EQUAL	//  tree _21
+      IF:<{	//  tree
+      }>ELSE<{	//  tree
+        DROP	// 
         NEWC	//  _22
         ENDC	//  _23
       }>

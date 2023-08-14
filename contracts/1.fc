@@ -23,9 +23,6 @@ slice begin_parse(cell c) asm "CTOS";
 
 (cell) find_branch_by_hash(int hash, cell tree) inline method_id {
 
-    if (hash == cell_hash(tree)) {
-        return tree;
-    }
 
     tuple queue = null();
     queue~push_back(tree);
@@ -46,5 +43,9 @@ slice begin_parse(cell c) asm "CTOS";
         }
     } until (is_null(queue));
 
+    if (hash == cell_hash(tree)) {
+        return tree;
+    }
+    
     return begin_cell().end_cell();
 }
