@@ -38,31 +38,6 @@ slice skip_bits(slice s, int len) asm "SDSKIPFIRST";
 int cell_depth(cell c) asm "CDEPTH";
 int slice_depth(slice s) asm "SDEPTH";
 
-int encode_char(int shift, int x) inline {
-  if (x <= 90) {
-    if (x >= 65) {
-      x += shift;
-
-      if (x > 90) {
-        x -= 26;
-      }
-    }
-  }
-  else {
-    if (x <= 122) {
-      if (x >= 97) {
-        x += shift;
-
-        if (x > 122) {
-          x -= 26;
-        }
-      }
-    }
-  }
-
-  return x;
-}
-
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) inline method_id {
   shift %= 26;
@@ -73,7 +48,29 @@ int encode_char(int shift, int x) inline {
   slice ds = text.begin_parse().skip_bits(32);
 
   repeat (ds.slice_bits() >> 3) {
-    b = store_uint(b, encode_char(shift, ds~load_uint(8)), 8);
+    int x = ds~load_uint(8);
+    if (x <= 90) {
+      if (x >= 65) {
+        x += shift;
+
+        if (x > 90) {
+          x -= 26;
+        }
+      }
+    }
+    else {
+      if (x <= 122) {
+        if (x >= 97) {
+          x += shift;
+
+          if (x > 122) {
+            x -= 26;
+          }
+        }
+      }
+    }
+
+    b = store_uint(b, x, 8);
   }
 
   ifnot (ds.slice_refs_empty?()) {
@@ -83,7 +80,29 @@ int encode_char(int shift, int x) inline {
 
     repeat (slice_depth(ds)) {
       repeat (127) {
-        b = store_uint(b, encode_char(shift, ds~load_uint(8)), 8);
+        int x = ds~load_uint(8);
+        if (x <= 90) {
+          if (x >= 65) {
+            x += shift;
+
+            if (x > 90) {
+              x -= 26;
+            }
+          }
+        }
+        else {
+          if (x <= 122) {
+            if (x >= 97) {
+              x += shift;
+
+              if (x > 122) {
+                x -= 26;
+              }
+            }
+          }
+        }
+
+        b = store_uint(b, x, 8);
       }
 
       ds = ds~load_ref().begin_parse();
@@ -92,7 +111,29 @@ int encode_char(int shift, int x) inline {
     }
 
     repeat (ds.slice_bits() >> 3) {
-      b = store_uint(b, encode_char(shift, ds~load_uint(8)), 8);
+      int x = ds~load_uint(8);
+      if (x <= 90) {
+        if (x >= 65) {
+          x += shift;
+
+          if (x > 90) {
+            x -= 26;
+          }
+        }
+      }
+      else {
+        if (x <= 122) {
+          if (x >= 97) {
+            x += shift;
+
+            if (x > 122) {
+              x -= 26;
+            }
+          }
+        }
+      }
+
+      b = store_uint(b, x, 8);
     }
   }
 
