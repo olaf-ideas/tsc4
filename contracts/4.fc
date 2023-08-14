@@ -49,6 +49,7 @@ int slice_depth(slice s) asm "SDEPTH";
   slice ds = text.begin_parse();
 
   int d = text.cell_depth();
+
   repeat (d) {
     repeat (127) {
       int x = ds~load_uint(8);
@@ -72,7 +73,6 @@ int slice_depth(slice s) asm "SDEPTH";
           }
         }
       }
-
       b = store_uint(b, x, 8);
     }
 
@@ -104,7 +104,6 @@ int slice_depth(slice s) asm "SDEPTH";
         }
       }
     }
-
     b = store_uint(b, x, 8);
   }
 

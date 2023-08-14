@@ -1,0 +1,53 @@
+// automatically generated from `./contracts/1.fc` 
+PROGRAM{
+  DECLPROC recv_internal
+  92939 DECLMETHOD find_branch_by_hash
+  recv_internal PROC:<{
+    // 
+  }>
+  find_branch_by_hash PROCINLINE:<{
+    CONT:<{
+      c2 SAVE
+      SAMEALTSAVE	//  hash tree
+      DUP	//  hash tree tree
+      HASHCU	//  hash tree _2
+      s2 s(-1) PUXC	//  hash tree hash _2
+      EQUAL	//  hash tree _3
+      IF:<{	//  hash tree
+        NIP	//  tree
+      }>ELSE<{	//  hash tree
+        PUSHNULL	//  hash tree queue
+        SWAP	//  hash queue tree
+        CONS	//  hash queue
+        UNTIL:<{
+          UNCONS	//  hash queue node
+          CTOS	//  hash queue adj
+          DUP	//  hash queue adj adj
+          SREFS	//  hash queue adj _13
+          REPEAT:<{	//  hash queue adj
+            LDREF	//  hash queue neigh adj
+            OVER	//  hash queue neigh adj neigh
+            HASHCU	//  hash queue neigh adj _17
+            s4 s(-1) PUXC	//  hash queue neigh adj hash _17
+            EQUAL	//  hash queue neigh adj _18
+            IFJMP:<{	//  hash queue neigh adj
+              s1 s3 XCHG
+              3 BLKDROP	//  neigh
+              RETALT
+            }>	//  hash queue neigh adj
+            -ROT	//  hash adj queue neigh
+            CONS	//  hash adj queue
+            SWAP	//  hash queue adj
+          }>
+          DROP	//  hash queue
+          DUP	//  hash queue queue
+          ISNULL	//  hash queue _21
+        }>	//  hash queue
+        2DROP	// 
+        NEWC	//  _22
+        ENDC	//  _23
+      }>
+    }>
+    EXECUTE
+  }>
+}END>c

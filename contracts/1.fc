@@ -18,24 +18,31 @@ int slice_refs(slice s) asm "SREFS";
 (slice, cell) load_ref(slice s) asm( -> 1 0) "LDREF";
 slice begin_parse(cell c) asm "CTOS";
 
-forall X -> (tuple, X) xdd(tuple list) asm "UNCONS";
-forall X -> tuple dxx(tuple tail, X head) asm "CONS";
+(tuple, ()) push_back(tuple tail, cell head) asm "CONS";
+(tuple, cell) pop_back(tuple list) asm "UNCONS";
 
 (cell) find_branch_by_hash(int hash, cell tree) inline method_id {
 
-    tuple queue = dxx(null(), tree);
+    if (hash == cell_hash(tree)) {
+        return tree;
+    }
+
+    tuple queue = null();
+    queue~push_back(tree);
 
     do {
-        (queue, cell node) = xdd(queue);
-
-        if (hash == cell_hash(node)) {
-            return node;
-        }
+        cell node = queue~pop_back();
 
         slice adj = begin_parse(node);
 
         repeat (slice_refs(adj)) {
-            queue = dxx(queue, adj~load_ref());
+            cell neigh = adj~load_ref();
+
+            if (hash == cell_hash(neigh)) {
+                return neigh;
+            }
+
+            queue~push_back(neigh);
         }
     } until (is_null(queue));
 
