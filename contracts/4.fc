@@ -9,60 +9,83 @@
 () recv_internal() {
 }
 
-cell solve1(int shift, cell text) inline {
-  slice ds = text.begin_parse();
+int is_null(tuple t) asm "ISNULL";
+int ilen(int x) asm "UBITSIZE";
+int is_prefix(slice pattern, slice text) asm "SDPFX";
 
-  builder result = begin_cell();
+(tuple, ()) push_back(tuple tail, builder head) asm "CONS";
+(tuple, builder) pop_back(tuple list) asm "UNCONS";
 
-  repeat (ds.slice_bits() >> 3) {
-    int x = ds~load_uint(8);
+(int, slice) load_zeros(slice s) asm "LDZEROES";
+builder store_one(builder b) asm "STONE";
+builder store_zeros(builder b, int cnt) asm "STZEROES";
 
-    if (97 <= x) {
-      if (x <= 122) {
-        x = x + shift;
-
-        if (x > 122) {
-          x -= 26;
-        }
-      }
-    }
-    else {
-      if (65 <= x) { 
-        if (x <= 90) {
-          x = x + shift;
-
-          if (x > 90) {
-            x -= 26;
-          }
-        }
-      }
-    }
-
-    result = store_uint(result, x, 8);
-  }
-
-  ifnot (ds.slice_refs_empty?()) {
-    cell rest = solve1(shift, preload_ref(ds));
-    result = store_ref(result, rest);
-  }
-
-  return result.end_cell();
-}
+builder store_ref(builder b, cell c) asm(c b) "STREF";
+(slice, cell) load_ref(slice s) asm( -> 1 0) "LDREF";
+int slice_refs(slice s) asm "SREFS";
+int min(int x, int y) asm "MIN";
+builder store_slice(builder b, slice s) asm "STSLICER";
+(slice, ()) ~skip_bits(slice s, int len) asm "SDSKIPFIRST";
+forall X -> X null() asm "PUSHNULL";
+int slice_bits(slice s) asm "SBITS";
+builder begin_cell() asm "NEWC";
+slice begin_parse(cell c) asm "CTOS";
+cell end_cell(builder b) asm "ENDC";
+int builder_bits(builder b) asm "BBITS";
+int slice_empty?(slice s) asm "SEMPTY";
+int slice_refs_empty?(slice s) asm "SREMPTY";
+slice skip_bits(slice s, int len) asm "SDSKIPFIRST";
+int cell_depth(cell c) asm "CDEPTH";
+int slice_depth(slice s) asm "SDEPTH";
 
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) inline method_id {
   shift %= 26;
 
-  builder result = begin_cell().store_uint(0, 32);
-
   slice ds = text.begin_parse().skip_bits(32);
+
+  tuple l = null();
+  builder b = begin_cell().store_uint(0, 32);
+
+  repeat (slice_depth(ds)) {
+    repeat (ds.slice_bits() >> 3) {
+      int x = ds~load_uint(8);
+
+      if (97 <= x) {
+        if (x <= 122) {
+          x += shift;
+
+          if (x > 122) {
+            x -= 26;
+          }
+        }
+      }
+      else {
+        if (65 <= x) { 
+          if (x <= 90) {
+            x += shift;
+
+            if (x > 90) {
+              x -= 26;
+            }
+          }
+        }
+      }
+
+      b = store_uint(b, x, 8);
+    }
+
+    ds = ds~load_ref().begin_parse();
+    l~push_back(b);
+    b = begin_cell();
+  }
 
   repeat (ds.slice_bits() >> 3) {
     int x = ds~load_uint(8);
 
     if (97 <= x) {
       if (x <= 122) {
-        x = x + shift;
+        x += shift;
 
         if (x > 122) {
           x -= 26;
@@ -72,7 +95,7 @@ cell solve1(int shift, cell text) inline {
     else {
       if (65 <= x) { 
         if (x <= 90) {
-          x = x + shift;
+          x += shift;
 
           if (x > 90) {
             x -= 26;
@@ -81,16 +104,18 @@ cell solve1(int shift, cell text) inline {
       }
     }
 
-    result = store_uint(result, x, 8);
+    b = store_uint(b, x, 8);
   }
 
-  ifnot (ds.slice_refs_empty?()) {
-    cell next = preload_ref(ds);
-    cell rest = solve1(shift, next);
-    result = store_ref(result, rest);
+  cell result = b.end_cell();
+
+  ifnot (is_null(l)) {
+    do {
+      result = (l~pop_back()).store_ref(result).end_cell();
+    } until (is_null(l));
   }
 
-  return result.end_cell();
+  return result;
 }
 
 ;; testable

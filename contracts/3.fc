@@ -121,9 +121,10 @@ int builder_bits(builder b) asm "BBITS";
 
   cell result = b.store_slice(w).end_cell();
 
-  while (~ is_null(l)) {
-    builder last = l~pop_back();
-    result = last.store_ref(result).end_cell();
+  ifnot (is_null(l)) {
+    do {
+      result = (l~pop_back()).store_ref(result).end_cell();
+    } until (is_null(l));
   }
 
   return result;

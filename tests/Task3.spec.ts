@@ -44,8 +44,8 @@ describe('Task3', () => {
 
     it('small test on one cell', async () => {
         
-        for (let xx = 1; xx < 50; xx++) {
-            console.log("test: ", xx);
+        for (let xx = 1; xx <= 1; xx++) {
+            // console.log("test: ", xx);
             let input = '';
 
             let xddd = 3000; // Math.round(Math.random() * 3000);
@@ -63,9 +63,9 @@ describe('Task3', () => {
             let flag = 0b101n; // BigInt(Math.round(Math.random() * 10) + 1);
             let value = 0b101011111n; // BigInt(Math.round(Math.random() * 10000000) + 1);
 
-            console.log("len: ", input.length);
-            console.log("flag: ", flag.toString(2));
-            console.log("value: ", value.toString(2));
+            // console.log("len: ", input.length);
+            // console.log("flag: ", flag.toString(2));
+            // console.log("value: ", value.toString(2));
 
             let chunks = [1023, 2, 3, 160, 10, 200, 500];
 

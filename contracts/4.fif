@@ -1,0 +1,147 @@
+// automatically generated from `./contracts/4.fc` 
+PROGRAM{
+  DECLPROC recv_internal
+  76319 DECLMETHOD caesar_cipher_encrypt
+  86492 DECLMETHOD caesar_cipher_decrypt
+  recv_internal PROC:<{
+    // 
+  }>
+  caesar_cipher_encrypt PROCINLINE:<{
+    //  shift text
+    SWAP
+    26 PUSHINT	//  text shift _2=26
+    MOD	//  text shift
+    SWAP	//  shift text
+    CTOS	//  shift _5
+    32 PUSHINT	//  shift _5 _6=32
+    SDSKIPFIRST	//  shift ds
+    PUSHNULL	//  shift ds l
+    0 PUSHINT	//  shift ds l _11=0
+    NEWC	//  shift ds l _11=0 _12
+    32 STU	//  shift ds l b
+    s2 PUSH	//  shift ds l b ds
+    SDEPTH	//  shift ds l b _15
+    REPEAT:<{	//  shift ds l b
+      s2 PUSH	//  shift ds l b ds
+      SBITS	//  shift ds l b _16
+      3 RSHIFT#	//  shift ds l b _18
+      REPEAT:<{	//  shift ds l b
+        s0 s2 XCHG	//  shift b l ds
+        8 LDU	//  shift b l x ds
+        OVER	//  shift b l x ds x
+        96 GTINT	//  shift b l x ds _24
+        IF:<{	//  shift b l x ds
+          OVER	//  shift b l x ds x
+          123 LESSINT	//  shift b l x ds _26
+          IF:<{	//  shift b l x ds
+            s1 s4 XCPU	//  shift b l ds x shift
+            ADD	//  shift b l ds x
+            DUP	//  shift b l ds x x
+            122 GTINT	//  shift b l ds x _29
+            IF:<{	//  shift b l ds x
+              -26 ADDCONST	//  shift b l ds x
+            }>	//  shift b l ds x
+            SWAP	//  shift b l x ds
+          }>	//  shift b l x ds
+        }>ELSE<{	//  shift b l x ds
+          OVER	//  shift b l x ds x
+          64 GTINT	//  shift b l x ds _33
+          IF:<{	//  shift b l x ds
+            OVER	//  shift b l x ds x
+            91 LESSINT	//  shift b l x ds _35
+            IF:<{	//  shift b l x ds
+              s1 s4 XCPU	//  shift b l ds x shift
+              ADD	//  shift b l ds x
+              DUP	//  shift b l ds x x
+              90 GTINT	//  shift b l ds x _38
+              IF:<{	//  shift b l ds x
+                -26 ADDCONST	//  shift b l ds x
+              }>	//  shift b l ds x
+              SWAP	//  shift b l x ds
+            }>	//  shift b l x ds
+          }>	//  shift b l x ds
+        }>
+        s0 s3 XCHG	//  shift ds l x b
+        8 STU	//  shift ds l b
+      }>
+      s0 s2 XCHG	//  shift b l ds
+      LDREF	//  shift b l _87 _86
+      DROP	//  shift b l _43
+      CTOS	//  shift b l ds
+      s0 s2 XCHG	//  shift ds l b
+      CONS	//  shift ds l
+      NEWC	//  shift ds l b
+    }>
+    s2 PUSH	//  shift ds l b ds
+    SBITS	//  shift ds l b _49
+    3 RSHIFT#	//  shift ds l b _51
+    REPEAT:<{	//  shift ds l b
+      s0 s2 XCHG	//  shift b l ds
+      8 LDU	//  shift b l x ds
+      OVER	//  shift b l x ds x
+      96 GTINT	//  shift b l x ds _57
+      IF:<{	//  shift b l x ds
+        OVER	//  shift b l x ds x
+        123 LESSINT	//  shift b l x ds _59
+        IF:<{	//  shift b l x ds
+          s1 s4 XCPU	//  shift b l ds x shift
+          ADD	//  shift b l ds x
+          DUP	//  shift b l ds x x
+          122 GTINT	//  shift b l ds x _62
+          IF:<{	//  shift b l ds x
+            -26 ADDCONST	//  shift b l ds x
+          }>	//  shift b l ds x
+          SWAP	//  shift b l x ds
+        }>	//  shift b l x ds
+      }>ELSE<{	//  shift b l x ds
+        OVER	//  shift b l x ds x
+        64 GTINT	//  shift b l x ds _66
+        IF:<{	//  shift b l x ds
+          OVER	//  shift b l x ds x
+          91 LESSINT	//  shift b l x ds _68
+          IF:<{	//  shift b l x ds
+            s1 s4 XCPU	//  shift b l ds x shift
+            ADD	//  shift b l ds x
+            DUP	//  shift b l ds x x
+            90 GTINT	//  shift b l ds x _71
+            IF:<{	//  shift b l ds x
+              -26 ADDCONST	//  shift b l ds x
+            }>	//  shift b l ds x
+            SWAP	//  shift b l x ds
+          }>	//  shift b l x ds
+        }>	//  shift b l x ds
+      }>
+      s0 s3 XCHG	//  shift ds l x b
+      8 STU	//  shift ds l b
+    }>
+    2 2 BLKDROP2	//  l b
+    ENDC	//  l result
+    OVER	//  l result l
+    ISNULL	//  l result _78
+    IFNOT:<{	//  l result
+      UNTIL:<{
+        SWAP	//  result l
+        UNCONS	//  result l _79
+        s1 s2 XCHG	//  l result _79
+        STREF	//  l _81
+        ENDC	//  l result
+        OVER	//  l result l
+        ISNULL	//  l result _83
+      }>	//  l result
+      NIP	//  result
+    }>ELSE<{
+      NIP	//  result
+    }>
+  }>
+  caesar_cipher_decrypt PROCINLINE:<{
+    //  shift text
+    SWAP
+    26 PUSHINT	//  text shift _2=26
+    MOD	//  text shift
+    26 PUSHINT	//  text shift _4=26
+    SWAP	//  text _4=26 shift
+    SUB	//  text _5
+    SWAP	//  _5 text
+    caesar_cipher_encrypt INLINECALLDICT	//  _6
+  }>
+}END>c
