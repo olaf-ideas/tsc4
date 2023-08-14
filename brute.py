@@ -16,117 +16,110 @@ def fib(n):
 
   return a
 
-def pushint_gas(x):
-  if x <= 10:
-    return 18
-  if x <= 127:
-    return 26
-  if x < 2**15:
-    return 34
+# def pushint_gas(x):
+#   if x <= 10:
+#     return 18
+#   if x <= 127:
+#     return 26
+#   if x < 2**15:
+#     return 34
 
-  l = int(ceil(log(x, 8)))
-  return 10 + 8 * l + 32
+#   l = int(ceil(log(x, 8)))
+#   return 10 + 8 * l + 32
 
-def gt_int_gas(x):
-  # adding the IF and s0 PUSH 
-  if x < 2**7:
-    return 18 + 18 + 26
+# def gt_int_gas(x):
+#   # adding the IF and s0 PUSH 
+#   if x < 2**7:
+#     return 18 + 18 + 26
 
-  return 18 + pushint_gas(x) + 18 + 18
+#   return 18 + pushint_gas(x) + 18 + 18
 
-def rest_gas(n1, n2):
-  assert n1 <= n2
-  """
-    ROT
-    REPEAT
-      TUCK
-      ADD
-    ROT
-    s0 PUSH
-    1 SUBCONST
-    ... rest is k dependent  
-  """
-  return (18 + 18 + (18 + 18) * (n2 - n1) + 18 + 18 + 18) * (370 - n1 + 1)
+# def rest_gas(n1, n2):
+#   assert n1 <= n2
+#   """
+#     ROT
+#     REPEAT
+#       TUCK
+#       ADD
+#     ROT
+#     s0 PUSH
+#     1 SUBCONST
+#     ... rest is k dependent  
+#   """
+#   return (18 + 18 + (18 + 18) * (n2 - n1) + 18 + 18 + 18) * (370 - n1 + 1)
 
-def hmmm(l, r):
-  result = 0
-  for i in range(l, r + 1):
-    result += 370 - i + 1
-  return result
+# def hmmm(l, r):
+#   result = 0
+#   for i in range(l, r + 1):
+#     result += 370 - i + 1
+#   return result
 
-def brute_all(l, r):
-  cost = 0
-  for i in range(l, r + 1):
-    cost += rest_gas(l, r) * (370 - i + 1)
-  return cost
+# def brute_all(l, r):
+#   cost = 0
+#   for i in range(l, r + 1):
+#     cost += rest_gas(l, r) * (370 - i + 1)
+#   return cost
 
-cache = dict([])
+# cache = dict([])
 
-eee = hmmm(0, 370)
+# eee = hmmm(0, 370)
 
-def best_value(l, r):
-  if (l, r) in cache:
-    return cache[(l, r)]
+# def best_value(l, r):
+#   if (l, r) in cache:
+#     return cache[(l, r)]
 
-  # print("calculating: ", l, r)
+#   # print("calculating: ", l, r)
 
-  best_cost = hmmm(l, r) * (pushint_gas(l) + 18 + pushint_gas(fib(l - 1)) + pushint_gas(fib(l))) + brute_all(l, r) + \
-              (pushint_gas(l) + 18 + 18 + pushint_gas(fib(l - 1)) + 18 + pushint_gas(fib(l)) + 18) * eee
+#   best_cost = hmmm(l, r) * (pushint_gas(l) + 18 + pushint_gas(fib(l - 1)) + pushint_gas(fib(l))) + brute_all(l, r) + \
+#               (pushint_gas(l) + 18 + 18 + pushint_gas(fib(l - 1)) + 18 + pushint_gas(fib(l)) + 18) * eee
 
-  best_data = str(l) + ' INT\n' + \
-              'SUB\n' + \
-              str(fib(l - 1)) + ' INT\n' + \
-              str(fib(l)) + ' INT\n'
+#   best_data = str(l) + ' INT\n' + \
+#               'SUB\n' + \
+#               str(fib(l - 1)) + ' INT\n' + \
+#               str(fib(l)) + ' INT\n'
 
-  for k in range(l, r):
-    new_data = 'DUP\n'
-    new_cost = 18 * eee
+#   for k in range(l, r):
+#     new_data = 'DUP\n'
+#     new_cost = 18 * eee
 
-    if k < 2**7:
-      new_data += str(k) + ' GTINT\n'
-      new_cost += (pushint_gas(k) + 26) * eee
-    else:
-      new_data += str(k) + ' INT\n' + \
-                  'GREATER\n'
-      new_cost += (pushint_gas(k) + 18 + 18) * eee
+#     if k < 2**7:
+#       new_data += str(k) + ' GTINT\n'
+#       new_cost += (pushint_gas(k) + 26) * eee
+#     else:
+#       new_data += str(k) + ' INT\n' + \
+#                   'GREATER\n'
+#       new_cost += (pushint_gas(k) + 18 + 18) * eee
 
-    (L_data, L_cost) = best_value(l, k + 0)
-    (R_data, R_cost) = best_value(k + 1, r)
+#     (L_data, L_cost) = best_value(l, k + 0)
+#     (R_data, R_cost) = best_value(k + 1, r)
 
-    new_cost += gt_int_gas(k) * hmmm(l, r) + L_cost + R_cost
+#     new_cost += gt_int_gas(k) * hmmm(l, r) + L_cost + R_cost
 
-    new_data += 'IF:<{\n'
-    new_data += R_data
-    new_data += '}>ELSE<{\n'
-    new_data += L_data
-    new_data += '}>\n'
+#     new_data += 'IF:<{\n'
+#     new_data += R_data
+#     new_data += '}>ELSE<{\n'
+#     new_data += L_data
+#     new_data += '}>\n'
 
-    new_cost += (18 + 18) * eee
+#     new_cost += (18 + 18) * eee
 
-    if best_cost > new_cost:
-      best_cost = new_cost
-      best_data = new_data
+#     if best_cost > new_cost:
+#       best_cost = new_cost
+#       best_data = new_data
   
-  cache[(l, r)] = (best_data, best_cost)
+#   cache[(l, r)] = (best_data, best_cost)
 
-  return (best_data, best_cost)
+#   return (best_data, best_cost)
 
 
-def jazda(l, r):
-  if (abs(r - l) <= 30):
-    if (l <= 127):
-      print(l, "SUBINT")
-    else:
-      print(l, "PUSHINT")
-      print("SUB")
-
-    print(fib(l - 1), "PUSHINT")
-    print(fib(l), "PUSHINT")
+def jazda(l):
+  if l > 370:
     return
 
-  m = (l + r) >> 1
   print("s0 PUSH")
-  
+
+  m = l + 40
+
   if (m <= 127):
     print(m, "LEQINT")
   else:
@@ -134,13 +127,20 @@ def jazda(l, r):
     print("LEQ")
 
   print("IF:<{")
-  jazda(l, m)
+  if (l <= 127):
+    print(l, "SUBINT")
+  else:
+    print(l, "PUSHINT")
+    print("SUB")
+
+  print(fib(l - 1), "PUSHINT")
+  print(fib(l), "PUSHINT")
+
   print("}>ELSE<{")
-  jazda(m + 1, r)
+  jazda(m+1)
   print("}>")
 
-
-jazda(0, 370)
+jazda(0)
 
 # (data, cost) = best_value(0, 370)
 

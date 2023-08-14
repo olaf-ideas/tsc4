@@ -28,14 +28,15 @@ slice begin_parse(cell c) asm "CTOS";
 
     do {
         cell node = queue~pop_back();
+
+        if (hash == cell_hash(node)) {
+            return node;
+        }
+
         slice adj = begin_parse(node);
 
         repeat (slice_refs(adj)) {
             queue~push_back(adj~load_ref());
-        }
-
-        if (hash == cell_hash(node)) {
-            return node;
         }
     } until (is_null(queue));
 

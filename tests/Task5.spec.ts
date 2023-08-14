@@ -38,117 +38,117 @@ describe('Task5', () => {
         // blockchain and task5 are ready to use
     });
 
-    // it('should work', async() => {
-    //     const result = await task5.getFibonacciSequence(1n, 3n);
+    it('should work', async() => {
+        const result = await task5.getFibonacciSequence(1n, 3n);
 
-    //     // console.log("result: ", result);
-    // });
+        // console.log("result: ", result);
+    });
 
-    // it('should pass this test', async() => {
+    it('should pass this test', async() => {
 
-    //     const result = await task5.getFibonacciSequence(1n, 3n);
+        const result = await task5.getFibonacciSequence(1n, 3n);
 
-    //     // console.log("result: ", result);
-    //     expect(result).toEqual(
-    //         {"items": 
-    //             [
-    //                 {"type": "int", "value": 1n}, 
-    //                 {"type": "int", "value": 1n}, 
-    //                 {"type": "int", "value": 2n},
-    //             ]
-    //         }
-    //     );
-    // })
+        // console.log("result: ", result);
+        expect(result).toEqual(
+            {"items": 
+                [
+                    {"type": "int", "value": 1n}, 
+                    {"type": "int", "value": 1n}, 
+                    {"type": "int", "value": 2n},
+                ]
+            }
+        );
+    })
 
-    // it('should pass this test 2', async() => {
+    it('should pass this test 2', async() => {
 
-    //     const result = await task5.getFibonacciSequence(201n, 4n);
+        const result = await task5.getFibonacciSequence(201n, 4n);
 
-    //     // console.log("result: ", result);
-    //     expect(result).toEqual(
-    //         {"items": 
-    //             [
-    //                 {"type": "int", "value": 453973694165307953197296969697410619233826n}, 
-    //                 {"type": "int", "value": 734544867157818093234908902110449296423351n}, 
-    //                 {"type": "int", "value": 1188518561323126046432205871807859915657177n},
-    //                 {"type": "int", "value": 1923063428480944139667114773918309212080528n},
-    //             ]
-    //         }
-    //     );
-    // })
+        // console.log("result: ", result);
+        expect(result).toEqual(
+            {"items": 
+                [
+                    {"type": "int", "value": 453973694165307953197296969697410619233826n}, 
+                    {"type": "int", "value": 734544867157818093234908902110449296423351n}, 
+                    {"type": "int", "value": 1188518561323126046432205871807859915657177n},
+                    {"type": "int", "value": 1923063428480944139667114773918309212080528n},
+                ]
+            }
+        );
+    })
 
-    // it('should pass this test 3', async() => {
+    it('should pass this test 3', async() => {
 
-    //     const result = await task5.getFibonacciSequence(100n, 0n);
+        const result = await task5.getFibonacciSequence(100n, 0n);
 
-    //     // console.log("result: ", result);
-    //     expect(result).toEqual(
-    //         {"items": 
-    //             [
-    //             ]
-    //         }
-    //     );
-    // })
+        // console.log("result: ", result);
+        expect(result).toEqual(
+            {"items": 
+                [
+                ]
+            }
+        );
+    })
 
-    // it('should pass this test 4', async() => {
+    it('should pass this test 4', async() => {
 
-    //     const result = await task5.getFibonacciSequence(370n, 0n);
+        const result = await task5.getFibonacciSequence(370n, 0n);
 
-    //     // console.log("result: ", result);
-    //     expect(result).toEqual(
-    //         {"items": 
-    //             [
-    //             ]
-    //         }
-    //     );
-    // })
+        // console.log("result: ", result);
+        expect(result).toEqual(
+            {"items": 
+                [
+                ]
+            }
+        );
+    })
 
-    // it ('should work on every single', async() => {
-    //     for (let n = 0n; n <= 370n; n += 1n) {
-    //         const result = await task5.getFibonacciSequence(n, 1n);
-    //     }
-    // })
+    it ('should work on every single', async() => {
+        for (let n = 0n; n <= 370n; n += 1n) {
+            const result = await task5.getFibonacciSequence(n, 1n);
+        }
+    })
 
-    // it('should pass this test 5', async() => {
+    it('should pass this test 5', async() => {
 
-    //     const result = await task5.getFibonacciSequence(369n, 1n);
+        const result = await task5.getFibonacciSequence(369n, 1n);
 
-    //     // console.log("result: ", result);
-    //     expect(result).toEqual(
-    //         {"items": 
-    //             [
-    //                 {"type": "int", "value": 58472848379039952684853851736901133239741266891456844557261755914039063645794n }, 
-    //             ]
-    //         }
-    //     );
-    // })
+        // console.log("result: ", result);
+        expect(result).toEqual(
+            {"items": 
+                [
+                    {"type": "int", "value": 58472848379039952684853851736901133239741266891456844557261755914039063645794n }, 
+                ]
+            }
+        );
+    })
 
-    // it('should pass this test MAX', async() => {
+    it('should pass this test MAX', async() => {
 
-    //     const result = await task5.getFibonacciSequence(370n, 1n);
+        const result = await task5.getFibonacciSequence(370n, 1n);
 
-    //     // console.log("result: ", result);
-    //     expect(result).toEqual(
-    //         {"items": 
-    //             [
-    //                 {"type": "int", "value": 94611056096305838013295371573764256526437182762229865607320618320601813254535n }, 
-    //             ]
-    //         }
-    //     );
-    // })
+        // console.log("result: ", result);
+        expect(result).toEqual(
+            {"items": 
+                [
+                    {"type": "int", "value": 94611056096305838013295371573764256526437182762229865607320618320601813254535n }, 
+                ]
+            }
+        );
+    })
 
-    // it('should pass this test 6', async() => {
+    it('should pass this test 6', async() => {
 
-    //     const result = await task5.getFibonacciSequence(0n, 0n);
+        const result = await task5.getFibonacciSequence(0n, 0n);
 
-    //     // console.log("result: ", result);
-    //     expect(result).toEqual(
-    //         {"items": 
-    //             [
-    //             ]
-    //         }
-    //     );
-    // })
+        // console.log("result: ", result);
+        expect(result).toEqual(
+            {"items": 
+                [
+                ]
+            }
+        );
+    })
 
     // it('just show me the results', async() => {
     //     const result = await task5.getFibonacciSequence(116n, 254n);
