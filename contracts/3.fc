@@ -43,14 +43,14 @@ int builder_bits(builder b) asm "BBITS";
 () recv_internal() {
 }
 
-(tuple, builder) store_request(tuple list, builder b, int bits) inline {
-  if (b.builder_bits() + bits > 1023) {
-    list~push_back(b);
-    b = begin_cell();
-  }
+;; (tuple, builder) store_request(tuple list, builder b, int bits) inline {
+;;   if (b.builder_bits() + bits > 1023) {
+;;     list~push_back(b);
+;;     b = begin_cell();
+;;   }
 
-  return (list, b);
-}
+;;   return (list, b);
+;; }
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) inline method_id {
@@ -73,20 +73,31 @@ int builder_bits(builder b) asm "BBITS";
       (int zeros, w) = w.load_zeros();
 
       if (zeros) {
-        (l, b) = store_request(l, b, zeros);
+        if (b.builder_bits() + zeros > 1023) {
+          l~push_back(b);
+          b = begin_cell();
+        }
+
         b = b.store_zeros(zeros);
       }
       else {
         if (is_prefix(df, w)) {
           w~skip_bits(F);
 
-          (l, b) = store_request(l, b, V);
+          if (b.builder_bits() + V > 1023) {
+            l~push_back(b);
+            b = begin_cell();
+          }
+
           b = b.store_slice(dv);
         }
         else {
           w~skip_bits(1);
-        
-          (l, b) = store_request(l, b, 1);
+          
+          if (b.builder_bits() + 1 > 1023) {
+            l~push_back(b);
+            b = begin_cell();
+          }
           b = b.store_uint(1, 1);
         }
       }
@@ -109,7 +120,7 @@ int builder_bits(builder b) asm "BBITS";
         }
       }
 
-      if (w.slice_bits() >= F) {
+      if (w.slice_bits() == 1023) {
         ok = true;
       }
 
@@ -117,7 +128,10 @@ int builder_bits(builder b) asm "BBITS";
 
   } until (w.slice_bits() < F);
 
-  (l, b) = store_request(l, b, w.slice_bits());
+  if (b.builder_bits() + w.slice_bits() > 1023) {
+    l~push_back(b);
+    b = begin_cell();
+  }
 
   cell result = b.store_slice(w).end_cell();
 
