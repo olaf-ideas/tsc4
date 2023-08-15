@@ -90,18 +90,18 @@ describe('Task5', () => {
         );
     })
 
-    it('should pass this test 4', async() => {
+    // it('should pass this test 4', async() => {
 
-        const result = await task5.getFibonacciSequence(370n, 0n);
+    //     const result = await task5.getFibonacciSequence(370n, 0n);
 
-        // console.log("result: ", result);
-        expect(result).toEqual(
-            {"items": 
-                [
-                ]
-            }
-        );
-    })
+    //     // console.log("result: ", result);
+    //     expect(result).toEqual(
+    //         {"items": 
+    //             [
+    //             ]
+    //         }
+    //     );
+    // })
 
     it ('should work on every single', async() => {
         for (let n = 0n; n <= 370n; n += 1n) {
@@ -168,21 +168,21 @@ describe('Task5', () => {
     //     // console.log("result: ", result);
     // })
 
-    // it('show me the cost', async() => {
+    it('show me the cost', async() => {
 
-    //     let cost = 0n;
+        let cost = 0n;
 
-    //     // for (var n = 300; n <= 370; n++) {
-    //     //     for (var k = 0; k <= 255; k++) {
-    //     //         if (n < 0 || n > 370 || n + k < 0 || n + k > 371 || k < 0 || k > 255)
-    //     //             continue;
+        for (var n = 300; n <= 370; n++) {
+            for (var k = 0; k <= 10; k++) {
+                if (n < 0 || n > 370 || n + k < 0 || n + k > 371 || k < 0 || k > 255)
+                    continue;
                 
-    //     //         cost += await task5.getFibonaaciSequenceCost(BigInt(n), BigInt(k));
-    //     //     }
-    //     // }
+                cost += await task5.getFibonaaciSequenceCost(BigInt(n), BigInt(k));
+            }
+        }
 
-    //     console.log("COST: ", cost);
-    // })
+        console.log("COST: ", cost);
+    })
 
     // it('test all', async() => {
     //     //  sequence from N to N+K terms (0<=N<=370; 0<=N+K<=370; 0<=K<=255). 

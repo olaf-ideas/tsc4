@@ -140,8 +140,55 @@ def jazda(l):
   jazda(m+1)
   print("}>")
 
-jazda(0)
+# jazda(0)
 
+def gen(depth):
+  if depth == 0:
+    print("slice a", depth, " = n", depth, ".begin_parse()")
+    print("repeat(slice_refs(a", depth, ")) {")
+    print("queue~push_back(a", depth, "~load_ref())")
+    return
+
+  print("")
+  gen(depth - 1)
+
+def test(n):
+  if n == 0:
+    return (1, 0)
+  else:
+    a, b = test(n // 2)
+
+    assert 2 * b < 2**257
+
+    c = a * a + b * b
+    d = b * (2 * a + b)
+
+    assert c < 2**257
+    assert d < 2**257
+
+    if n % 2 == 0:
+      return (c, d)
+    else:
+      assert c + d < 2**257
+      return (d, c + d)
+
+print(test(0))
+print(test(1))
+print(test(2))
+print(test(3))
+print(test(4))
+print(test(5))
+print(test(370))
+print(fib(370))
+# print(test(370))
+# print(fib(370))
+# print(test(201))
+# print(fib(201))
+# print(test(370))
+# print(fib(370))
+
+# print("(", end='')
+# for i in range(255):
 # (data, cost) = best_value(0, 370)
 
 # print(data)

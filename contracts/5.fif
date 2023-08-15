@@ -1,0 +1,82 @@
+"Asm.fif" include
+// automatically generated from `./contracts/5.fc` 
+PROGRAM{
+  DECLPROC recv_internal
+  DECLPROC fibonacci
+  100995 DECLMETHOD fibonacci_sequence
+  recv_internal PROC:<{
+    // 
+  }>
+  fibonacci PROCINLINE:<{
+    //  n
+        DUP	//  n n
+        SGN
+        IF:<{	//  n
+          DUP	//  n n
+          1 RSHIFT#	//  n _8
+          fibonacci INLINECALLDICT	//  n a b
+          s1 s1 PUSH2	//  n a b a a
+          MUL	//  n a b _11
+          s1 s1 PUSH2	//  n a b _11 b b
+          MUL	//  n a b _11 _12
+          ADD	//  n a b c
+          s0 s2 XCHG	//  n c b a
+          1 LSHIFT#	//  n c b _16
+          OVER	//  n c b _16 b
+          ADD	//  n c b _17
+          MUL	//  n c d
+          s0 s2 XCHG	//  d c n
+          1 MODPOW2#	//  d c _20
+          IFJMP:<{	//  d c
+            OVER	//  d c d
+            ADD	//  d _21
+          }>	//  d c
+          SWAP	//  c d
+        }>ELSE<{
+          DROP	// 
+          1 PUSHINT	//  _3=1
+          0 PUSHINT	//  _3=1 _4=0
+        }>	//  _2 _3
+  }>
+  fibonacci_sequence PROCINLINE:<{
+    //  n k
+    // n, k
+    DUP
+    // n, k, k
+    SGN
+    // n, k, k=0
+    IF:<{
+      SWAP // k, n
+      // k, n
+      fibonacci INLINECALLDICT
+      // s0 DUMP
+      // s1 DUMP
+      // s2 DUMP
+      ROT // k, a, b
+      // k, f_n-1, f_n
+      // f_n-1, f_n, k
+      s0 PUSH
+      // f_n-1, f_n, k, k
+      1 SUBCONST
+      // f_n-1, f_n, k, k-1
+      REPEAT:<{
+        // f_n-1, f_n, k
+        s2 s1 PUSH2
+        ADD
+        SWAP
+      }>
+      // f_n-1 f_n, f_n + 1, ... f_n + k - 3, f_n + k - 2, f_n + k - 1, k
+      TUPLEVAR
+      // f_n-1 (f_n, f_n + 1, ..., f_n + k - 1)
+      SWAP
+      // (f_n, f_n + 1, ..., f_n + k - 1) f_n-1
+      DROP
+      // (f_n, f_n + 1, ..., f_n + k - 1)
+    }>ELSE<{
+      // n, k
+      DROP2
+      //
+      NIL
+    }>	//  _2
+  }>
+}END>c
