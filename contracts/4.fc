@@ -14,6 +14,7 @@
   // shift, text
   CTOS
   // shift, ds
+
   SWAP
   // ds, shift
   26 INT
@@ -114,6 +115,7 @@
     127 INT
     REPEAT:<{
       8 LDU
+
       SWAP
       // ..., 3, 2, 1, 0, list, builder, ds, x_8
       3 ADDCONST
@@ -172,15 +174,21 @@
   // ..., 3, 2, 1, 0, list, result
   SWAP
   // ..., 3, 2, 1, 0, result, list
+
   DUP
   ISNULL
+
   IFNOT:<{
     UNTIL:<{
+
       // result, list
       UNCONS
       // result, list, builder
-      -ROT
-      // list, builder, result
+
+      s1 s2 XCHG
+
+      // list, result, builder
+
       STREF
       // list, builder
       ENDC

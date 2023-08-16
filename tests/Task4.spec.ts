@@ -164,55 +164,129 @@ describe('Task4', () => {
         expect(result_string).toEqual(answer);
     })
 
-    // it('hard', async() => {
-    //     let len = 4000;
+    it('hard', async() => {
+        let len = 2000;
 
-    //     let blocks = [];
+        let blocks = [];
 
-    //     blocks.push(Math.min(127 - 32, len));
-    //     len -= blocks[0];
+        blocks.push(Math.min(127 - (32 / 8), len));
+        len -= blocks[0];
 
-    //     while (len >= 127) {
-    //         blocks.push(127);
-    //         len -= 127;
-    //     }
+        while (len >= 127) {
+            blocks.push(127);
+            len -= 127;
+        }
+        
+        if (len > 0) {
+            blocks.push(len);
+            len = 0;
+        }
 
-    //     blocks.push(len);
+        console.log("blocks:" , blocks);
 
-    //     let builder = beginCell().storeUint(0n, 32);
-    //     let list = '';
+        let builder = beginCell();
 
-    //     for (let i = 0, l = blocks[-1]; i < l; i++) {
-    //         let x = BigInt(Math.floor(Math.random() * 127));
-    //         builder.storeUint(x, 8);
-    //         list += String.fromCharCode(Number(x.toString()));
-    //     }
+        if (blocks.length == 1) {
+            builder.storeUint(0, 32);
+        }
 
-    //     blocks.pop();
+        let list = [];
 
-    //     let cell = builder.endCell();
+        console.log(blocks[blocks.length - 1]);
 
-    //     while (blocks.length > 0) {
-    //         builder = beginCell();
-            
-    //         for (let i = 0, l = blocks[-1]; i < l; i++) {
-    //             let x = BigInt(Math.floor(Math.random() * 127));
-    //             builder.storeUint(x, 8);
-    //             list += String.fromCharCode(Number(x.toString()));
-    //         }
+        let v = '';
+        for (let i = 0, l = blocks[blocks.length - 1]; i < l; i++) {
+            // let x = 32;
+            // if (Math.floor(Math.random() * 2) < 1) {
+                let x = 97 + Math.floor(Math.random() * 26);
+            // }
 
-    //         blocks.pop();
-    //     }
+            builder.storeUint(x, 8);
+            v += String.fromCharCode(Number(x));
+        }
 
-    //     let input = '';
-    //     for (let i = list.length - 1; i >= 0; i--) {
-    //         input += list[i];
-    //     }
+        console.log("size:", builder.bits);
 
-    //     let shift = 5n;
+        list.push(v);
 
-    //     const result = await task4.getCeasarDecyption(shift, cell);
-    // })
+        console.log(builder);
+        console.log(list);
+
+        blocks.pop();
+
+        let cell = builder.endCell();
+
+        while (blocks.length > 0) {
+
+            builder = beginCell();
+            builder.storeRef(cell);
+
+            if (blocks.length == 1) {
+                console.log("STORING 32 bits");
+                builder.storeUint(0, 32);
+            }
+
+            console.log("ADDING ", blocks[blocks.length - 1] * 8, " BITS in cell");
+
+            v = '';
+            for (let i = 0, l = blocks[blocks.length - 1]; i < l; i++) {
+                // let x = 32;
+                // if (Math.floor(Math.random() * 2) < 1) {
+                    let x = 97 + Math.floor(Math.random() * 26);
+                // }
+    
+                builder.storeUint(x, 8);
+                v += String.fromCharCode(Number(x));
+            }
+
+            list.push(v);
+
+            console.log("size:", builder.bits);
+            cell = builder.endCell();
+
+            blocks.pop();
+        }
+
+        let input = '';
+        for (let i = list.length - 1; i >= 0; i--) {
+            input += list[i];
+        }
+
+        let shift = 5n;
+
+        console.log("cell: ", cell);
+        console.log("cell bits: ", cell.bits.length);
+
+        const result = await task4.getCeasarEncyption(shift, cell);    
+
+        let answer = '';
+
+        let ds = result.beginParse().skip(32);
+
+        while (true) {
+            if (ds.remainingBits > 0) {
+                let x = ds.loadUint(8);
+                answer += String.fromCharCode(x);
+            }
+            else
+            if (ds.remainingRefs > 0) {
+                expect(ds.remainingRefs == 1);
+                ds = ds.loadRef().beginParse();
+            }
+            else {
+                break;
+            }
+        }
+
+        let solution = encrypt(input, Number(shift));
+
+        console.log("input:", input);
+        console.log("answe:", answer);
+        console.log("solut:", solution);
+        console.log("shift:", shift);
+
+        expect(answer).toEqual(solution);
+    })
     // it('decryption test shift 3', async() => {
 
     //     var len = 12 + 4;
