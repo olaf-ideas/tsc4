@@ -18,17 +18,18 @@ PROGRAM{
       MOD
       
       // ds, shift
-      128 INT
-      127 INT
-      126 INT
-      125 INT
-      124 INT
-      123 INT
-      // ds, shift, 128, 127, 126, 125, 124, 123
-      s5 PUSH
+      254 INT
+      131 INT
+      REPEAT:<{
+        DUP
+        DEC
+      }>
+      // ds, shift, 254, ..., 128, 127, 126, 125, 124, 123
+      132 s() PUSH /// !!!!!!
+      s0 DUMP
       96 ADDCONST
-      // ds, shift, 128, 127, 126, 125, 124, 123, 122 - 26 + shift
-      // ds, shift, 128, 127, 126, 125, 124, 123, 122 - 26 + shift
+      // ds, shift, 255, ..., 128, 127, 126, 125, 124, 123, 122 - 26 + shift
+      // ds, shift, 255, ..., 128, 127, 126, 125, 124, 123, 122 - 26 + shift
       25 INT
       REPEAT:<{
         DUP
@@ -39,7 +40,7 @@ PROGRAM{
           26 ADDCONST
         }>
       }>
-      // ds, shift, 128, ..., 123, 122-26+shift, ..., 97+shift
+      // ds, shift, 254, ..., 123, 122-26+shift, ..., 97+shift
       96 INT
       95 INT
       94 INT
@@ -47,10 +48,10 @@ PROGRAM{
       92 INT
       91 INT
       // ds, shift, 128, ..., 92, 91
-      // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91
-      38 s() PUSH
+      // shift, ds, 254, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91
+      164 s() PUSH // !!!!!!!!
       64 ADDCONST
-      // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift
+      // shift, ds, 254, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift
       25 INT
       REPEAT:<{
         DUP
@@ -61,15 +62,15 @@ PROGRAM{
           26 ADDCONST
         }>
       }>
-      // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift
+      // shift, ds, 254, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift
       64 INT
       64 INT
       REPEAT:<{
         DUP
-        INC
+        DEC
       }>
-      // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift, 64, ..., 0
-      130 s() PUSH
+      // shift, ds, 254, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift, 64, ..., 0
+      255 s() PUSH  /// !!!!!
       NULL
       // ..., 3, 2, 1, 0, ds, list
       NEWC
@@ -175,17 +176,18 @@ PROGRAM{
       MOD
       
       // ds, shift
-      128 INT
-      127 INT
-      126 INT
-      125 INT
-      124 INT
-      123 INT
-      // ds, shift, 128, 127, 126, 125, 124, 123
-      s5 PUSH
+      254 INT
+      131 INT
+      REPEAT:<{
+        DUP
+        DEC
+      }>
+      // ds, shift, 254, ..., 128, 127, 126, 125, 124, 123
+      132 s() PUSH /// !!!!!!
+      s0 DUMP
       96 ADDCONST
-      // ds, shift, 128, 127, 126, 125, 124, 123, 122 - 26 + shift
-      // ds, shift, 128, 127, 126, 125, 124, 123, 122 - 26 + shift
+      // ds, shift, 255, ..., 128, 127, 126, 125, 124, 123, 122 - 26 + shift
+      // ds, shift, 255, ..., 128, 127, 126, 125, 124, 123, 122 - 26 + shift
       25 INT
       REPEAT:<{
         DUP
@@ -196,7 +198,7 @@ PROGRAM{
           26 ADDCONST
         }>
       }>
-      // ds, shift, 128, ..., 123, 122-26+shift, ..., 97+shift
+      // ds, shift, 254, ..., 123, 122-26+shift, ..., 97+shift
       96 INT
       95 INT
       94 INT
@@ -204,10 +206,10 @@ PROGRAM{
       92 INT
       91 INT
       // ds, shift, 128, ..., 92, 91
-      // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91
-      38 s() PUSH
+      // shift, ds, 254, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91
+      164 s() PUSH // !!!!!!!!
       64 ADDCONST
-      // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift
+      // shift, ds, 254, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift
       25 INT
       REPEAT:<{
         DUP
@@ -218,15 +220,15 @@ PROGRAM{
           26 ADDCONST
         }>
       }>
-      // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift
+      // shift, ds, 254, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift
       64 INT
       64 INT
       REPEAT:<{
         DUP
-        INC
+        DEC
       }>
-      // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift, 64, ..., 0
-      130 s() PUSH
+      // shift, ds, 254, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift, 64, ..., 0
+      255 s() PUSH  /// !!!!!
       NULL
       // ..., 3, 2, 1, 0, ds, list
       NEWC

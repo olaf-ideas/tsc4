@@ -20,20 +20,21 @@
   MOD
   
   // ds, shift
-  128 INT
-  127 INT
-  126 INT
-  125 INT
-  124 INT
-  123 INT
+  253 INT
+  130 INT
+  REPEAT:<{
+    DUP
+    DEC
+  }>
 
-  // ds, shift, 128, 127, 126, 125, 124, 123
+  // ds, shift, 253, ..., 128, 127, 126, 125, 124, 123
 
-  s6 PUSH
+  131 s() PUSH
+
+  // !!!!!!
+
   96 ADDCONST
-  // ds, shift, 128, 127, 126, 125, 124, 123, 122 - 26 + shift
-
-  // ds, shift, 128, 127, 126, 125, 124, 123, 122 - 26 + shift
+  // ds, shift, 253, ..., 128, 127, 126, 125, 124, 123, 122 - 26 + shift
 
   25 INT
   REPEAT:<{
@@ -45,7 +46,7 @@
       26 ADDCONST
     }>
   }>
-  // ds, shift, 128, ..., 123, 122-26+shift, ..., 97+shift
+  // ds, shift, 253, ..., 123, 122-26+shift, ..., 97+shift
 
   96 INT
   95 INT
@@ -54,14 +55,13 @@
   92 INT
   91 INT
 
-  // ds, shift, 128, ..., 92, 91
+  // ds, shift, 253, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91
 
-  // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91
-
-  38 s() PUSH
+  163 s() PUSH
+  // !!!!!!!!
 
   64 ADDCONST
-  // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift
+  // ds, shift, 253, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift
 
   25 INT
   REPEAT:<{
@@ -73,7 +73,7 @@
       26 ADDCONST
     }>
   }>
-  // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift
+  // ds, shift, 253, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift
 
   64 INT
   64 INT
@@ -82,9 +82,10 @@
     DEC
   }>
 
-  // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift, 64, ..., 0
+  // ds, shift, 253, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift, 64, ..., 0
 
-  130 s() PUSH
+  255 s() PUSH  
+  // !!!!!
 
   NULL
   // ..., 3, 2, 1, 0, ds, list
