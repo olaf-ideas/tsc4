@@ -84,18 +84,18 @@ builder store_one(builder b) asm "STONE";
   builder result = begin_cell().store_zeros(32);
 
   slice ds = text.begin_parse().skip_bits(32);
-
+  
   repeat (ds.slice_bits() >> 3) {
     int x = ds~load_uint(8);
 
-    ifnot (sgn((x - 97) / 26)) {
+    ifnot ((x - 97) / 26) {
       x += shift;
       if (x > 122) {
         x -= 26;
       }
     }
     else {
-      ifnot (sgn((x - 65) / 26)) {
+      ifnot ((x - 65) / 26) {
         x += shift;
 
         if (x > 90) {
