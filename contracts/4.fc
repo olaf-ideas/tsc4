@@ -13,11 +13,13 @@
 (cell) _caesar_cipher_encrypt(int shift, cell text) asm """
   // shift, text
   SWAP
+  26 INT
+  MOD
+
   DUP
   IF:<{
-    26 INT
-    MOD
-    SWAP
+
+  SWAP
 
   CTOS
   // shift, ds
@@ -204,7 +206,6 @@
   1 INT
   ONLYTOPX
   // result
-
   }>ELSE<{
     DROP
   }>
@@ -217,5 +218,5 @@
 
 ;; testable
 (cell) caesar_cipher_decrypt(int shift, cell text) inline method_id {
-  return _caesar_cipher_encrypt(26 - (shift % 26), text);
+  return caesar_cipher_encrypt(26 - (shift % 26), text);
 }

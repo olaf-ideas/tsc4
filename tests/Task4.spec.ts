@@ -84,7 +84,7 @@ describe('Task4', () => {
             root.storeUint(s.charCodeAt(i), 8);
         }
 
-        let shift = 8n;
+        let shift = 0n;
         let cell = root.endCell();
 
         const result = await task4.getCeasarEncyption(shift, cell);
