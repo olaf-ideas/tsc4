@@ -16,39 +16,99 @@
 () recv_internal() {
 }
 
-(int, int) _fibonacci(int n) asm  """
-    DUP	//  n n
-    SGN
-    IF:<{	//  n
-      DUP	//  n n
-      1 RSHIFT#	//  n _8
-      fibonacci INLINECALLDICT	//  n a b
-      s1 s1 PUSH2	//  n a b a a
-      MUL	//  n a b _11
-      s1 s1 PUSH2	//  n a b _11 b b
-      MUL	//  n a b _11 _12
-      ADD	//  n a b c
-      s0 s2 XCHG	//  n c b a
-      1 LSHIFT#	//  n c b _16
-      OVER	//  n c b _16 b
-      ADD	//  n c b _17
-      MUL	//  n c d
-      s0 s2 XCHG	//  d c n
-      1 MODPOW2#	//  d c _20
-      IFJMP:<{	//  d c
-        OVER	//  d c d
-        ADD	//  d _21
-      }>	//  d c
-      SWAP	//  c d
-    }>ELSE<{
-      DROP	// 
-      1 PUSHINT	//  _3=1
-      0 PUSHINT	//  _3=1 _4=0
-    }>
-""";
+int sgn(int x) asm "SGN";
+int bits(int x) asm "UBITSIZE";
+(tuple, ()) push_back(tuple tail, int head) asm "CONS";
+(tuple, int) pop_back(tuple list) asm "UNCONS";
+tuple null() asm "PUSHNULL";
+
+;; (int, int) _fibonacci(int n) asm  """
+;;     DUP	//  n n
+;;     SGN	//  n _1
+;;     IF:<{	//  n
+;;       DUP
+;;       UBITSIZE	
+;;         //  n |n|
+;;       SWAP
+;;       s1 PUSH
+;;       REPEAT:<{
+;;         // |n| n
+;;         2 INT
+;;         // |n| n 2
+;;         DIVMOD
+;;         // |n| n/2 n%2
+;;         ROTREV
+;;         // n%2 |n| n/2
+;;       }>
+;;       POP
+;;       // n_0, n_1, n_2, .., n_|n|-1, |n|
+      
+;;       1 INT
+;;       0 INT
+;;       ROT
+
+;;       REPEAT:<{
+;;         // n_0, n_1, ..., n_k, a, b
+;;         ROT
+;;         SGN
+
+;;         IF:<{
+;;           // a, b
+;;           s1 s1 s1 PUSH3
+
+
+;;         }>ELSE<{
+
+;;         }>
+;;       }>
+
+;;     }>ELSE<{	//  n
+;;       DROP	// 
+;;       1 PUSHINT	//  _28=1
+;;       0 PUSHINT	//  _28=1 _29=0
+;;     }>
+;; """;
+
+;; (int, int) fibonacci(int n) inline {
+;;   return _fibonacci(n);
+;; }
 
 (int, int) fibonacci(int n) inline {
-  return _fibonacci(n);
+
+  if (sgn(n)) {
+    tuple x = null();
+    
+    int y = bits(n);
+    repeat (y) {
+      x~push_back(n % 2);
+      n >>= 1;
+    }
+
+    int a = 1;
+    int b = 0;
+
+    repeat (y) {
+      if (x~pop_back()) {
+        int ab = a + b;
+        int ab2 = ab * ab;
+        int c = ab2 - a * a;
+        int d = ab2 + b * b;
+        a = c;
+        b = d;
+      }
+      else {
+        int c = a * a + b * b;
+        int d = b * (2 * a + b);
+        a = c;
+        b = d;
+      }
+    }
+
+    return (a, b);
+  }
+  else {
+    return (1, 0);
+  }
 }
 
 (tuple) _fibonacci_sequence (int n, int k) asm """

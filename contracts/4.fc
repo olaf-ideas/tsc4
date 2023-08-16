@@ -38,6 +38,8 @@ slice skip_bits(slice s, int len) asm "SDSKIPFIRST";
 int cell_depth(cell c) asm "CDEPTH";
 int slice_depth(slice s) asm "SDEPTH";
 
+builder store_one(builder b) asm "STONE";
+
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) inline method_id {
   shift %= 26;
@@ -52,7 +54,45 @@ int slice_depth(slice s) asm "SDEPTH";
 
   repeat (d) {
     repeat (127) {
-      int x = ds~load_uint(8);
+      ifnot (ds~load_uint(1)) {
+        int x = ds~load_uint(7);
+        if (x <= 90) {
+          if (x >= 65) {
+            x += shift;
+
+            if (x > 90) {
+              x -= 26;
+            }
+          }
+        }
+        else {
+          if (x <= 122) {
+            if (x >= 97) {
+              x += shift;
+
+              if (x > 122) {
+                x -= 26;
+              }
+            }
+          }
+        }
+        b = store_uint(b, x, 8);
+      }
+      else {
+        b = store_one(b);
+        b = store_uint(b, ds~load_uint(7), 7);
+      }
+    }
+
+    l~push_back(b);
+
+    b = begin_cell();
+    ds = ds~load_ref().begin_parse();
+  }
+
+  repeat (ds.slice_bits() >> 3) {
+    ifnot (ds~load_uint(1)) {
+      int x = ds~load_uint(7);
       if (x <= 90) {
         if (x >= 65) {
           x += shift;
@@ -75,36 +115,10 @@ int slice_depth(slice s) asm "SDEPTH";
       }
       b = store_uint(b, x, 8);
     }
-
-    l~push_back(b);
-
-    b = begin_cell();
-    ds = ds~load_ref().begin_parse();
-  }
-
-  repeat (ds.slice_bits() >> 3) {
-    int x = ds~load_uint(8);
-    if (x <= 90) {
-      if (x >= 65) {
-        x += shift;
-
-        if (x > 90) {
-          x -= 26;
-        }
-      }
-    }
     else {
-      if (x <= 122) {
-        if (x >= 97) {
-          x += shift;
-
-          if (x > 122) {
-            x -= 26;
-          }
-        }
-      }
+      b = store_one(b);
+      b = store_uint(b, ds~load_uint(7), 7);
     }
-    b = store_uint(b, x, 8);
   }
 
   cell result = b.end_cell();

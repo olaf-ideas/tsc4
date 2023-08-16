@@ -158,19 +158,19 @@ def test(n):
   else:
     a, b = test(n // 2)
 
-    assert 2 * b < 2**257
-
-    c = a * a + b * b
-    d = b * (2 * a + b)
-
-    assert c < 2**257
-    assert d < 2**257
-
     if n % 2 == 0:
-      return (c, d)
+        c = a * a + b * b
+        d = b * (2 * a + b)
+        a = c
+        b = d
+        return (a, b)
     else:
-      assert c + d < 2**257
-      return (d, c + d)
+      ab = (a + b) * (a + b)
+      c = ab - a * a
+      d = ab + b * b
+      a = c
+      b = d
+      return (a, b)
 
 print(test(0))
 print(test(1))

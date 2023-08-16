@@ -9,34 +9,65 @@ PROGRAM{
   }>
   fibonacci PROCINLINE:<{
     //  n
-        DUP	//  n n
-        SGN
-        IF:<{	//  n
-          DUP	//  n n
-          1 RSHIFT#	//  n _8
-          fibonacci INLINECALLDICT	//  n a b
-          s1 s1 PUSH2	//  n a b a a
-          MUL	//  n a b _11
-          s1 s1 PUSH2	//  n a b _11 b b
-          MUL	//  n a b _11 _12
-          ADD	//  n a b c
-          s0 s2 XCHG	//  n c b a
-          1 LSHIFT#	//  n c b _16
-          OVER	//  n c b _16 b
-          ADD	//  n c b _17
-          MUL	//  n c d
-          s0 s2 XCHG	//  d c n
-          1 MODPOW2#	//  d c _20
-          IFJMP:<{	//  d c
-            OVER	//  d c d
-            ADD	//  d _21
-          }>	//  d c
-          SWAP	//  c d
-        }>ELSE<{
-          DROP	// 
-          1 PUSHINT	//  _3=1
-          0 PUSHINT	//  _3=1 _4=0
-        }>	//  _2 _3
+    DUP	//  n n
+    SGN	//  n _1
+    IF:<{	//  n
+      PUSHNULL	//  n x
+      OVER	//  n x n
+      UBITSIZE	//  n x y
+      DUP	//  n x y y
+      REPEAT:<{	//  n x y
+        s2 PUSH	//  n x y n
+        1 MODPOW2#	//  n x y _8
+        s1 s2 XCHG	//  n y x _8
+        CONS	//  n y x
+        s0 s2 XCHG	//  x y n
+        1 RSHIFT#	//  x y n
+        -ROT	//  n x y
+      }>
+      s2 POP	//  y x
+      1 PUSHINT	//  y x a=1
+      0 PUSHINT	//  y x a=1 b=0
+      s0 s3 XCHG	//  b=0 x a=1 y
+      REPEAT:<{	//  b x a
+        SWAP	//  b a x
+        UNCONS	//  b a x _16
+        IF:<{	//  b a x
+          s1 s2 PUSH2	//  b a x a b
+          ADD	//  b a x ab
+          DUP	//  b a x ab ab
+          MUL	//  b a x ab2
+          s2 s0 XCPU	//  b ab2 x a a
+          MUL	//  b ab2 x _23
+          s2 s(-1) PUXC	//  b ab2 x ab2 _23
+          SUB	//  b ab2 x c
+          s3 s0 XCPU	//  c ab2 x b b
+          MUL	//  c ab2 x _26
+          s1 s2 XCHG	//  c x ab2 _26
+          ADD	//  a x b
+        }>ELSE<{	//  b a x
+          s1 s1 PUSH2	//  b a x a a
+          MUL	//  b a x _29
+          s3 s3 PUSH2	//  b a x _29 b b
+          MUL	//  b a x _29 _30
+          ADD	//  b a x c
+          s0 s2 XCHG	//  b c x a
+          1 LSHIFT#	//  b c x _34
+          s3 PUSH	//  b c x _34 b
+          ADD	//  b c x _35
+          s1 s3 XCHG	//  x c b _35
+          MUL	//  x a b
+          s1 s2 XCHG	//  a x b
+        }>
+        s0 s2 XCHG	//  b x a
+      }>
+      NIP	//  b a
+      SWAP	//  a b
+    }>ELSE<{	//  n
+      DROP	// 
+      1 PUSHINT	//  _37=1
+      0 PUSHINT	//  _37=1 _38=0
+    }>
   }>
   fibonacci_sequence PROCINLINE:<{
     //  n k
