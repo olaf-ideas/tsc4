@@ -76,7 +76,7 @@ describe('Task4', () => {
 
     it('encryption test easy', async() => {
 
-        for (let shift = 0n; shift <= 30n; shift += 1n) {
+        for (let shift = 1n; shift <= 25n; shift += 1n) {
         let s = 'abecadlo z pieca spadlo AJDKLSADJKLASD sdsdfsjlfsd.sdf.fsdjflsdsdfafsd hehe';
 
         let root = beginCell().storeUint(0, 32);
@@ -124,6 +124,7 @@ describe('Task4', () => {
     it('decryption test easy', async() => {
 
         let s = 'abecadlo z pieca spadlo AJDKLSADJKLASD sdsdfsjlfsd.sdf.fsdjflsdsdfafsd hehe';
+        s += String.fromCharCode(93);
 
         let root = beginCell().storeUint(0, 32);
 

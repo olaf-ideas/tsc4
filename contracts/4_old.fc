@@ -12,79 +12,95 @@
 ;; remember to if the shift = 0 case (or do we?)
 (cell) _caesar_cipher_encrypt(int shift, cell text) asm """
   // shift, text
-  CTOS
-  // shift, ds
-  
   SWAP
   26 INT
   MOD
+
+  DUP
+  IF:<{
+
+  SWAP
+
+  CTOS
+  // shift, ds
+
+  8 PUSHPOW2DEC
+  -ROT
+
+  132 INT
+  REPEAT:<{
+    s2 PUSH
+    DEC
+    -ROT
+  }>
+
+  // 127, 126, 125, 124, 123, shift, ds
   
-  // ds, shift
-  128 INT
-  127 INT
-  126 INT
-  125 INT
-  124 INT
-  123 INT
+  OVER
+  96 INT
+  ADD
+  // 127, 126, 125, 124, 123, shift, ds, 122 - 26 + shift
+  -ROT
 
-  // ds, shift, 128, 127, 126, 125, 124, 123
-
-  s6 PUSH
-  96 ADDCONST
-  // ds, shift, 128, 127, 126, 125, 124, 123, 122 - 26 + shift
-
-  // ds, shift, 128, 127, 126, 125, 124, 123, 122 - 26 + shift
-
+  // 127, 126, 125, 124, 123, 122 - 26 + shift, shift, ds
   25 INT
   REPEAT:<{
-    DUP
+    s2 PUSH
     DEC
     DUP
     97 LESSINT
     IF:<{
       26 ADDCONST
     }>
+    -ROT
   }>
-  // ds, shift, 128, ..., 123, 122-26+shift, ..., 97+shift
+  // 127, ..., 123, 122-26+shift, ..., 97+shift, shift, ds
 
   96 INT
+  -ROT
   95 INT
+  -ROT
   94 INT
+  -ROT
   93 INT
+  -ROT
   92 INT
+  -ROT
   91 INT
-
-  // ds, shift, 128, ..., 92, 91
-
-  // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91
-
-  38 s() PUSH
-
-  64 ADDCONST
-  // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift
-
+  -ROT
+  // 127, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, shift, ds
+  SWAP
+  64 INT
+  ADD
+  // 127, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, ds, 90-26+shift
+  SWAP
+  // 127, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ds
   25 INT
   REPEAT:<{
-    DUP
+    s1 PUSH
     DEC
     DUP
     65 LESSINT
     IF:<{
       26 ADDCONST
     }>
+    SWAP
   }>
-  // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift
+  // 127, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift, ds
 
   64 INT
+  SWAP
+
   64 INT
   REPEAT:<{
-    DUP
+    // ... i, ds
+    s1 PUSH
     DEC
+    // ..., i, ds, i - 1
+    SWAP
+    // ..., i, i - 1, ds
   }>
-
-  // shift, ds, 128, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift, 64, ..., 0
-
-  130 s() PUSH
+  // ..., 3, 2, 1, 0, ds
 
   NULL
   // ..., 3, 2, 1, 0, ds, list
@@ -190,6 +206,9 @@
   1 INT
   ONLYTOPX
   // result
+  }>ELSE<{
+    DROP
+  }>
 """;
 
 ;; testable
