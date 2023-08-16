@@ -23,72 +23,115 @@ slice begin_parse(cell c) asm "CTOS";
 
 (cell) find_branch_by_hash(int hash, cell tree) inline method_id {
 
+    if (hash == tree.cell_hash()) {
+        return tree;
+    }
+
     tuple queue = null();
-    queue~push_back(tree);
 
-    do {
-        cell n1 = queue~pop_back();
+    {
+        slice aa = tree.begin_parse();
 
-        if (hash == n1.cell_hash()) {
-            return n1;
-        }
+        repeat (aa.slice_refs()) {
+            cell b = aa~load_ref();
 
-        slice a1 = n1.begin_parse();
-
-        repeat (slice_refs(a1)) {
-            cell n2 = a1~load_ref();
-
-            if (hash == n2.cell_hash()) {
-                return n2;
+            if (hash == b.cell_hash()) {
+                return b;
             }
 
-            slice a2 = n2.begin_parse();
+            slice bb = b.begin_parse();
+            repeat (bb.slice_refs()) {
+                cell c = bb~load_ref();
 
-            repeat (slice_refs(a2)) {
-                cell n3 = a2~load_ref();
-
-                if (hash == n3.cell_hash()) {
-                    return n3;
+                if (hash == c.cell_hash()) {
+                    return c;
                 }
 
-                slice a3 = n3.begin_parse();
+                slice cc = c.begin_parse();
+                repeat (cc.slice_refs()) {
+                    cell d = cc~load_ref();
 
-                repeat (slice_refs(a3)) {
-                    cell n4 = a3~load_ref();
-
-                    if (hash == n4.cell_hash()) {
-                        return n4;
+                    if (hash == d.cell_hash()) {
+                        return d;
                     }
 
-                    slice a4 = n4.begin_parse();
+                    slice dd = d.begin_parse();
+                    repeat (dd.slice_refs()) {
+                        cell e = dd~load_ref();
 
-                    repeat (slice_refs(a4)) {
-                        cell n5 = a4~load_ref();
-
-                        if (hash == n5.cell_hash()) {
-                            return n5;
+                        if (hash == e.cell_hash()) {
+                            return e;
                         }
 
-                        slice a5 = n5.begin_parse();
+                        slice ee = e.begin_parse();
 
-                        repeat (slice_refs(a5)) {
-                            cell n6 = a5~load_ref();
+                        repeat (ee.slice_refs()) {
+                            cell f = ee~load_ref();
 
-                            if (hash == n6.cell_hash()) {
-                                return n6;
+                            if (hash == f.cell_hash()) {
+                                return f;
                             }
 
-                            slice a6 = n6.begin_parse();
-
-                            repeat (slice_refs(a6)) {
-                                queue~push_back(a6~load_ref());
-                            }
+                            queue~push_back(f);
                         }
                     }
                 }
             }
         }
-    } until (is_null(queue));
+    }
+
+    ifnot (is_null(queue)) {
+        do {
+            slice aa = (queue~pop_back()).begin_parse();
+
+            repeat (aa.slice_refs()) {
+                cell b = aa~load_ref();
+
+                if (hash == b.cell_hash()) {
+                    return b;
+                }
+
+                slice bb = b.begin_parse();
+                repeat (bb.slice_refs()) {
+                    cell c = bb~load_ref();
+
+                    if (hash == c.cell_hash()) {
+                        return c;
+                    }
+
+                    slice cc = c.begin_parse();
+                    repeat (cc.slice_refs()) {
+                        cell d = cc~load_ref();
+
+                        if (hash == d.cell_hash()) {
+                            return d;
+                        }
+
+                        slice dd = d.begin_parse();
+                        repeat (dd.slice_refs()) {
+                            cell e = dd~load_ref();
+
+                            if (hash == e.cell_hash()) {
+                                return e;
+                            }
+
+                            slice ee = e.begin_parse();
+
+                            repeat (ee.slice_refs()) {
+                                cell f = ee~load_ref();
+
+                                if (hash == f.cell_hash()) {
+                                    return f;
+                                }
+
+                                queue~push_back(f);
+                            }
+                        }
+                    }
+                }
+            }
+        } until (is_null(queue));
+    }
 
     return begin_cell().end_cell();
 }

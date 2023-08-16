@@ -10,120 +10,204 @@ PROGRAM{
     CONT:<{
       c2 SAVE
       SAMEALTSAVE	//  hash tree
-      PUSHNULL	//  hash tree queue
-      SWAP	//  hash queue tree
-      CONS	//  hash queue
-      UNTIL:<{
-        UNCONS	//  hash queue n1
-        DUP	//  hash queue n1 n1
-        HASHCU	//  hash queue n1 _9
-        s3 s(-1) PUXC	//  hash queue n1 hash _9
-        EQUAL	//  hash queue n1 _10
-        IFJMP:<{	//  hash queue n1
-          2 1 BLKDROP2	//  n1
-          RETALT
-        }>	//  hash queue n1
-        CTOS	//  hash queue a1
-        DUP	//  hash queue a1 a1
-        SREFS	//  hash queue a1 _13
-        REPEAT:<{	//  hash queue a1
-          LDREF	//  hash queue n2 a1
-          OVER	//  hash queue n2 a1 n2
-          HASHCU	//  hash queue n2 a1 _17
-          s4 s(-1) PUXC	//  hash queue n2 a1 hash _17
-          EQUAL	//  hash queue n2 a1 _18
-          IFJMP:<{	//  hash queue n2 a1
+      DUP	//  hash tree tree
+      HASHCU	//  hash tree _2
+      s2 s(-1) PUXC	//  hash tree hash _2
+      EQUAL	//  hash tree _3
+      IF:<{	//  hash tree
+        NIP	//  tree
+      }>ELSE<{	//  hash tree
+        PUSHNULL	//  hash tree queue
+        SWAP	//  hash queue tree
+        CTOS	//  hash queue aa
+        DUP	//  hash queue aa aa
+        SREFS	//  hash queue aa _8
+        REPEAT:<{	//  hash queue aa
+          LDREF	//  hash queue b aa
+          OVER	//  hash queue b aa b
+          HASHCU	//  hash queue b aa _12
+          s4 s(-1) PUXC	//  hash queue b aa hash _12
+          EQUAL	//  hash queue b aa _13
+          IFJMP:<{	//  hash queue b aa
             s1 s3 XCHG
-            3 BLKDROP	//  n2
+            3 BLKDROP	//  b
             RETALT
-          }>	//  hash queue n2 a1
-          SWAP	//  hash queue a1 n2
-          CTOS	//  hash queue a1 a2
-          DUP	//  hash queue a1 a2 a2
-          SREFS	//  hash queue a1 a2 _21
-          REPEAT:<{	//  hash queue a1 a2
-            LDREF	//  hash queue a1 n3 a2
-            OVER	//  hash queue a1 n3 a2 n3
-            HASHCU	//  hash queue a1 n3 a2 _25
-            s5 s(-1) PUXC	//  hash queue a1 n3 a2 hash _25
-            EQUAL	//  hash queue a1 n3 a2 _26
-            IFJMP:<{	//  hash queue a1 n3 a2
+          }>	//  hash queue b aa
+          SWAP	//  hash queue aa b
+          CTOS	//  hash queue aa bb
+          DUP	//  hash queue aa bb bb
+          SREFS	//  hash queue aa bb _16
+          REPEAT:<{	//  hash queue aa bb
+            LDREF	//  hash queue aa c bb
+            OVER	//  hash queue aa c bb c
+            HASHCU	//  hash queue aa c bb _20
+            s5 s(-1) PUXC	//  hash queue aa c bb hash _20
+            EQUAL	//  hash queue aa c bb _21
+            IFJMP:<{	//  hash queue aa c bb
               s1 s4 XCHG
-              4 BLKDROP	//  n3
+              4 BLKDROP	//  c
               RETALT
-            }>	//  hash queue a1 n3 a2
-            SWAP	//  hash queue a1 a2 n3
-            CTOS	//  hash queue a1 a2 a3
-            DUP	//  hash queue a1 a2 a3 a3
-            SREFS	//  hash queue a1 a2 a3 _29
-            REPEAT:<{	//  hash queue a1 a2 a3
-              LDREF	//  hash queue a1 a2 n4 a3
-              OVER	//  hash queue a1 a2 n4 a3 n4
-              HASHCU	//  hash queue a1 a2 n4 a3 _33
-              s6 s(-1) PUXC	//  hash queue a1 a2 n4 a3 hash _33
-              EQUAL	//  hash queue a1 a2 n4 a3 _34
-              IFJMP:<{	//  hash queue a1 a2 n4 a3
+            }>	//  hash queue aa c bb
+            SWAP	//  hash queue aa bb c
+            CTOS	//  hash queue aa bb cc
+            DUP	//  hash queue aa bb cc cc
+            SREFS	//  hash queue aa bb cc _24
+            REPEAT:<{	//  hash queue aa bb cc
+              LDREF	//  hash queue aa bb d cc
+              OVER	//  hash queue aa bb d cc d
+              HASHCU	//  hash queue aa bb d cc _28
+              s6 s(-1) PUXC	//  hash queue aa bb d cc hash _28
+              EQUAL	//  hash queue aa bb d cc _29
+              IFJMP:<{	//  hash queue aa bb d cc
                 s1 s5 XCHG
-                5 BLKDROP	//  n4
+                5 BLKDROP	//  d
                 RETALT
-              }>	//  hash queue a1 a2 n4 a3
-              SWAP	//  hash queue a1 a2 a3 n4
-              CTOS	//  hash queue a1 a2 a3 a4
-              DUP	//  hash queue a1 a2 a3 a4 a4
-              SREFS	//  hash queue a1 a2 a3 a4 _37
-              REPEAT:<{	//  hash queue a1 a2 a3 a4
-                LDREF	//  hash queue a1 a2 a3 n5 a4
-                OVER	//  hash queue a1 a2 a3 n5 a4 n5
-                HASHCU	//  hash queue a1 a2 a3 n5 a4 _41
-                s7 s(-1) PUXC	//  hash queue a1 a2 a3 n5 a4 hash _41
-                EQUAL	//  hash queue a1 a2 a3 n5 a4 _42
-                IFJMP:<{	//  hash queue a1 a2 a3 n5 a4
+              }>	//  hash queue aa bb d cc
+              SWAP	//  hash queue aa bb cc d
+              CTOS	//  hash queue aa bb cc dd
+              DUP	//  hash queue aa bb cc dd dd
+              SREFS	//  hash queue aa bb cc dd _32
+              REPEAT:<{	//  hash queue aa bb cc dd
+                LDREF	//  hash queue aa bb cc e dd
+                OVER	//  hash queue aa bb cc e dd e
+                HASHCU	//  hash queue aa bb cc e dd _36
+                s7 s(-1) PUXC	//  hash queue aa bb cc e dd hash _36
+                EQUAL	//  hash queue aa bb cc e dd _37
+                IFJMP:<{	//  hash queue aa bb cc e dd
                   s1 s6 XCHG
-                  6 BLKDROP	//  n5
+                  6 BLKDROP	//  e
                   RETALT
-                }>	//  hash queue a1 a2 a3 n5 a4
-                SWAP	//  hash queue a1 a2 a3 a4 n5
-                CTOS	//  hash queue a1 a2 a3 a4 a5
-                DUP	//  hash queue a1 a2 a3 a4 a5 a5
-                SREFS	//  hash queue a1 a2 a3 a4 a5 _45
-                REPEAT:<{	//  hash queue a1 a2 a3 a4 a5
-                  LDREF	//  hash queue a1 a2 a3 a4 n6 a5
-                  OVER	//  hash queue a1 a2 a3 a4 n6 a5 n6
-                  HASHCU	//  hash queue a1 a2 a3 a4 n6 a5 _49
-                  s8 s(-1) PUXC	//  hash queue a1 a2 a3 a4 n6 a5 hash _49
-                  EQUAL	//  hash queue a1 a2 a3 a4 n6 a5 _50
-                  IFJMP:<{	//  hash queue a1 a2 a3 a4 n6 a5
+                }>	//  hash queue aa bb cc e dd
+                SWAP	//  hash queue aa bb cc dd e
+                CTOS	//  hash queue aa bb cc dd ee
+                DUP	//  hash queue aa bb cc dd ee ee
+                SREFS	//  hash queue aa bb cc dd ee _40
+                REPEAT:<{	//  hash queue aa bb cc dd ee
+                  LDREF	//  hash queue aa bb cc dd f ee
+                  OVER	//  hash queue aa bb cc dd f ee f
+                  HASHCU	//  hash queue aa bb cc dd f ee _44
+                  s8 s(-1) PUXC	//  hash queue aa bb cc dd f ee hash _44
+                  EQUAL	//  hash queue aa bb cc dd f ee _45
+                  IFJMP:<{	//  hash queue aa bb cc dd f ee
                     s1 s7 XCHG
-                    7 BLKDROP	//  n6
+                    7 BLKDROP	//  f
                     RETALT
-                  }>	//  hash queue a1 a2 a3 a4 n6 a5
-                  SWAP	//  hash queue a1 a2 a3 a4 a5 n6
-                  CTOS	//  hash queue a1 a2 a3 a4 a5 a6
-                  DUP	//  hash queue a1 a2 a3 a4 a5 a6 a6
-                  SREFS	//  hash queue a1 a2 a3 a4 a5 a6 _53
-                  REPEAT:<{	//  hash queue a1 a2 a3 a4 a5 a6
-                    LDREF	//  hash queue a1 a2 a3 a4 a5 _55 a6
-                    s7 s7 XCHG2	//  hash a6 a1 a2 a3 a4 a5 queue _55
-                    CONS	//  hash a6 a1 a2 a3 a4 a5 queue
-                    s0 s6 XCHG	//  hash queue a1 a2 a3 a4 a5 a6
-                  }>
-                  DROP	//  hash queue a1 a2 a3 a4 a5
+                  }>	//  hash queue aa bb cc dd f ee
+                  s6 s6 XCHG2	//  hash ee aa bb cc dd queue f
+                  CONS	//  hash ee aa bb cc dd queue
+                  s0 s5 XCHG	//  hash queue aa bb cc dd ee
                 }>
-                DROP	//  hash queue a1 a2 a3 a4
+                DROP	//  hash queue aa bb cc dd
               }>
-              DROP	//  hash queue a1 a2 a3
+              DROP	//  hash queue aa bb cc
             }>
-            DROP	//  hash queue a1 a2
+            DROP	//  hash queue aa bb
           }>
-          DROP	//  hash queue a1
+          DROP	//  hash queue aa
         }>
         DROP	//  hash queue
         DUP	//  hash queue queue
-        ISNULL	//  hash queue _58
-      }>	//  hash queue
-      2DROP	// 
-      NEWC	//  _59
-      ENDC	//  _60
+        ISNULL	//  hash queue _48
+        IFNOT:<{	//  hash queue
+          UNTIL:<{
+            UNCONS	//  hash queue _50
+            CTOS	//  hash queue aa
+            DUP	//  hash queue aa aa
+            SREFS	//  hash queue aa _53
+            REPEAT:<{	//  hash queue aa
+              LDREF	//  hash queue b aa
+              OVER	//  hash queue b aa b
+              HASHCU	//  hash queue b aa _57
+              s4 s(-1) PUXC	//  hash queue b aa hash _57
+              EQUAL	//  hash queue b aa _58
+              IFJMP:<{	//  hash queue b aa
+                s1 s3 XCHG
+                3 BLKDROP	//  b
+                RETALT
+              }>	//  hash queue b aa
+              SWAP	//  hash queue aa b
+              CTOS	//  hash queue aa bb
+              DUP	//  hash queue aa bb bb
+              SREFS	//  hash queue aa bb _61
+              REPEAT:<{	//  hash queue aa bb
+                LDREF	//  hash queue aa c bb
+                OVER	//  hash queue aa c bb c
+                HASHCU	//  hash queue aa c bb _65
+                s5 s(-1) PUXC	//  hash queue aa c bb hash _65
+                EQUAL	//  hash queue aa c bb _66
+                IFJMP:<{	//  hash queue aa c bb
+                  s1 s4 XCHG
+                  4 BLKDROP	//  c
+                  RETALT
+                }>	//  hash queue aa c bb
+                SWAP	//  hash queue aa bb c
+                CTOS	//  hash queue aa bb cc
+                DUP	//  hash queue aa bb cc cc
+                SREFS	//  hash queue aa bb cc _69
+                REPEAT:<{	//  hash queue aa bb cc
+                  LDREF	//  hash queue aa bb d cc
+                  OVER	//  hash queue aa bb d cc d
+                  HASHCU	//  hash queue aa bb d cc _73
+                  s6 s(-1) PUXC	//  hash queue aa bb d cc hash _73
+                  EQUAL	//  hash queue aa bb d cc _74
+                  IFJMP:<{	//  hash queue aa bb d cc
+                    s1 s5 XCHG
+                    5 BLKDROP	//  d
+                    RETALT
+                  }>	//  hash queue aa bb d cc
+                  SWAP	//  hash queue aa bb cc d
+                  CTOS	//  hash queue aa bb cc dd
+                  DUP	//  hash queue aa bb cc dd dd
+                  SREFS	//  hash queue aa bb cc dd _77
+                  REPEAT:<{	//  hash queue aa bb cc dd
+                    LDREF	//  hash queue aa bb cc e dd
+                    OVER	//  hash queue aa bb cc e dd e
+                    HASHCU	//  hash queue aa bb cc e dd _81
+                    s7 s(-1) PUXC	//  hash queue aa bb cc e dd hash _81
+                    EQUAL	//  hash queue aa bb cc e dd _82
+                    IFJMP:<{	//  hash queue aa bb cc e dd
+                      s1 s6 XCHG
+                      6 BLKDROP	//  e
+                      RETALT
+                    }>	//  hash queue aa bb cc e dd
+                    SWAP	//  hash queue aa bb cc dd e
+                    CTOS	//  hash queue aa bb cc dd ee
+                    DUP	//  hash queue aa bb cc dd ee ee
+                    SREFS	//  hash queue aa bb cc dd ee _85
+                    REPEAT:<{	//  hash queue aa bb cc dd ee
+                      LDREF	//  hash queue aa bb cc dd f ee
+                      OVER	//  hash queue aa bb cc dd f ee f
+                      HASHCU	//  hash queue aa bb cc dd f ee _89
+                      s8 s(-1) PUXC	//  hash queue aa bb cc dd f ee hash _89
+                      EQUAL	//  hash queue aa bb cc dd f ee _90
+                      IFJMP:<{	//  hash queue aa bb cc dd f ee
+                        s1 s7 XCHG
+                        7 BLKDROP	//  f
+                        RETALT
+                      }>	//  hash queue aa bb cc dd f ee
+                      s6 s6 XCHG2	//  hash ee aa bb cc dd queue f
+                      CONS	//  hash ee aa bb cc dd queue
+                      s0 s5 XCHG	//  hash queue aa bb cc dd ee
+                    }>
+                    DROP	//  hash queue aa bb cc dd
+                  }>
+                  DROP	//  hash queue aa bb cc
+                }>
+                DROP	//  hash queue aa bb
+              }>
+              DROP	//  hash queue aa
+            }>
+            DROP	//  hash queue
+            DUP	//  hash queue queue
+            ISNULL	//  hash queue _93
+          }>	//  hash queue
+          2DROP	// 
+        }>ELSE<{
+          2DROP	// 
+        }>
+        NEWC	//  _94
+        ENDC	//  _95
+      }>
     }>
     EXECUTE
   }>
