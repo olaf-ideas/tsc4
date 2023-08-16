@@ -168,7 +168,7 @@ describe('Task4', () => {
 
     it('hard', async() => {
         // for (let shift = 0n; shift <= 30n; shift += 1n) {
-        let len = 4000;
+        let len = 0;
         let shift = 5n;
 
         let blocks = [];
@@ -191,6 +191,7 @@ describe('Task4', () => {
         let builder = beginCell();
 
         if (blocks.length == 1) {
+            console.log("STORE HERE: ", 32);
             builder.storeUint(0, 32);
         }
 

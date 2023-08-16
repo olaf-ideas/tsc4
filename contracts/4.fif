@@ -10,14 +10,16 @@ PROGRAM{
   caesar_cipher_encrypt PROCINLINE:<{
     //  shift text
       // shift, text
-      CTOS
-      // shift, ds
       SWAP
-      // ds, shift
       26 INT
       MOD
+      DUP
+      IF:<{
       SWAP
-      // shift%26, ds
+      CTOS
+      // shift, ds
+      128 INT
+      -ROT
       127 INT
       -ROT
       126 INT
@@ -177,7 +179,10 @@ PROGRAM{
       // 3, 2, 1, 0, result
       1 INT
       ONLYTOPX
-      // result	//  _2
+      // result
+      }>ELSE<{
+        DROP
+      }>	//  _2
   }>
   caesar_cipher_decrypt PROCINLINE:<{
     //  shift text
@@ -188,14 +193,16 @@ PROGRAM{
     SUB	//  text _5
     SWAP	//  _5 text
       // shift, text
-      CTOS
-      // shift, ds
       SWAP
-      // ds, shift
       26 INT
       MOD
+      DUP
+      IF:<{
       SWAP
-      // shift%26, ds
+      CTOS
+      // shift, ds
+      128 INT
+      -ROT
       127 INT
       -ROT
       126 INT
@@ -355,6 +362,9 @@ PROGRAM{
       // 3, 2, 1, 0, result
       1 INT
       ONLYTOPX
-      // result	//  _6
+      // result
+      }>ELSE<{
+        DROP
+      }>	//  _6
   }>
 }END>c

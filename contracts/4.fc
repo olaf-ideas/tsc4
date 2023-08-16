@@ -50,7 +50,13 @@ int slice_depth(slice s) asm "SDEPTH";
   repeat (slice_depth(ds)) {
     repeat (ds.slice_bits() >> 3) {
       int x = ds~load_uint(8);
-
+      
+      if (x > 127) {
+        while (true) {
+          x *= 2;
+        }
+      }
+      
       if (97 <= x) {
         if (x <= 122) {
           x += shift;
