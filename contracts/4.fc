@@ -9,214 +9,124 @@
 () recv_internal() {
 }
 
-;; remember to if the shift = 0 case (or do we?)
-(cell) _caesar_cipher_encrypt(int shift, cell text) asm """
-  // shift, text
-  SWAP
-  26 INT
-  MOD
+int is_null(tuple t) asm "ISNULL";
+int ilen(int x) asm "UBITSIZE";
+int is_prefix(slice pattern, slice text) asm "SDPFX";
 
-  DUP
-  IF:<{
+(tuple, ()) push_back(tuple tail, builder head) asm "CONS";
+(tuple, builder) pop_back(tuple list) asm "UNCONS";
 
-  SWAP
+(int, slice) load_zeros(slice s) asm "LDZEROES";
+builder store_one(builder b) asm "STONE";
+builder store_zeros(builder b, int cnt) asm "STZEROES";
 
-  CTOS
-  // shift, ds
-
-  127 INT
-  -ROT
-  126 INT
-  -ROT
-  125 INT
-  -ROT
-  124 INT
-  -ROT
-  123 INT
-  -ROT
-  // 127, 126, 125, 124, 123, shift, ds
-  
-  OVER
-  96 INT
-  ADD
-  // 127, 126, 125, 124, 123, shift, ds, 122 - 26 + shift
-  -ROT
-
-  // 127, 126, 125, 124, 123, 122 - 26 + shift, shift, ds
-  25 INT
-  REPEAT:<{
-    s2 PUSH
-    DEC
-    DUP
-    97 LESSINT
-    IF:<{
-      26 ADDCONST
-    }>
-    -ROT
-  }>
-  // 127, ..., 123, 122-26+shift, ..., 97+shift, shift, ds
-
-  96 INT
-  -ROT
-  95 INT
-  -ROT
-  94 INT
-  -ROT
-  93 INT
-  -ROT
-  92 INT
-  -ROT
-  91 INT
-  -ROT
-  // 127, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, shift, ds
-  SWAP
-  64 INT
-  ADD
-  // 127, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, ds, 90-26+shift
-  SWAP
-  // 127, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ds
-  25 INT
-  REPEAT:<{
-    s1 PUSH
-    DEC
-    DUP
-    65 LESSINT
-    IF:<{
-      26 ADDCONST
-    }>
-    SWAP
-  }>
-  // 127, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift, ds
-
-  64 INT
-  SWAP
-
-  64 INT
-  REPEAT:<{
-    // ... i, ds
-    s1 PUSH
-    DEC
-    // ..., i, ds, i - 1
-    SWAP
-    // ..., i, i - 1, ds
-  }>
-  // ..., 3, 2, 1, 0, ds
-
-  NULL
-  // ..., 3, 2, 1, 0, ds, list
-  NEWC
-
-  // ..., 3, 2, 1, 0, ds, list, builder
-  ROT
-  // ..., 3, 2, 1, 0, list, builder, ds
-  s0 PUSH
-  SDEPTH
-  // ..., 3, 2, 1, 0, list, builder, ds, ds_depth
-  
-  REPEAT:<{
-    127 INT
-    REPEAT:<{
-      8 LDU
-
-      SWAP
-      // ..., 3, 2, 1, 0, list, builder, ds, x_8
-      3 ADDCONST
-      
-      PUSHX
-
-      // ..., 3, 2, 1, 0, list, builder, ds, x_shifted
-      ROT
-      // ..., 3, 2, 1, 0, list, ds, x_shifted, builder
-
-      8 STU
-      // ..., 3, 2, 1, 0, list, ds, builder
-      SWAP
-      // ..., 3, 2, 1, 0, list, builder, ds
-    }>
-    // ..., 3, 2, 1, 0, list, builder, ds
-    -ROT
-    CONS
-    // ..., 3, 2, 1, 0, ds, list
-    NEWC
-    // ..., 3, 2, 1, 0, ds, list, builder
-    ROT
-    // ..., 3, 2, 1, 0, list, builder, ds
-    PLDREF
-    CTOS
-    // ..., 3, 2, 1, 0, list, builder, ds
-  }>
-
-  DUP
-  SBITS
-
-  3 RSHIFT#
-
-
-  REPEAT:<{
-    8 LDU
-    SWAP
-    // ..., 3, 2, 1, 0, list, builder, ds, x_8
-    3 ADDCONST
-    
-    PUSHX
-
-    // ..., 3, 2, 1, 0, list, builder, ds, x_shifted
-    ROT
-    // ..., 3, 2, 1, 0, list, ds, x_shifted, builder
-
-    8 STU
-    // ..., 3, 2, 1, 0, list, ds, builder
-    SWAP
-    // ..., 3, 2, 1, 0, list, builder, ds
-  }>
-
-  DROP
-  // ..., 3, 2, 1, 0, list, builder
-  ENDC
-  // ..., 3, 2, 1, 0, list, result
-  SWAP
-  // ..., 3, 2, 1, 0, result, list
-
-  DUP
-  ISNULL
-
-  IFNOT:<{
-    UNTIL:<{
-
-      // result, list
-      UNCONS
-      // result, list, builder
-
-      s1 s2 XCHG
-
-      // list, result, builder
-
-      STREF
-      // list, builder
-      ENDC
-      // list, result
-      SWAP
-      // result, list
-      DUP
-      ISNULL
-    }>
-  }>
-  DROP
-  // 3, 2, 1, 0, result
-  1 INT
-  ONLYTOPX
-  // result
-  }>ELSE<{
-    DROP
-  }>
-""";
+builder store_ref(builder b, cell c) asm(c b) "STREF";
+(slice, cell) load_ref(slice s) asm( -> 1 0) "LDREF";
+int slice_refs(slice s) asm "SREFS";
+int min(int x, int y) asm "MIN";
+builder store_slice(builder b, slice s) asm "STSLICER";
+(slice, ()) ~skip_bits(slice s, int len) asm "SDSKIPFIRST";
+forall X -> X null() asm "PUSHNULL";
+int slice_bits(slice s) asm "SBITS";
+builder begin_cell() asm "NEWC";
+slice begin_parse(cell c) asm "CTOS";
+cell end_cell(builder b) asm "ENDC";
+int builder_bits(builder b) asm "BBITS";
+int slice_empty?(slice s) asm "SEMPTY";
+int slice_refs_empty?(slice s) asm "SREMPTY";
+slice skip_bits(slice s, int len) asm "SDSKIPFIRST";
+int cell_depth(cell c) asm "CDEPTH";
+int slice_depth(slice s) asm "SDEPTH";
 
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) inline method_id {
-  return _caesar_cipher_encrypt(shift, text);
+  shift %= 26;
+
+  slice ds = text.begin_parse().skip_bits(32);
+
+  tuple l = null();
+  builder b = begin_cell().store_uint(0, 32);
+
+  repeat (slice_depth(ds)) {
+    repeat (ds.slice_bits() >> 3) {
+      int x = ds~load_uint(8);
+
+      if (97 <= x) {
+        if (x <= 122) {
+          x += shift;
+
+          if (x > 122) {
+            x -= 26;
+          }
+        }
+      }
+      else {
+        if (65 <= x) { 
+          if (x <= 90) {
+            x += shift;
+
+            if (x > 90) {
+              x -= 26;
+            }
+          }
+        }
+      }
+
+      b = store_uint(b, x, 8);
+    }
+
+    ds = ds~load_ref().begin_parse();
+    l~push_back(b);
+    b = begin_cell();
+  }
+
+  repeat (ds.slice_bits() >> 3) {
+    int x = ds~load_uint(8);
+
+    if (x > 127) {
+      while (true) {
+        x *= 2;
+      }
+    }
+    
+    if (97 <= x) {
+      if (x <= 122) {
+        x += shift;
+
+        if (x > 122) {
+          x -= 26;
+        }
+      }
+    }
+    else {
+      if (65 <= x) { 
+        if (x <= 90) {
+          x += shift;
+
+          if (x > 90) {
+            x -= 26;
+          }
+        }
+      }
+    }
+
+    b = store_uint(b, x, 8);
+  }
+
+  cell result = b.end_cell();
+
+  ifnot (is_null(l)) {
+    do {
+      result = (l~pop_back()).store_ref(result).end_cell();
+    } until (is_null(l));
+  }
+
+  return result;
 }
 
 ;; testable
 (cell) caesar_cipher_decrypt(int shift, cell text) inline method_id {
-  return _caesar_cipher_encrypt(26 - (shift % 26), text);
+  shift %= 26;
+
+  return caesar_cipher_encrypt(26 - shift, text);
 }
