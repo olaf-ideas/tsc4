@@ -48,7 +48,7 @@ describe('Task4', () => {
             if ('a' <= s[i] && s[i] <= 'z') {
                 let x = s.charCodeAt(i) + shift;
 
-                if (x > 'z'.charCodeAt(0))
+                while (x > 'z'.charCodeAt(0))
                     x -= 26;
                 
                 t += String.fromCharCode(x);
@@ -57,7 +57,7 @@ describe('Task4', () => {
             if ('A' <= s[i] && s[i] <= 'Z') {
                 let x = s.charCodeAt(i) + shift;
 
-                if (x > 'Z'.charCodeAt(0))
+                while (x > 'Z'.charCodeAt(0))
                     x -= 26;
                 
                 t += String.fromCharCode(x);
@@ -76,6 +76,7 @@ describe('Task4', () => {
 
     it('encryption test easy', async() => {
 
+        for (let shift = 0n; shift <= 30n; shift += 1n) {
         let s = 'abecadlo z pieca spadlo AJDKLSADJKLASD sdsdfsjlfsd.sdf.fsdjflsdsdfafsd hehe';
 
         let root = beginCell().storeUint(0, 32);
@@ -84,7 +85,7 @@ describe('Task4', () => {
             root.storeUint(s.charCodeAt(i), 8);
         }
 
-        let shift = 0n;
+        // let shift = 0n;
         let cell = root.endCell();
 
         const result = await task4.getCeasarEncyption(shift, cell);
@@ -117,6 +118,7 @@ describe('Task4', () => {
         // console.log("answer: ", answer);
 
         expect(result_string).toEqual(answer);
+        }
     })
 
     it('decryption test easy', async() => {
@@ -165,7 +167,9 @@ describe('Task4', () => {
     })
 
     it('hard', async() => {
-        let len = 2000;
+        // for (let shift = 0n; shift <= 30n; shift += 1n) {
+        let len = 4000;
+        let shift = 5n;
 
         let blocks = [];
 
@@ -252,7 +256,7 @@ describe('Task4', () => {
             input += list[i];
         }
 
-        let shift = 5n;
+        // let shift = 5n;
 
         console.log("cell: ", cell);
         console.log("cell bits: ", cell.bits.length);
@@ -286,6 +290,7 @@ describe('Task4', () => {
         console.log("shift:", shift);
 
         expect(answer).toEqual(solution);
+        // }
     })
     // it('decryption test shift 3', async() => {
 
