@@ -114,14 +114,20 @@
     127 INT
     REPEAT:<{
       8 LDU
+      SWAP
       // ..., 3, 2, 1, 0, list, builder, ds, x_8
       3 ADDCONST
+      
       PUSHX
+
       // ..., 3, 2, 1, 0, list, builder, ds, x_shifted
-      s1 s2 XCHG
+      ROT
+      // ..., 3, 2, 1, 0, list, ds, x_shifted, builder
+
       8 STU
       // ..., 3, 2, 1, 0, list, ds, builder
       SWAP
+      // ..., 3, 2, 1, 0, list, builder, ds
     }>
     // ..., 3, 2, 1, 0, list, builder, ds
     -ROT

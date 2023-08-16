@@ -74,7 +74,7 @@ describe('Task4', () => {
         return encrypt(s, -shift);
     }
 
-    it('encryption test', async() => {
+    it('encryption test easy', async() => {
 
         let s = 'abecadlo z pieca spadlo AJDKLSADJKLASD sdsdfsjlfsd.sdf.fsdjflsdsdfafsd hehe';
 
@@ -119,7 +119,7 @@ describe('Task4', () => {
         expect(result_string).toEqual(answer);
     })
 
-    it('decryption test', async() => {
+    it('decryption test easy', async() => {
 
         let s = 'abecadlo z pieca spadlo AJDKLSADJKLASD sdsdfsjlfsd.sdf.fsdjflsdsdfafsd hehe';
 
@@ -163,6 +163,56 @@ describe('Task4', () => {
 
         expect(result_string).toEqual(answer);
     })
+
+    // it('hard', async() => {
+    //     let len = 4000;
+
+    //     let blocks = [];
+
+    //     blocks.push(Math.min(127 - 32, len));
+    //     len -= blocks[0];
+
+    //     while (len >= 127) {
+    //         blocks.push(127);
+    //         len -= 127;
+    //     }
+
+    //     blocks.push(len);
+
+    //     let builder = beginCell().storeUint(0n, 32);
+    //     let list = '';
+
+    //     for (let i = 0, l = blocks[-1]; i < l; i++) {
+    //         let x = BigInt(Math.floor(Math.random() * 127));
+    //         builder.storeUint(x, 8);
+    //         list += String.fromCharCode(Number(x.toString()));
+    //     }
+
+    //     blocks.pop();
+
+    //     let cell = builder.endCell();
+
+    //     while (blocks.length > 0) {
+    //         builder = beginCell();
+            
+    //         for (let i = 0, l = blocks[-1]; i < l; i++) {
+    //             let x = BigInt(Math.floor(Math.random() * 127));
+    //             builder.storeUint(x, 8);
+    //             list += String.fromCharCode(Number(x.toString()));
+    //         }
+
+    //         blocks.pop();
+    //     }
+
+    //     let input = '';
+    //     for (let i = list.length - 1; i >= 0; i--) {
+    //         input += list[i];
+    //     }
+
+    //     let shift = 5n;
+
+    //     const result = await task4.getCeasarDecyption(shift, cell);
+    // })
     // it('decryption test shift 3', async() => {
 
     //     var len = 12 + 4;
