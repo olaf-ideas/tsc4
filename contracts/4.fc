@@ -12,15 +12,15 @@
 ;; remember to if the shift = 0 case (or do we?)
 (cell) _caesar_cipher_encrypt(int shift, cell text) asm """
   // shift, text
+  SWAP
+  DUP
+  IF:<{
+    26 INT
+    MOD
+    SWAP
+
   CTOS
   // shift, ds
-
-  SWAP
-  // ds, shift
-  26 INT
-  MOD
-  SWAP
-  // shift%26, ds
 
   127 INT
   -ROT
@@ -204,6 +204,10 @@
   1 INT
   ONLYTOPX
   // result
+
+  }>ELSE<{
+    DROP
+  }>
 """;
 
 ;; testable
