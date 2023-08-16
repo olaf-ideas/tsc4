@@ -213,5 +213,5 @@
 
 ;; testable
 (cell) caesar_cipher_decrypt(int shift, cell text) inline method_id {
-  return caesar_cipher_encrypt(26 - (shift % 26), text);
+  return _caesar_cipher_encrypt(26 - (shift % 26), text);
 }

@@ -18,8 +18,6 @@ PROGRAM{
       MOD
       SWAP
       // shift%26, ds
-      s1 DUMP
-      s0 DUMP
       127 INT
       -ROT
       126 INT
@@ -107,14 +105,18 @@ PROGRAM{
         127 INT
         REPEAT:<{
           8 LDU
+          SWAP
           // ..., 3, 2, 1, 0, list, builder, ds, x_8
           3 ADDCONST
+          
           PUSHX
           // ..., 3, 2, 1, 0, list, builder, ds, x_shifted
-          s1 s2 XCHG
+          ROT
+          // ..., 3, 2, 1, 0, list, ds, x_shifted, builder
           8 STU
           // ..., 3, 2, 1, 0, list, ds, builder
           SWAP
+          // ..., 3, 2, 1, 0, list, builder, ds
         }>
         // ..., 3, 2, 1, 0, list, builder, ds
         -ROT
@@ -130,47 +132,22 @@ PROGRAM{
       }>
       DUP
       SBITS
-      s0 DUMP
       3 RSHIFT#
-      s6 DUMP
-      s5 DUMP
-      s4 DUMP
-      s3 DUMP
-      s2 DUMP
-      s1 DUMP
-      s0 DUMP
       REPEAT:<{
         8 LDU
         SWAP
-        s0 DUMP
         // ..., 3, 2, 1, 0, list, builder, ds, x_8
         3 ADDCONST
-        
-        s0 DUMP
         
         PUSHX
         // ..., 3, 2, 1, 0, list, builder, ds, x_shifted
         ROT
         // ..., 3, 2, 1, 0, list, ds, x_shifted, builder
-        s2 DUMP
-        s1 DUMP
-        s0 DUMP
         8 STU
         // ..., 3, 2, 1, 0, list, ds, builder
         SWAP
         // ..., 3, 2, 1, 0, list, builder, ds
-      
-        s0 DUMP
-        s1 DUMP
-        s2 DUMP
       }>
-      s6 DUMP
-      s5 DUMP
-      s4 DUMP
-      s3 DUMP
-      s2 DUMP
-      s1 DUMP
-      s0 DUMP
       DROP
       // ..., 3, 2, 1, 0, list, builder
       ENDC
@@ -181,16 +158,11 @@ PROGRAM{
       ISNULL
       IFNOT:<{
         UNTIL:<{
-          s4 DUMP
-          s3 DUMP
-          s2 DUMP
-          s1 DUMP
-          s0 DUMP
           // result, list
           UNCONS
           // result, list, builder
-          -ROT
-          // list, builder, result
+          s1 s2 XCHG
+          // list, result, builder
           STREF
           // list, builder
           ENDC
@@ -215,6 +187,174 @@ PROGRAM{
     s1 s2 XCHG	//  text _2=26 _4
     SUB	//  text _5
     SWAP	//  _5 text
-    caesar_cipher_encrypt INLINECALLDICT	//  _6
+      // shift, text
+      CTOS
+      // shift, ds
+      SWAP
+      // ds, shift
+      26 INT
+      MOD
+      SWAP
+      // shift%26, ds
+      127 INT
+      -ROT
+      126 INT
+      -ROT
+      125 INT
+      -ROT
+      124 INT
+      -ROT
+      123 INT
+      -ROT
+      // 127, 126, 125, 124, 123, shift, ds
+      
+      OVER
+      96 INT
+      ADD
+      // 127, 126, 125, 124, 123, shift, ds, 122 - 26 + shift
+      -ROT
+      // 127, 126, 125, 124, 123, 122 - 26 + shift, shift, ds
+      25 INT
+      REPEAT:<{
+        s2 PUSH
+        DEC
+        DUP
+        97 LESSINT
+        IF:<{
+          26 ADDCONST
+        }>
+        -ROT
+      }>
+      // 127, ..., 123, 122-26+shift, ..., 97+shift, shift, ds
+      96 INT
+      -ROT
+      95 INT
+      -ROT
+      94 INT
+      -ROT
+      93 INT
+      -ROT
+      92 INT
+      -ROT
+      91 INT
+      -ROT
+      // 127, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, shift, ds
+      SWAP
+      64 INT
+      ADD
+      // 127, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, ds, 90-26+shift
+      SWAP
+      // 127, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ds
+      25 INT
+      REPEAT:<{
+        s1 PUSH
+        DEC
+        DUP
+        65 LESSINT
+        IF:<{
+          26 ADDCONST
+        }>
+        SWAP
+      }>
+      // 127, ..., 123, 122-26+shift, ..., 97+shift, 96, .., 91, 90-26+shift, ..., 65+shift, ds
+      64 INT
+      SWAP
+      64 INT
+      REPEAT:<{
+        // ... i, ds
+        s1 PUSH
+        DEC
+        // ..., i, ds, i - 1
+        SWAP
+        // ..., i, i - 1, ds
+      }>
+      // ..., 3, 2, 1, 0, ds
+      NULL
+      // ..., 3, 2, 1, 0, ds, list
+      NEWC
+      // ..., 3, 2, 1, 0, ds, list, builder
+      ROT
+      // ..., 3, 2, 1, 0, list, builder, ds
+      s0 PUSH
+      SDEPTH
+      // ..., 3, 2, 1, 0, list, builder, ds, ds_depth
+      
+      REPEAT:<{
+        127 INT
+        REPEAT:<{
+          8 LDU
+          SWAP
+          // ..., 3, 2, 1, 0, list, builder, ds, x_8
+          3 ADDCONST
+          
+          PUSHX
+          // ..., 3, 2, 1, 0, list, builder, ds, x_shifted
+          ROT
+          // ..., 3, 2, 1, 0, list, ds, x_shifted, builder
+          8 STU
+          // ..., 3, 2, 1, 0, list, ds, builder
+          SWAP
+          // ..., 3, 2, 1, 0, list, builder, ds
+        }>
+        // ..., 3, 2, 1, 0, list, builder, ds
+        -ROT
+        CONS
+        // ..., 3, 2, 1, 0, ds, list
+        NEWC
+        // ..., 3, 2, 1, 0, ds, list, builder
+        ROT
+        // ..., 3, 2, 1, 0, list, builder, ds
+        PLDREF
+        CTOS
+        // ..., 3, 2, 1, 0, list, builder, ds
+      }>
+      DUP
+      SBITS
+      3 RSHIFT#
+      REPEAT:<{
+        8 LDU
+        SWAP
+        // ..., 3, 2, 1, 0, list, builder, ds, x_8
+        3 ADDCONST
+        
+        PUSHX
+        // ..., 3, 2, 1, 0, list, builder, ds, x_shifted
+        ROT
+        // ..., 3, 2, 1, 0, list, ds, x_shifted, builder
+        8 STU
+        // ..., 3, 2, 1, 0, list, ds, builder
+        SWAP
+        // ..., 3, 2, 1, 0, list, builder, ds
+      }>
+      DROP
+      // ..., 3, 2, 1, 0, list, builder
+      ENDC
+      // ..., 3, 2, 1, 0, list, result
+      SWAP
+      // ..., 3, 2, 1, 0, result, list
+      DUP
+      ISNULL
+      IFNOT:<{
+        UNTIL:<{
+          // result, list
+          UNCONS
+          // result, list, builder
+          s1 s2 XCHG
+          // list, result, builder
+          STREF
+          // list, builder
+          ENDC
+          // list, result
+          SWAP
+          // result, list
+          DUP
+          ISNULL
+        }>
+      }>
+      DROP
+      // 3, 2, 1, 0, result
+      1 INT
+      ONLYTOPX
+      // result	//  _6
   }>
 }END>c

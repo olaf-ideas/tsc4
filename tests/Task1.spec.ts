@@ -89,6 +89,8 @@ describe('Task1', () => {
         let root = active[0];
         let find_me = all_cells[Math.floor(Math.random() * all_cells.length)];
 
-        const result = task1.getCell(BigInt("0"), root);
+        const result = await task1.getCell(BigInt("0"), root);
+
+        expect(result.hash()).toEqual((beginCell().endCell()).hash());
     })
 });
