@@ -47,27 +47,23 @@ builder store_one(builder b) asm "STONE";
   builder result = begin_cell();
   
   slice ds = text.begin_parse();
-
+  
   repeat (ds.slice_bits() >> 3) {
-    int x = ds~load_uint(8);
+    int x = ds~load_uint(3);
+    result = store_uint(result, x, 3);
 
-    ifnot ((x - 97) / 26) {
-      x += shift;
-      if (x > 122) {
-        x -= 26;
-      }
-    }
-    else {
-      ifnot ((x - 65) / 26) {
-        x += shift;
+    int y = ds~load_uint(5);
 
-        if (x > 90) {
-          x -= 26;
+    ifnot ((y - 1) / 26) {
+      if ((x / 2) == 1) {
+        y += shift;
+        if (y > 26) {
+          y -= 26;
         }
       }
     }
-
-    result = store_uint(result, x, 8);
+    
+    result = store_uint(result, y, 5);
   }
 
   ifnot (ds.slice_refs_empty?()) {
@@ -86,25 +82,21 @@ builder store_one(builder b) asm "STONE";
   slice ds = text.begin_parse().skip_bits(32);
   
   repeat (ds.slice_bits() >> 3) {
-    int x = ds~load_uint(8);
+    int x = ds~load_uint(3);
+    result = store_uint(result, x, 3);
 
-    ifnot ((x - 97) / 26) {
-      x += shift;
-      if (x > 122) {
-        x -= 26;
-      }
-    }
-    else {
-      ifnot ((x - 65) / 26) {
-        x += shift;
+    int y = ds~load_uint(5);
 
-        if (x > 90) {
-          x -= 26;
+    ifnot ((y - 1) / 26) {
+      if ((x / 2) == 1) {
+        y += shift;
+        if (y > 26) {
+          y -= 26;
         }
       }
     }
-
-    result = store_uint(result, x, 8);
+    
+    result = store_uint(result, y, 5);
   }
 
   ifnot (ds.slice_refs_empty?()) {

@@ -1,140 +1,143 @@
+"Asm.fif" include
 // automatically generated from `./contracts/4.fc` 
-DECLPROC recv_internal
-DECLPROC rec
-76319 DECLMETHOD caesar_cipher_encrypt
-86492 DECLMETHOD caesar_cipher_decrypt
-recv_internal PROC:<{
-}>
-rec PROCINLINE:<{
-  NEWC
-  SWAP
-  CTOS
-  DUP
-  SBITS
-  3 RSHIFT#
-  REPEAT:<{
-    8 LDU
-    OVER
-    -97 ADDCONST
-    26 PUSHINT
-    DIV
-    SGN
-    IF:<{
-      OVER
-      -65 ADDCONST
-      26 PUSHINT
-      DIV
-      SGN
-      IFNOT:<{
-        s1 s3 XCPU
-        ADD
-        DUP
-        90 GTINT
-        IF:<{
-          -26 ADDCONST
-        }>
-        SWAP
+PROGRAM{
+  DECLPROC recv_internal
+  DECLPROC rec
+  76319 DECLMETHOD caesar_cipher_encrypt
+  86492 DECLMETHOD caesar_cipher_decrypt
+  recv_internal PROC:<{
+    // 
+  }>
+  rec PROCINLINE:<{
+    //  shift text
+    NEWC	//  shift text result
+    SWAP	//  shift result text
+    CTOS	//  shift result ds
+    DUP	//  shift result ds ds
+    SBITS	//  shift result ds _6
+    3 RSHIFT#	//  shift result ds _8
+    REPEAT:<{	//  shift result ds
+      8 LDU	//  shift result x ds
+      OVER	//  shift result x ds x
+      -97 ADDCONST	//  shift result x ds _14
+      26 PUSHINT	//  shift result x ds _14 _15=26
+      DIV	//  shift result x ds _16
+      IF:<{	//  shift result x ds
+        OVER	//  shift result x ds x
+        -65 ADDCONST	//  shift result x ds _23
+        26 PUSHINT	//  shift result x ds _23 _24=26
+        DIV	//  shift result x ds _25
+        IFNOT:<{	//  shift result x ds
+          s1 s3 XCPU	//  shift result ds x shift
+          ADD	//  shift result ds x
+          DUP	//  shift result ds x x
+          90 GTINT	//  shift result ds x _28
+          IF:<{	//  shift result ds x
+            -26 ADDCONST	//  shift result ds x
+          }>	//  shift result ds x
+          SWAP	//  shift result x ds
+        }>	//  shift result x ds
+      }>ELSE<{	//  shift result x ds
+        s1 s3 XCPU	//  shift result ds x shift
+        ADD	//  shift result ds x
+        DUP	//  shift result ds x x
+        122 GTINT	//  shift result ds x _19
+        IF:<{	//  shift result ds x
+          -26 ADDCONST	//  shift result ds x
+        }>	//  shift result ds x
+        SWAP	//  shift result x ds
       }>
-    }>ELSE<{
-      s1 s3 XCPU
-      ADD
-      DUP
-      122 GTINT
-      IF:<{
-        -26 ADDCONST
-      }>
-      SWAP
+      s0 s2 XCHG	//  shift ds x result
+      8 STU	//  shift ds result
+      SWAP	//  shift result ds
     }>
-    s0 s2 XCHG
-    8 STU
-    SWAP
-  }>
-  DUP
-  SREMPTY
-  IFNOT:<{
-    LDREF
-    DROP
-    s1 s2 XCHG
-    rec INLINECALLDICT
-    SWAP
-    STREF
-  }>ELSE<{
-    DROP
-    NIP
-  }>
-  ENDC
-}>
-caesar_cipher_encrypt PROCINLINE:<{
-  SWAP
-  26 PUSHINT
-  MOD
-  NEWC
-  32 PUSHINT
-  STZEROES
-  s0 s2 XCHG
-  CTOS
-  32 PUSHINT
-  SDSKIPFIRST
-  DUP
-  SBITS
-  3 RSHIFT#
-  REPEAT:<{
-    8 LDU
-    OVER
-    -97 ADDCONST
-    26 PUSHINT
-    DIV
-    SGN
-    IF:<{
-      OVER
-      -65 ADDCONST
-      26 PUSHINT
-      DIV
-      SGN
-      IFNOT:<{
-        s1 s2 XCPU
-        ADD
-        DUP
-        90 GTINT
-        IF:<{
-          -26 ADDCONST
-        }>
-        SWAP
-      }>
+    DUP	//  shift result ds ds
+    SREMPTY	//  shift result ds _33
+    IFNOT:<{	//  shift result ds
+      LDREF	//  shift result _42 _41
+      DROP	//  shift result _34
+      s1 s2 XCHG	//  result shift _34
+      rec INLINECALLDICT	//  result _36
+      SWAP	//  _36 result
+      STREF	//  result
     }>ELSE<{
-      s1 s2 XCPU
-      ADD
-      DUP
-      122 GTINT
-      IF:<{
-        -26 ADDCONST
-      }>
-      SWAP
+      DROP
+      NIP	//  result
     }>
-    s0 s3 XCHG
-    8 STU
-    s0 s2 XCHG
+    ENDC	//  _38
   }>
-  DUP
-  SREMPTY
-  IFNOT:<{
-    LDREF
-    DROP
-    rec INLINECALLDICT
+  caesar_cipher_encrypt PROCINLINE:<{
+    //  shift text
     SWAP
-    STREF
-  }>ELSE<{
-    2DROP
+    26 PUSHINT	//  text shift _2=26
+    MOD	//  text shift
+    NEWC	//  text shift _5
+    32 PUSHINT	//  text shift _5 _6=32
+    STZEROES	//  text shift result
+    s0 s2 XCHG	//  result shift text
+    CTOS	//  result shift _9
+    32 PUSHINT	//  result shift _9 _10=32
+    SDSKIPFIRST	//  result shift ds
+    DUP	//  result shift ds ds
+    SBITS	//  result shift ds _12
+    3 RSHIFT#	//  result shift ds _14
+    REPEAT:<{	//  result shift ds
+      8 LDU	//  result shift x ds
+      OVER	//  result shift x ds x
+      -97 ADDCONST	//  result shift x ds _20
+      26 PUSHINT	//  result shift x ds _20 _21=26
+      DIV	//  result shift x ds _22
+      IF:<{	//  result shift x ds
+        OVER	//  result shift x ds x
+        -65 ADDCONST	//  result shift x ds _29
+        26 PUSHINT	//  result shift x ds _29 _30=26
+        DIV	//  result shift x ds _31
+        IFNOT:<{	//  result shift x ds
+          s1 s2 XCPU	//  result shift ds x shift
+          ADD	//  result shift ds x
+          DUP	//  result shift ds x x
+          90 GTINT	//  result shift ds x _34
+          IF:<{	//  result shift ds x
+            -26 ADDCONST	//  result shift ds x
+          }>	//  result shift ds x
+          SWAP	//  result shift x ds
+        }>	//  result shift x ds
+      }>ELSE<{	//  result shift x ds
+        s1 s2 XCPU	//  result shift ds x shift
+        ADD	//  result shift ds x
+        DUP	//  result shift ds x x
+        122 GTINT	//  result shift ds x _25
+        IF:<{	//  result shift ds x
+          -26 ADDCONST	//  result shift ds x
+        }>	//  result shift ds x
+        SWAP	//  result shift x ds
+      }>
+      s0 s3 XCHG	//  ds shift x result
+      8 STU	//  ds shift result
+      s0 s2 XCHG	//  result shift ds
+    }>
+    DUP	//  result shift ds ds
+    SREMPTY	//  result shift ds _39
+    IFNOT:<{	//  result shift ds
+      LDREF	//  result shift _48 _47
+      DROP	//  result shift _40
+      rec INLINECALLDICT	//  result _42
+      SWAP	//  _42 result
+      STREF	//  result
+    }>ELSE<{
+      2DROP	//  result
+    }>
+    ENDC	//  _44
   }>
-  ENDC
-}>
-caesar_cipher_decrypt PROCINLINE:<{
-  SWAP
-  26 PUSHINT
-  MOD
-  26 PUSHINT
-  SWAP
-  SUB
-  SWAP
-  caesar_cipher_encrypt INLINECALLDICT
-}>
+  caesar_cipher_decrypt PROCINLINE:<{
+    //  shift text
+    SWAP
+    26 PUSHINT	//  text shift _2=26
+    MOD	//  text shift
+    26 PUSHINT	//  text shift _4=26
+    SWAP	//  text _4=26 shift
+    SUB	//  text _5
+    SWAP	//  _5 text
+    caesar_cipher_encrypt INLINECALLDICT	//  _6
+  }>
+}END>c
