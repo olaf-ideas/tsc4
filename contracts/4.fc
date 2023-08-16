@@ -38,96 +38,80 @@ slice skip_bits(slice s, int len) asm "SDSKIPFIRST";
 int cell_depth(cell c) asm "CDEPTH";
 int slice_depth(slice s) asm "SDEPTH";
 
+int sgn(int x) asm "SGN";
 builder store_one(builder b) asm "STONE";
+
+;; (x-97)/ (122 - 97)
+
+(cell) rec(int shift, cell text) inline {
+  builder result = begin_cell();
+  
+  slice ds = text.begin_parse();
+
+  repeat (ds.slice_bits() >> 3) {
+    int x = ds~load_uint(8);
+
+    ifnot (sgn((x - 97) / 26)) {
+      x += shift;
+      if (x > 122) {
+        x -= 26;
+      }
+    }
+    else {
+      ifnot (sgn((x - 65) / 26)) {
+        x += shift;
+
+        if (x > 90) {
+          x -= 26;
+        }
+      }
+    }
+
+    result = store_uint(result, x, 8);
+  }
+
+  ifnot (ds.slice_refs_empty?()) {
+    result = result.store_ref(rec(shift, ds~load_ref())); 
+  }
+
+  return result.end_cell();
+}
 
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) inline method_id {
   shift %= 26;
 
+  builder result = begin_cell().store_zeros(32);
 
-  tuple l = null();
-  builder b = begin_cell();
-
-  slice ds = text.begin_parse();
-
-  int d = text.cell_depth();
-
-  repeat (d) {
-    repeat (127) {
-      ifnot (ds~load_uint(1)) {
-        int x = ds~load_uint(7);
-        if (x <= 90) {
-          if (x >= 65) {
-            x += shift;
-
-            if (x > 90) {
-              x -= 26;
-            }
-          }
-        }
-        else {
-          if (x <= 122) {
-            if (x >= 97) {
-              x += shift;
-
-              if (x > 122) {
-                x -= 26;
-              }
-            }
-          }
-        }
-        b = store_uint(b, x, 8);
-      }
-      else {
-        b = store_one(b);
-        b = store_uint(b, ds~load_uint(7), 7);
-      }
-    }
-
-    l~push_back(b);
-
-    b = begin_cell();
-    ds = ds~load_ref().begin_parse();
-  }
+  slice ds = text.begin_parse().skip_bits(32);
 
   repeat (ds.slice_bits() >> 3) {
-    ifnot (ds~load_uint(1)) {
-      int x = ds~load_uint(7);
-      if (x <= 90) {
-        if (x >= 65) {
-          x += shift;
+    int x = ds~load_uint(8);
 
-          if (x > 90) {
-            x -= 26;
-          }
-        }
+    ifnot (sgn((x - 97) / 26)) {
+      x += shift;
+      if (x > 122) {
+        x -= 26;
       }
-      else {
-        if (x <= 122) {
-          if (x >= 97) {
-            x += shift;
-
-            if (x > 122) {
-              x -= 26;
-            }
-          }
-        }
-      }
-      b = store_uint(b, x, 8);
     }
     else {
-      b = store_one(b);
-      b = store_uint(b, ds~load_uint(7), 7);
+      ifnot (sgn((x - 65) / 26)) {
+        x += shift;
+
+        if (x > 90) {
+          x -= 26;
+        }
+      }
     }
+
+    result = store_uint(result, x, 8);
   }
 
-  cell result = b.end_cell();
-
-  repeat (d) {
-    result = (l~pop_back()).store_ref(result).end_cell();
+  ifnot (ds.slice_refs_empty?()) {
+    result = result.store_ref(rec(shift, ds~load_ref())); 
   }
 
-  return result;
+  return result.end_cell();
 }
 
 ;; testable
