@@ -115,8 +115,6 @@ tuple null() asm "PUSHNULL";
 // n, k
 DUP
 // n, k, k
-SGN
-// n, k, k=0
 IF:<{
   SWAP // k, n
   // k, n
