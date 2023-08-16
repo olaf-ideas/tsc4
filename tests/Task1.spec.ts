@@ -47,4 +47,48 @@ describe('Task1', () => {
 
         console.log("result: ", result);
     });
+
+    it('big empty test', async() => {
+        let leafs = 1000;
+
+        let all_cells = [];
+        let active = [];
+
+        for (let i = 0; i < leafs; i++) {
+            let cell = beginCell().endCell();
+
+            all_cells.push(cell);
+            active.push(cell);
+        }
+
+        const shuffle = (array: Cell[]) => { 
+            return array.map((a) => ({ sort: Math.random(), value: a }))
+                .sort((a, b) => a.sort - b.sort)
+                .map((a) => a.value); 
+        }; 
+
+        while (active.length > 1) {
+            let x = Math.min(4, Math.floor(Math.random() * active.length) + 1);
+            active = shuffle(active);
+
+            let cell = beginCell();
+
+            while (x > 0) {
+                cell.storeRef(active[active.length - 1]);
+                active.pop();
+                x -= 1;
+            }
+
+            let y = cell.endCell();
+            active.push(y);
+            all_cells.push(y);
+        }
+
+        expect(active.length).toEqual(1);
+
+        let root = active[0];
+        let find_me = all_cells[Math.floor(Math.random() * all_cells.length)];
+
+        const result = task1.getCell(BigInt("0"), root);
+    })
 });
